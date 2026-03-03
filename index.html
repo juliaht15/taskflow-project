@@ -3,29 +3,55 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TaskFlow Project</title>
+    <title>TaskFlow Pro</title>
     <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
 </head>
 <body>
 
-    <header>
-        <h1>TaskFlow</h1>
+    <header class="navbar">
+        <h1>Task<span>Flow</span></h1>
+        <div class="user-profile">JH</div>
     </header>
 
-    <main>
-        <aside>
-            <h3>Filtros</h3>
-            <ul>
-                <li>Pendientes</li>
-                <li>Completadas</li>
-            </ul>
+    <main class="app-container">
+        <aside class="sidebar">
+            <nav>
+                <ul>
+                    <li class="active">📅 Todas</li>
+                    <li>🔥 Urgentes</li>
+                    <li>✅ Finalizadas</li>
+                </ul>
+            </nav>
         </aside>
 
-        <section class="task-container">
-            <h2>Mis Tareas</h2>
-            <div class="task-card">
-                <span>Tarea Ejemplo</span>
-                <span class="badge priority-high">Alta</span>
+        <section class="task-board">
+            <h2>Panel de Control</h2>
+            
+            <div class="task-list">
+                <article class="task-card">
+                    <div class="task-info">
+                        <h3>Configurar repositorio Git</h3>
+                        <span class="category">Desarrollo</span>
+                    </div>
+                    <span class="badge priority-high">Alta</span>
+                </article>
+
+                <article class="task-card">
+                    <div class="task-info">
+                        <h3>Diseñar Variables CSS</h3>
+                        <span class="category">Diseño</span>
+                    </div>
+                    <span class="badge priority-medium">Media</span>
+                </article>
+
+                <article class="task-card">
+                    <div class="task-info">
+                        <h3>Desplegar en Vercel</h3>
+                        <span class="category">DevOps</span>
+                    </div>
+                    <span class="badge priority-low">Baja</span>
+                </article>
             </div>
         </section>
     </main>
