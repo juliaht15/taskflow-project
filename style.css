@@ -1,0 +1,89 @@
+/* 1. Definición de variables en :root */
+:root {
+    --primary-color: #4f46e5;
+    --secondary-color: #64748b;
+    --bg-color: #f8fafc;
+    --card-bg: #ffffff;
+    --text-main: #1e293b;
+    --padding-std: 20px;
+    --transition-speed: 0.3s;
+}
+
+/* Configuración básica */
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-main);
+    margin: 0;
+}
+
+header {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 1rem;
+    text-align: center;
+}
+
+/* 2. Layout Principal con Flexbox */
+main {
+    display: flex;
+    gap: var(--padding-std);
+    padding: var(--padding-std);
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+aside {
+    flex: 1;
+    background: var(--secondary-color);
+    color: white;
+    padding: 15px;
+    border-radius: 8px;
+    min-height: 200px;
+}
+
+.task-container {
+    flex: 3;
+}
+
+/* 3. Maquetación de la lista de tareas con Flexbox */
+.task-card {
+    display: flex;
+    justify-content: space-between; /* Alinea título a la izquierda y prioridad a la derecha */
+    align-items: center;
+    background: var(--card-bg);
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    
+    /* Bonus: Transición suave */
+    transition: all var(--transition-speed) ease;
+    cursor: pointer;
+}
+
+.task-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.badge {
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    background: #fee2e2;
+    color: #ef4444;
+}
+
+/* 4. Media Queries para móviles */
+@media (max-width: 768px) {
+    main {
+        flex-direction: column; /* La barra lateral pasa arriba y el contenido abajo */
+    }
+
+    aside {
+        width: 100%;
+        box-sizing: border-box;
+    }
+}
