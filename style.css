@@ -1,3 +1,4 @@
+/* 1. VARIABLES GLOBALES */
 :root {
     --primary: #6366f1;
     --primary-dark: #4f46e5;
@@ -11,6 +12,7 @@
     --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
 
+/* 2. RESET Y ESTILOS BASE */
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
@@ -19,6 +21,7 @@ body {
     color: var(--text-dark);
 }
 
+/* 3. NAVEGACIÓN */
 header.navbar {
     background: var(--white);
     padding: 1rem 5%;
@@ -30,6 +33,19 @@ header.navbar {
 
 header h1 span { color: var(--primary); }
 
+.search-bar {
+    padding: 8px 15px;
+    border: 1px solid #e5e7eb;
+    border-radius: 20px;
+    outline: none;
+    font-size: 0.9rem;
+    width: 300px; /* NOTA: Ancho fijo para que luzca mejor en el centro */
+    transition: border-color 0.3s;
+}
+
+.search-bar:focus { border-color: var(--primary); }
+
+/* 4. LAYOUT PRINCIPAL */
 .app-container {
     display: flex;
     padding: 2rem 5%;
@@ -55,8 +71,53 @@ header h1 span { color: var(--primary); }
 }
 .sidebar li.active { background: var(--primary); color: white; }
 
+/* 5. PANEL DE CONTROL Y CONTADOR */
 .task-board { flex: 3; }
 
+/* NOTA: Estilo para la cabecera del panel con el contador */
+.board-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+#task-count {
+    font-size: 0.9rem;
+    color: var(--text-light);
+    font-weight: 600;
+}
+
+/* 6. FORMULARIO DE ENTRADA */
+.add-task-container {
+    display: flex;
+    gap: 10px;
+    margin-top: 1rem;
+}
+
+.add-task-container input {
+    flex: 1;
+    padding: 12px;
+    border: 1px solid #e5e7eb;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    outline: none;
+}
+
+.add-task-container button {
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 0 20px;
+    border-radius: var(--radius);
+    cursor: pointer;
+    font-weight: 600;
+    transition: background 0.3s;
+}
+
+.add-task-container button:hover { background: var(--primary-dark); }
+
+/* 7. TARJETAS DE TAREAS */
 .task-list {
     display: flex;
     flex-direction: column;
@@ -72,37 +133,59 @@ header h1 span { color: var(--primary); }
     padding: 1.2rem;
     border-radius: var(--radius);
     box-shadow: var(--shadow);
-    
-    transition: transform 0.2s ease, box-shadow 0.2s ease, border-left 0.2s ease;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
     border-left: 5px solid transparent;
 }
 
 .task-card:hover {
     transform: translateX(10px);
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
     border-left: 5px solid var(--primary);
 }
 
-.task-info h3 { font-size: 1.1rem; margin-bottom: 4px; }
-.task-info .category { font-size: 0.85rem; color: var(--text-light); }
-
-.badge {
-    padding: 6px 14px;
-    border-radius: 20px;
-    font-size: 0.75rem;
-    font-weight: 600;
+/* NOTA: Estilo para el texto cuando la tarea está completada */
+.task-card.completed h3 {
+    text-decoration: line-through;
+    color: var(--text-light);
+    opacity: 0.6;
 }
-.priority-high { background: var(--high-priority); color: var(--high-text); }
-.priority-medium { background: #fef3c7; color: #d97706; }
-.priority-low { background: #d1fae5; color: #059669; }
 
+.task-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* Estilo del checkbox personalizado */
+.task-check {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    accent-color: var(--primary);
+}
+
+.task-info h3 { font-size: 1.1rem; }
+
+/* 8. BOTÓN ELIMINAR */
+.delete-btn {
+    background: #fee2e2;
+    color: #ef4444;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    font-weight: 600;
+    transition: all 0.3s;
+}
+
+.delete-btn:hover {
+    background: #ef4444;
+    color: white;
+}
+
+/* 9. RESPONSIVE */
 @media (max-width: 850px) {
-    .app-container {
-        flex-direction: column;
-    }
-    
-    .sidebar {
-        width: 100%;
-        order: 2;
-    }
+    .app-container { flex-direction: column; }
+    .sidebar { width: 100%; order: 2; }
+    .search-bar { width: 150px; }
 }
