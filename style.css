@@ -39,11 +39,14 @@ header h1 span { color: var(--primary); }
     border-radius: 20px;
     outline: none;
     font-size: 0.9rem;
-    width: 300px; /* NOTA: Ancho fijo para que luzca mejor en el centro */
-    transition: border-color 0.3s;
+    width: 300px; 
+    transition: border-color 0.3s, box-shadow 0.3s;
 }
 
-.search-bar:focus { border-color: var(--primary); }
+.search-bar:focus { 
+    border-color: var(--primary); 
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
 
 /* 4. LAYOUT PRINCIPAL */
 .app-container {
@@ -52,6 +55,7 @@ header h1 span { color: var(--primary); }
     gap: 2rem;
 }
 
+/* 5. SIDEBAR (FILTROS) */
 .sidebar {
     flex: 1;
     background: var(--white);
@@ -63,18 +67,30 @@ header h1 span { color: var(--primary); }
 
 .sidebar ul { list-style: none; }
 .sidebar li {
-    padding: 10px;
-    margin-bottom: 5px;
+    padding: 12px;
+    margin-bottom: 8px;
     border-radius: 8px;
     cursor: pointer;
-    transition: background 0.3s;
+    font-weight: 500;
+    color: var(--text-light);
+    transition: all 0.3s ease;
 }
-.sidebar li.active { background: var(--primary); color: white; }
 
-/* 5. PANEL DE CONTROL Y CONTADOR */
+/* NOTA: Este estilo se aplica al filtro que clickeas desde JS */
+.sidebar li.active { 
+    background: var(--primary); 
+    color: white; 
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+}
+
+.sidebar li:hover:not(.active) {
+    background: #f9fafb;
+    color: var(--primary);
+}
+
+/* 6. PANEL DE CONTROL Y CONTADOR */
 .task-board { flex: 3; }
 
-/* NOTA: Estilo para la cabecera del panel con el contador */
 .board-header {
     display: flex;
     justify-content: space-between;
@@ -86,9 +102,12 @@ header h1 span { color: var(--primary); }
     font-size: 0.9rem;
     color: var(--text-light);
     font-weight: 600;
+    background: #e5e7eb;
+    padding: 4px 12px;
+    border-radius: 20px;
 }
 
-/* 6. FORMULARIO DE ENTRADA */
+/* 7. FORMULARIO DE ENTRADA */
 .add-task-container {
     display: flex;
     gap: 10px;
@@ -102,22 +121,28 @@ header h1 span { color: var(--primary); }
     border-radius: var(--radius);
     box-shadow: var(--shadow);
     outline: none;
+    transition: border-color 0.3s;
 }
+
+.add-task-container input:focus { border-color: var(--primary); }
 
 .add-task-container button {
     background: var(--primary);
     color: white;
     border: none;
-    padding: 0 20px;
+    padding: 0 25px;
     border-radius: var(--radius);
     cursor: pointer;
     font-weight: 600;
-    transition: background 0.3s;
+    transition: all 0.3s;
 }
 
-.add-task-container button:hover { background: var(--primary-dark); }
+.add-task-container button:hover { 
+    background: var(--primary-dark);
+    transform: translateY(-2px);
+}
 
-/* 7. TARJETAS DE TAREAS */
+/* 8. TARJETAS DE TAREAS */
 .task-list {
     display: flex;
     flex-direction: column;
@@ -142,7 +167,11 @@ header h1 span { color: var(--primary); }
     border-left: 5px solid var(--primary);
 }
 
-/* NOTA: Estilo para el texto cuando la tarea está completada */
+/* Estilo para tarea completada */
+.task-card.completed {
+    background: #f9fafb;
+}
+
 .task-card.completed h3 {
     text-decoration: line-through;
     color: var(--text-light);
@@ -155,7 +184,6 @@ header h1 span { color: var(--primary); }
     gap: 12px;
 }
 
-/* Estilo del checkbox personalizado */
 .task-check {
     width: 20px;
     height: 20px;
@@ -165,7 +193,7 @@ header h1 span { color: var(--primary); }
 
 .task-info h3 { font-size: 1.1rem; }
 
-/* 8. BOTÓN ELIMINAR */
+/* 9. BOTÓN ELIMINAR */
 .delete-btn {
     background: #fee2e2;
     color: #ef4444;
@@ -181,9 +209,10 @@ header h1 span { color: var(--primary); }
 .delete-btn:hover {
     background: #ef4444;
     color: white;
+    transform: scale(1.05);
 }
 
-/* 9. RESPONSIVE */
+/* 10. RESPONSIVE */
 @media (max-width: 850px) {
     .app-container { flex-direction: column; }
     .sidebar { width: 100%; order: 2; }

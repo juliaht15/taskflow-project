@@ -3,7 +3,12 @@ const taskForm = document.getElementById('task-form');
 const taskInput = document.getElementById('task-input');
 const taskList = document.getElementById('task-list');
 const searchInput = document.getElementById('search-input');
-const taskCount = document.getElementById('task-count'); // NUEVO: Para el contador
+const taskCount = document.getElementById('task-count');
+
+// Elementos de los filtros laterales (Sidebar)
+const btnAll = document.getElementById('filter-all');
+const btnUrgent = document.getElementById('filter-urgent');
+const btnCompleted = document.getElementById('filter-completed');
 
 // Array principal de tareas
 let tasks = [];
@@ -13,7 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const savedTasks = JSON.parse(localStorage.getItem('tasks'));
     if (savedTasks) {
         tasks = savedTasks;
-        renderTasks();
+        renderTasks(); // Por defecto muestra todas
     }
 });
 
@@ -25,27 +30,26 @@ taskForm.addEventListener('submit', (e) => {
         id: Date.now(),
         text: taskInput.value,
         category: 'General',
-        completed: false // NUEVO: Estado inicial para poder tachar la tarea
+        completed: false
     };
 
     tasks.push(newTask);
     saveAndRender();
-    taskInput.value = ''; // Limpiar el campo
+    taskInput.value = ''; 
 });
 
-// 4. Función para guardar en LocalStorage y redibujar
+// 4. Función para guardar y redibujar
 function saveAndRender() {
     localStorage.setItem('tasks', JSON.stringify(tasks));
     renderTasks();
 }
 
-// 5. Función para pintar las tareas en el HTML
-function renderTasks() {
-    taskList.innerHTML = ''; // Limpiar lista actual
+// 5. Función principal para pintar tareas (acepta una lista filtrada como opción)
+function renderTasks(tasksToRender = tasks) {
+    taskList.innerHTML = ''; 
 
-    tasks.forEach(task => {
+    tasksToRender.forEach(task => {
         const article = document.createElement('article');
-        // NOTA: Si la tarea está completada, añadimos la clase 'completed' para el CSS
         article.className = `task-card ${task.completed ? 'completed' : ''}`;
         
         article.innerHTML = `
@@ -68,10 +72,35 @@ function renderTasks() {
         taskList.appendChild(article);
     });
 
-    updateCounter(); // Actualizar el contador cada vez que renderizamos
+    updateCounter();
 }
 
-// 6. NUEVO: Función para marcar/desmarcar tarea (Interactividad Pro)
+// 6. Lógica de los filtros del Sidebar
+function setActiveFilter(element) {
+    [btnAll, btnUrgent, btnCompleted].forEach(btn => btn.classList.remove('active'));
+    element.classList.add('active');
+}
+
+btnAll.addEventListener('click', () => {
+    setActiveFilter(btnAll);
+    renderTasks(tasks); // Muestra todas
+});
+
+btnUrgent.addEventListener('click', () => {
+    setActiveFilter(btnUrgent);
+    // Filtramos las que NO están completadas
+    const urgentTasks = tasks.filter(t => !t.completed);
+    renderTasks(urgentTasks);
+});
+
+btnCompleted.addEventListener('click', () => {
+    setActiveFilter(btnCompleted);
+    // Filtramos las que SÍ están completadas
+    const completedTasks = tasks.filter(t => t.completed);
+    renderTasks(completedTasks);
+});
+
+// 7. Funciones de interactividad (Marcar y Borrar)
 window.toggleTask = function(id) {
     tasks = tasks.map(task => {
         if (task.id === id) {
@@ -82,26 +111,19 @@ window.toggleTask = function(id) {
     saveAndRender();
 };
 
-// 7. Función para borrar tarea
 window.deleteTask = function(id) {
     tasks = tasks.filter(t => t.id !== id);
     saveAndRender();
 };
 
-// 8. NUEVO: Actualizar el contador de tareas pendientes
 function updateCounter() {
     const pending = tasks.filter(t => !t.completed).length;
     taskCount.textContent = `${pending} tareas pendientes`;
 }
 
-// 9. BONUS: Filtro de búsqueda
+// 8. Bonus: Buscador
 searchInput.addEventListener('input', (e) => {
     const term = e.target.value.toLowerCase();
-    const cards = document.querySelectorAll('.task-card');
-
-    cards.forEach(card => {
-        const title = card.querySelector('h3').textContent.toLowerCase();
-        // Usamos display flex o none para ocultar/mostrar según la búsqueda
-        card.style.display = title.includes(term) ? 'flex' : 'none';
-    });
+    const filtered = tasks.filter(task => task.text.toLowerCase().includes(term));
+    renderTasks(filtered);
 });
