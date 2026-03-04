@@ -16,10 +16,22 @@ let tasks = [];
 // 2. Cargar tareas de LocalStorage al iniciar
 document.addEventListener('DOMContentLoaded', () => {
     const savedTasks = JSON.parse(localStorage.getItem('tasks'));
-    if (savedTasks) {
+    
+    // Comprobamos si existen tareas guardadas y si el array no está vacío
+    if (savedTasks && savedTasks.length > 0) {
         tasks = savedTasks;
-        renderTasks(); // Por defecto muestra todas
+    } else {
+        // TAREAS DE EJEMPLO para que la web no se vea vacía al abrirla por primera vez
+        tasks = [
+            { id: 1, text: "🚀 Configurar el entorno de desarrollo", category: "General", completed: true },
+            { id: 2, text: "🔥 Implementar filtros dinámicos", category: "Urgente", completed: false },
+            { id: 3, text: "✨ Personalizar el diseño con CSS", category: "Diseño", completed: true },
+            { id: 4, text: "📦 Desplegar la app en Vercel", category: "General", completed: false }
+        ];
+        // Las guardamos para que el contador y los filtros funcionen desde el inicio
+        localStorage.setItem('tasks', JSON.stringify(tasks));
     }
+    renderTasks(); // Dibujamos las tareas (ya sean las guardadas o las de ejemplo)
 });
 
 // 3. Escuchar el envío del formulario
