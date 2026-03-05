@@ -10,9 +10,9 @@
 <body class="bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 min-h-screen font-sans">
 
     <header class="p-6 bg-white dark:bg-slate-900 shadow-sm flex justify-between items-center border-b dark:border-slate-800">
-        <h1 class="text-2xl font-bold text-indigo-600">TaskFlow</h1>
+        <h1 class="text-2xl font-bold text-indigo-600 tracking-tight">TaskFlow</h1>
         
-        <button id="theme-toggle" class="p-2 px-4 rounded-lg bg-slate-100 dark:bg-slate-800 hover:ring-2 ring-indigo-500 transition-all font-medium">
+        <button id="theme-toggle" class="p-2 px-4 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-indigo-100 dark:hover:bg-slate-700 focus:ring-2 focus:ring-indigo-500 focus:outline-none transition-all font-semibold text-sm">
             <span class="dark:hidden">🌙 Modo Noche</span>
             <span class="hidden dark:inline">☀️ Modo Día</span>
         </button>
@@ -20,16 +20,15 @@
 
     <main class="max-w-xl mx-auto mt-10 p-4">
         <form id="task-form" class="flex gap-2 mb-8">
-            <input type="text" id="task-input" placeholder="¿Qué hay que hacer?" required
-                class="flex-1 p-3 rounded-xl border border-slate-200 dark:border-slate-800 dark:bg-slate-900 focus:ring-2 focus:ring-indigo-500 outline-none transition-all">
+            <input type="text" id="task-input" placeholder="¿Qué tienes pendiente?" required
+                class="flex-1 p-3 rounded-xl border border-slate-200 dark:border-slate-800 dark:bg-slate-900 focus:ring-2 focus:ring-indigo-500 focus:border-transparent focus:outline-none transition-all">
             
-            <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-xl font-bold shadow-lg active:scale-95 transition-all">
+            <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-xl font-bold shadow-lg shadow-indigo-200 dark:shadow-none focus:ring-2 focus:ring-indigo-500 focus:outline-none active:scale-95 transition-all">
                 Añadir
             </button>
         </form>
 
-        <div id="task-list" class="space-y-3">
-            </div>
+        <div id="task-list" class="space-y-3"></div>
     </main>
 
     <script src="app.js"></script>

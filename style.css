@@ -2,14 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Bonus: Transiciones personalizadas globales */
 * {
     transition-property: all;
     transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
     transition-duration: 300ms;
 }
 
-/* Estado visual para tareas completadas (Punto 5) */
 .task-completed {
     @apply opacity-50 grayscale;
 }
