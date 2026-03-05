@@ -5,62 +5,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TaskFlow Pro</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class', // Habilitamos modo oscuro por clase
-        }
-    </script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
-<body class="bg-gray-100 text-gray-900 dark:bg-slate-950 dark:text-gray-100 min-h-screen transition-colors duration-300 font-sans">
+<body class="bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 min-h-screen font-sans">
 
-    <header class="flex flex-col md:flex-row items-center justify-between p-4 bg-white dark:bg-slate-900 shadow-sm border-b dark:border-slate-800 gap-4 px-[5%]">
-        <h1 class="text-2xl font-bold">Task<span class="text-indigo-500">Flow</span></h1>
+    <header class="p-6 bg-white dark:bg-slate-900 shadow-sm flex justify-between items-center border-b dark:border-slate-800">
+        <h1 class="text-2xl font-bold text-indigo-600">TaskFlow</h1>
         
-        <div class="flex items-center gap-4 w-full md:w-auto">
-            <input type="text" id="search-input" placeholder="Buscar tareas..." 
-                class="w-full md:w-80 px-4 py-2 rounded-full border border-gray-200 dark:border-slate-700 dark:bg-slate-800 focus:ring-2 focus:ring-indigo-500 focus:outline-none transition-all">
-            
-            <button id="theme-toggle" class="p-2 rounded-lg bg-gray-100 dark:bg-slate-800 hover:ring-2 ring-indigo-500 transition-all" title="Alternar modo oscuro">
-                <span class="dark:hidden">🌙</span>
-                <span class="hidden dark:inline">☀️</span>
-            </button>
-
-            <div class="w-10 h-10 rounded-full bg-indigo-500 text-white flex items-center justify-center font-semibold shadow-md shrink-0">JH</div>
-        </div>
+        <button id="theme-toggle" class="p-2 px-4 rounded-lg bg-slate-100 dark:bg-slate-800 hover:ring-2 ring-indigo-500 transition-all font-medium">
+            <span class="dark:hidden">🌙 Modo Noche</span>
+            <span class="hidden dark:inline">☀️ Modo Día</span>
+        </button>
     </header>
 
-    <main class="max-w-7xl mx-auto flex flex-col md:flex-row gap-8 p-8">
-        
-        <aside class="w-full md:w-1/4">
-            <nav class="bg-white dark:bg-slate-900 p-6 rounded-xl shadow-md border dark:border-slate-800">
-                <ul class="space-y-2">
-                    <li id="filter-all" class="p-3 rounded-lg cursor-pointer bg-indigo-500 text-white font-semibold shadow-lg shadow-indigo-200 dark:shadow-none transition-all">📅 Todas</li>
-                    <li id="filter-urgent" class="p-3 rounded-lg cursor-pointer text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-slate-800 hover:text-indigo-500 transition-all text-sm lg:text-base">🔥 Urgentes</li>
-                    <li id="filter-completed" class="p-3 rounded-lg cursor-pointer text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-slate-800 hover:text-indigo-500 transition-all text-sm lg:text-base">✅ Finalizadas</li>
-                </ul>
-            </nav>
-        </aside>
-
-        <section class="flex-1">
-            <div class="flex items-center justify-between mb-6">
-                <h2 class="text-2xl font-bold">Panel de Control</h2>
-                <span id="task-count" class="text-sm font-semibold bg-gray-200 dark:bg-slate-800 text-gray-600 dark:text-gray-300 px-3 py-1 rounded-full text-sm">0 tareas pendientes</span>
-            </div>
+    <main class="max-w-xl mx-auto mt-10 p-4">
+        <form id="task-form" class="flex gap-2 mb-8">
+            <input type="text" id="task-input" placeholder="¿Qué hay que hacer?" required
+                class="flex-1 p-3 rounded-xl border border-slate-200 dark:border-slate-800 dark:bg-slate-900 focus:ring-2 focus:ring-indigo-500 outline-none transition-all">
             
-            <form id="task-form" class="flex gap-3 mb-8">
-                <input type="text" id="task-input" placeholder="¿Qué hay que hacer hoy?" required
-                    class="flex-1 p-3 rounded-xl border border-gray-200 dark:border-slate-700 dark:bg-slate-800 focus:ring-2 focus:ring-indigo-500 focus:outline-none transition-all shadow-sm">
-                <button type="submit" id="add-btn" 
-                    class="px-8 bg-indigo-500 hover:bg-indigo-600 text-white font-bold rounded-xl transition-all transform hover:-translate-y-1 active:scale-95 shadow-lg shadow-indigo-200 dark:shadow-none">
-                    Añadir
-                </button>
-            </form>
+            <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-xl font-bold shadow-lg active:scale-95 transition-all">
+                Añadir
+            </button>
+        </form>
 
-            <div id="task-list" class="space-y-4">
-                </div>
-        </section>
+        <div id="task-list" class="space-y-3">
+            </div>
     </main>
 
     <script src="app.js"></script>

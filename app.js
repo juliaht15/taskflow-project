@@ -1,20 +1,18 @@
-// 1. SELECCIÓN DE ELEMENTOS
 const taskForm = document.getElementById('task-form');
 const taskInput = document.getElementById('task-input');
 const taskList = document.getElementById('task-list');
-const searchInput = document.getElementById('search-input');
-const taskCount = document.getElementById('task-count');
 const themeToggle = document.getElementById('theme-toggle');
 
-const btnAll = document.getElementById('filter-all');
-const btnUrgent = document.getElementById('filter-urgent');
-const btnCompleted = document.getElementById('filter-completed');
+// Persistencia (Punto 5)
+let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
 
-let tasks = [];
-
-// 2. LÓGICA MODO OSCURO (Punto 4 del objetivo)
-if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-    document.documentElement.classList.add('dark');
+// Punto 4: Lógica de Modo Oscuro persistente
+function applyTheme() {
+    if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.classList.add('dark');
+    } else {
+        document.documentElement.classList.remove('dark');
+    }
 }
 
 themeToggle.addEventListener('click', () => {
@@ -22,32 +20,13 @@ themeToggle.addEventListener('click', () => {
     localStorage.theme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
 });
 
-// 3. CARGA INICIAL
-document.addEventListener('DOMContentLoaded', () => {
-    const savedTasks = JSON.parse(localStorage.getItem('tasks'));
-    if (savedTasks && savedTasks.length > 0) {
-        tasks = savedTasks;
-    } else {
-        tasks = [
-            { id: 1, text: "🚀 Configurar Tailwind CSS", category: "General", completed: true },
-            { id: 2, text: "🌙 Implementar Modo Oscuro", category: "Urgente", completed: false }
-        ];
-    }
-    renderTasks();
-});
-
-// 4. AÑADIR TAREA
+// Gestión de Tareas
 taskForm.addEventListener('submit', (e) => {
     e.preventDefault();
-    const newTask = {
-        id: Date.now(),
-        text: taskInput.value,
-        category: 'General',
-        completed: false
-    };
-    tasks.push(newTask);
+    const task = { id: Date.now(), text: taskInput.value, completed: false };
+    tasks.push(task);
     saveAndRender();
-    taskInput.value = ''; 
+    taskInput.value = '';
 });
 
 function saveAndRender() {
@@ -55,71 +34,42 @@ function saveAndRender() {
     renderTasks();
 }
 
-// 5. RENDERIZADO CON CLASES TAILWIND (Puntos 2, 3 y Bonus)
-function renderTasks(tasksToRender = tasks) {
-    taskList.innerHTML = ''; 
-
-    tasksToRender.forEach(task => {
-        const article = document.createElement('article');
-        
-        // Clases para el diseño profesional y estados hover (Bonus)
-        article.className = `flex justify-between items-center p-4 rounded-xl border transition-all duration-300 ${
+function renderTasks() {
+    taskList.innerHTML = '';
+    tasks.forEach(task => {
+        const div = document.createElement('div');
+        // Puntos 2 y 3: Diseño dinámico con utilidades de Tailwind
+        div.className = `flex justify-between items-center p-4 rounded-xl border transition-all ${
             task.completed 
-            ? 'bg-gray-50 dark:bg-slate-900 border-transparent opacity-60' 
-            : 'bg-white dark:bg-slate-900 border-gray-100 dark:border-slate-800 shadow-sm hover:shadow-md hover:translate-x-2'
+            ? 'task-completed bg-slate-100 dark:bg-slate-800 border-transparent' 
+            : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md'
         }`;
         
-        article.innerHTML = `
-            <div class="flex items-center gap-4">
-                <input type="checkbox" class="w-5 h-5 accent-indigo-500 cursor-pointer" 
-                    ${task.completed ? 'checked' : ''} 
-                    onclick="toggleTask(${task.id})">
-                <div>
-                    <h3 class="font-medium ${task.completed ? 'line-through text-gray-400' : 'text-gray-800 dark:text-gray-200'}">${task.text}</h3>
-                    <span class="text-[10px] font-bold text-indigo-500 uppercase tracking-widest">${task.category}</span>
-                </div>
+        div.innerHTML = `
+            <div class="flex items-center gap-3">
+                <input type="checkbox" ${task.completed ? 'checked' : ''} onchange="toggleTask(${task.id})" 
+                    class="w-5 h-5 accent-indigo-600 cursor-pointer">
+                <span class="font-medium text-slate-700 dark:text-slate-200">${task.text}</span>
             </div>
-            <button class="px-3 py-1.5 rounded-lg text-xs font-bold bg-red-50 text-red-500 hover:bg-red-500 hover:text-white transition-all duration-200" 
-                onclick="deleteTask(${task.id})">
+            <button onclick="deleteTask(${task.id})" class="text-red-500 hover:text-red-700 font-bold transition-colors">
                 Eliminar
             </button>
         `;
-        taskList.appendChild(article);
+        taskList.appendChild(div);
     });
-    updateCounter();
 }
 
-// 6. FILTROS (Punto 5: Coherencia visual)
-function setActiveFilter(element) {
-    [btnAll, btnUrgent, btnCompleted].forEach(btn => {
-        btn.className = "p-3 rounded-lg cursor-pointer text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-slate-800 hover:text-indigo-500 transition-all text-sm";
-    });
-    element.className = "p-3 rounded-lg cursor-pointer bg-indigo-500 text-white font-semibold shadow-lg shadow-indigo-200 dark:shadow-none transition-all text-sm";
-}
-
-btnAll.addEventListener('click', () => { setActiveFilter(btnAll); renderTasks(tasks); });
-btnUrgent.addEventListener('click', () => { setActiveFilter(btnUrgent); renderTasks(tasks.filter(t => !t.completed)); });
-btnCompleted.addEventListener('click', () => { setActiveFilter(btnCompleted); renderTasks(tasks.filter(t => t.completed)); });
-
-// 7. UTILIDADES
-window.toggleTask = function(id) {
-    tasks = tasks.map(task => task.id === id ? { ...task, completed: !task.completed } : task);
+// Funciones globales corregidas (Punto 2)
+window.toggleTask = (id) => {
+    tasks = tasks.map(t => t.id === id ? { ...t, completed: !t.completed } : t);
     saveAndRender();
 };
 
-window.deleteTask = function(id) {
+window.deleteTask = (id) => {
     tasks = tasks.filter(t => t.id !== id);
     saveAndRender();
 };
 
-function updateCounter() {
-    const pending = tasks.filter(t => !t.completed).length;
-    taskCount.textContent = `${pending} tareas pendientes`;
-}
-
-// 8. BUSCADOR
-searchInput.addEventListener('input', (e) => {
-    const term = e.target.value.toLowerCase();
-    const filtered = tasks.filter(task => task.text.toLowerCase().includes(term));
-    renderTasks(filtered);
-});
+// Inicio de la app
+applyTheme();
+renderTasks();
