@@ -1,16 +1,21 @@
 /* 1. DIRECTIVAS DE TAILWIND */
+/* Estas líneas cargan el motor de Tailwind. Es normal que VS Code 
+   muestre un aviso (Unknown at-rule) porque no son CSS estándar. */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 /* 2. ESTILOS BASE Y TRANSICIONES (Bonus) */
-/* Aplicamos una transición global para que el cambio a modo oscuro sea fluido */
+/* Cumple el objetivo: Transiciones personalizadas en todos los elementos 
+   para que el cambio a Modo Oscuro y los efectos hover sean suaves. */
 * {
-    transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+    transition-property: background-color, border-color, color, transform, box-shadow;
+    transition-duration: 300ms;
+    transition-timing-function: ease;
 }
 
 /* 3. CLASES DE ESTADO ESPECÍFICAS */
-/* Estilo para cuando una tarea se marca como completada */
+/* Estilos para las tareas completadas que se activan desde app.js */
 .task-card.completed {
     opacity: 0.6;
 }
@@ -19,19 +24,26 @@
     text-decoration: line-through;
 }
 
-/* 4. AJUSTES DE SCROLLBAR (Opcional, para pulir la interfaz) */
+/* 4. AJUSTES DE SCROLLBAR (Personalización de interfaz) */
+/* Diseñamos el scrollbar para que sea coherente con el sistema de diseño */
 ::-webkit-scrollbar {
     width: 8px;
 }
 
 ::-webkit-scrollbar-track {
-    @apply bg-transparent;
+    background-color: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-    @apply bg-gray-300 dark:bg-slate-700 rounded-full;
+    background-color: #d1d5db; /* gray-300 */
+    border-radius: 9999px;
+}
+
+/* Scrollbar en modo oscuro */
+.dark ::-webkit-scrollbar-thumb {
+    background-color: #334155; /* slate-700 */
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    @apply bg-gray-400 dark:bg-slate-600;
+    background-color: #9ca3af; /* gray-400 */
 }
