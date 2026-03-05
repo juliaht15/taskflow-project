@@ -1,220 +1,37 @@
-/* 1. VARIABLES GLOBALES */
-:root {
-    --primary: #6366f1;
-    --primary-dark: #4f46e5;
-    --bg-main: #f3f4f6;
-    --white: #ffffff;
-    --text-dark: #111827;
-    --text-light: #6b7280;
-    --high-priority: #fee2e2;
-    --high-text: #ef4444;
-    --radius: 12px;
-    --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+/* 1. DIRECTIVAS DE TAILWIND */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* 2. ESTILOS BASE Y TRANSICIONES (Bonus) */
+/* Aplicamos una transición global para que el cambio a modo oscuro sea fluido */
+* {
+    transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
 }
 
-/* 2. RESET Y ESTILOS BASE */
-* { box-sizing: border-box; margin: 0; padding: 0; }
-
-body {
-    font-family: 'Inter', sans-serif;
-    background-color: var(--bg-main);
-    color: var(--text-dark);
-}
-
-/* 3. NAVEGACIÓN */
-header.navbar {
-    background: var(--white);
-    padding: 1rem 5%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid #e5e7eb;
-}
-
-header h1 span { color: var(--primary); }
-
-.search-bar {
-    padding: 8px 15px;
-    border: 1px solid #e5e7eb;
-    border-radius: 20px;
-    outline: none;
-    font-size: 0.9rem;
-    width: 300px; 
-    transition: border-color 0.3s, box-shadow 0.3s;
-}
-
-.search-bar:focus { 
-    border-color: var(--primary); 
-    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
-}
-
-/* 4. LAYOUT PRINCIPAL */
-.app-container {
-    display: flex;
-    padding: 2rem 5%;
-    gap: 2rem;
-}
-
-/* 5. SIDEBAR (FILTROS) */
-.sidebar {
-    flex: 1;
-    background: var(--white);
-    padding: 1.5rem;
-    border-radius: var(--radius);
-    height: fit-content;
-    box-shadow: var(--shadow);
-}
-
-.sidebar ul { list-style: none; }
-.sidebar li {
-    padding: 12px;
-    margin-bottom: 8px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: 500;
-    color: var(--text-light);
-    transition: all 0.3s ease;
-}
-
-/* NOTA: Este estilo se aplica al filtro que clickeas desde JS */
-.sidebar li.active { 
-    background: var(--primary); 
-    color: white; 
-    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
-}
-
-.sidebar li:hover:not(.active) {
-    background: #f9fafb;
-    color: var(--primary);
-}
-
-/* 6. PANEL DE CONTROL Y CONTADOR */
-.task-board { flex: 3; }
-
-.board-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1rem;
-}
-
-#task-count {
-    font-size: 0.9rem;
-    color: var(--text-light);
-    font-weight: 600;
-    background: #e5e7eb;
-    padding: 4px 12px;
-    border-radius: 20px;
-}
-
-/* 7. FORMULARIO DE ENTRADA */
-.add-task-container {
-    display: flex;
-    gap: 10px;
-    margin-top: 1rem;
-}
-
-.add-task-container input {
-    flex: 1;
-    padding: 12px;
-    border: 1px solid #e5e7eb;
-    border-radius: var(--radius);
-    box-shadow: var(--shadow);
-    outline: none;
-    transition: border-color 0.3s;
-}
-
-.add-task-container input:focus { border-color: var(--primary); }
-
-.add-task-container button {
-    background: var(--primary);
-    color: white;
-    border: none;
-    padding: 0 25px;
-    border-radius: var(--radius);
-    cursor: pointer;
-    font-weight: 600;
-    transition: all 0.3s;
-}
-
-.add-task-container button:hover { 
-    background: var(--primary-dark);
-    transform: translateY(-2px);
-}
-
-/* 8. TARJETAS DE TAREAS */
-.task-list {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    margin-top: 1.5rem;
-}
-
-.task-card {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: var(--white);
-    padding: 1.2rem;
-    border-radius: var(--radius);
-    box-shadow: var(--shadow);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    border-left: 5px solid transparent;
-}
-
-.task-card:hover {
-    transform: translateX(10px);
-    border-left: 5px solid var(--primary);
-}
-
-/* Estilo para tarea completada */
+/* 3. CLASES DE ESTADO ESPECÍFICAS */
+/* Estilo para cuando una tarea se marca como completada */
 .task-card.completed {
-    background: #f9fafb;
+    opacity: 0.6;
 }
 
 .task-card.completed h3 {
     text-decoration: line-through;
-    color: var(--text-light);
-    opacity: 0.6;
 }
 
-.task-info {
-    display: flex;
-    align-items: center;
-    gap: 12px;
+/* 4. AJUSTES DE SCROLLBAR (Opcional, para pulir la interfaz) */
+::-webkit-scrollbar {
+    width: 8px;
 }
 
-.task-check {
-    width: 20px;
-    height: 20px;
-    cursor: pointer;
-    accent-color: var(--primary);
+::-webkit-scrollbar-track {
+    @apply bg-transparent;
 }
 
-.task-info h3 { font-size: 1.1rem; }
-
-/* 9. BOTÓN ELIMINAR */
-.delete-btn {
-    background: #fee2e2;
-    color: #ef4444;
-    border: none;
-    padding: 8px 14px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 0.8rem;
-    font-weight: 600;
-    transition: all 0.3s;
+::-webkit-scrollbar-thumb {
+    @apply bg-gray-300 dark:bg-slate-700 rounded-full;
 }
 
-.delete-btn:hover {
-    background: #ef4444;
-    color: white;
-    transform: scale(1.05);
-}
-
-/* 10. RESPONSIVE */
-@media (max-width: 850px) {
-    .app-container { flex-direction: column; }
-    .sidebar { width: 100%; order: 2; }
-    .search-bar { width: 150px; }
+::-webkit-scrollbar-thumb:hover {
+    @apply bg-gray-400 dark:bg-slate-600;
 }
