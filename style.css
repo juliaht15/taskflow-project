@@ -1,17 +1,31 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
 * {
-    transition-property: all;
-    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-    transition-duration: 300ms;
+    transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease, opacity 0.3s ease;
 }
 
-.task-completed {
-    @apply opacity-50 grayscale;
+@keyframes slideIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
-.task-completed span {
-    @apply line-through text-slate-400;
+.task-item {
+    animation: slideIn 0.4s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+}
+
+#progress-bar {
+    transition: width 0.8s cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+/* Ocultar scrollbar pero mantener funcionalidad */
+::-webkit-scrollbar {
+    width: 6px;
+}
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+::-webkit-scrollbar-thumb {
+    background: #e2e8f0;
+    border-radius: 10px;
+}
+.dark ::-webkit-scrollbar-thumb {
+    background: #1e293b;
 }
