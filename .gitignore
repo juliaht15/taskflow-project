@@ -1,0 +1,14 @@
+# Node
+node_modules/
+dist/
+
+# Sistema Operativo
+.DS_Store
+Thumbs.db
+
+# Editor (VS Code)
+.vscode/
+.history/
+
+# Variables de entorno
+.env

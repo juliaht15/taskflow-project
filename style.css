@@ -1,5 +1,12 @@
+:root {
+    --primary-color: #4f46e5;
+    --bg-light: #f8fafc;
+    --bg-dark: #020617;
+    --transition-speed: 0.3s;
+}
+
 * {
-    transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease, opacity 0.3s ease;
+    transition: background-color var(--transition-speed) ease, border-color var(--transition-speed) ease, color var(--transition-speed) ease;
 }
 
 @keyframes slideIn {
@@ -15,17 +22,7 @@
     transition: width 0.8s cubic-bezier(0.65, 0, 0.35, 1);
 }
 
-/* Ocultar scrollbar pero mantener funcionalidad */
-::-webkit-scrollbar {
-    width: 6px;
-}
-::-webkit-scrollbar-track {
-    background: transparent;
-}
-::-webkit-scrollbar-thumb {
-    background: #e2e8f0;
-    border-radius: 10px;
-}
-.dark ::-webkit-scrollbar-thumb {
-    background: #1e293b;
-}
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
+.dark ::-webkit-scrollbar-thumb { background: #1e293b; }
