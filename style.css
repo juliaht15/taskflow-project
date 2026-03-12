@@ -1,3 +1,4 @@
+/* Variables y Configuración Base */
 :root {
     --primary-color: #4f46e5;
     --bg-light: #f8fafc;
@@ -6,9 +7,12 @@
 }
 
 * {
-    transition: background-color var(--transition-speed) ease, border-color var(--transition-speed) ease, color var(--transition-speed) ease;
+    transition: background-color var(--transition-speed) ease, 
+                border-color var(--transition-speed) ease, 
+                color var(--transition-speed) ease;
 }
 
+/* Animación de entrada de tareas (Mejorada con tu cubic-bezier) */
 @keyframes slideIn {
     from { opacity: 0; transform: translateY(12px); }
     to { opacity: 1; transform: translateY(0); }
@@ -18,11 +22,35 @@
     animation: slideIn 0.4s cubic-bezier(0.23, 1, 0.32, 1) forwards;
 }
 
+/* Lógica visual de tareas completadas */
+.task-completed .task-text {
+    text-decoration: line-through;
+    opacity: 0.5;
+    color: #94a3b8; /* Un gris suave para indicar que está terminada */
+}
+
+.task-completed {
+    border-left-color: #10b981 !important; /* Cambia el borde a verde al completar */
+    background-color: rgba(248, 250, 252, 0.5); /* Un toque de transparencia */
+}
+
+.dark .task-completed {
+    background-color: rgba(30, 41, 59, 0.3);
+}
+
+/* Barra de progreso con tu transición fluida */
 #progress-bar {
     transition: width 0.8s cubic-bezier(0.65, 0, 0.35, 1);
 }
 
+/* Personalización del Scrollbar (Actualizado con tu estilo) */
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
 .dark ::-webkit-scrollbar-thumb { background: #1e293b; }
+
+/* Efecto hover en las tareas para feedback visual */
+.task-item:hover {
+    transform: scale(1.01);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}

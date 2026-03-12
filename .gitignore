@@ -1,14 +1,18 @@
-# Node
+# Dependencias
 node_modules/
 dist/
+npm-debug.log*
 
 # Sistema Operativo
 .DS_Store
 Thumbs.db
+desktop.ini
 
-# Editor (VS Code)
+# Editor (VS Code / Cursor)
 .vscode/
 .history/
+*.log
 
-# Variables de entorno
+# Variables de entorno y configuración local
 .env
+.env.local
