@@ -1,210 +1,181 @@
 /**
- * TASKFLOW PRO - Lógica de aplicación
- * Refactorizada con asistencia de IA para máxima eficiencia
+ * TASKFLOW PRO - Controlador de Interfaz (Frontend)
+ * Importa la lógica de datos de api.js
  */
+import { taskAPI } from './api.js';
 
-// Selección de elementos del DOM
+let tasks = [];
+
+// Elementos del DOM
 const taskListElement = document.getElementById('task-list');
-const themeToggleButton = document.getElementById('theme-toggle');
 const progressBarElement = document.getElementById('progress-bar');
 const progressTextElement = document.getElementById('progress-text');
 const pendingCountElement = document.getElementById('count-pending');
 const completedCountElement = document.getElementById('count-done');
 
-// Tareas por defecto (solo carga si no hay datos previos)
-const DEFAULT_TASKS = [
-    { id: 1, text: "Configurar estructura semántica", priority: "Alta", completed: true },
-    { id: 2, text: "Implementar filtros de estado", priority: "Alta", completed: false }
-];
+/**
+ * 1. GESTIÓN DE DATOS
+ */
+async function loadTasks() {
+    try {
+        // Feedback visual de carga
+        taskListElement.innerHTML = `
+            <div class="loading-state">
+                <div class="spinner"></div>
+                <p class="text-sm font-medium text-indigo-500 animate-pulse">Sincronizando tareas...</p>
+            </div>`;
+        
+        tasks = await taskAPI.getAll();
+        renderTasks();
+    } catch (error) {
+        taskListElement.innerHTML = `
+            <div class="p-8 text-center bg-red-50 dark:bg-red-900/10 rounded-2xl border border-red-100 dark:border-red-900/20">
+                <p class="text-red-500 font-bold italic text-sm">Error: No se pudo conectar con el servidor.</p>
+            </div>`;
+    }
+}
 
-// Carga inicial segura de datos
-let tasks = [];
-try {
-    tasks = JSON.parse(localStorage.getItem('tasks')) || [...DEFAULT_TASKS];
-} catch (e) {
-    console.error("Error al cargar LocalStorage, reiniciando datos...");
-    tasks = [...DEFAULT_TASKS];
+async function handleAddTask(title, priority) {
+    try {
+        await taskAPI.create(title, priority);
+        closeModalFunc();
+        await loadTasks();
+    } catch (error) {
+        alert(error.message);
+    }
+}
+
+async function handleDeleteTask(id) {
+    if(!confirm("¿Eliminar tarea definitivamente?")) return;
+    try {
+        await taskAPI.delete(id);
+        await loadTasks();
+    } catch (error) {
+        alert("Error al borrar la tarea");
+    }
+}
+
+async function handleToggleTask(id) {
+    const task = tasks.find(t => t.id === id);
+    if (!task) return;
+
+    try {
+        // Enviamos solo el cambio al servidor
+        await taskAPI.update(id, { completed: !task.completed });
+        await loadTasks();
+    } catch (error) {
+        // Revertir localmente si falla el servidor
+        renderTasks();
+        alert("Error al actualizar estado");
+    }
 }
 
 /**
- * Aplica el tema guardado o la preferencia del sistema
+ * 2. RENDERIZADO Y FILTROS
  */
-function applyTheme() {
-    const isDark = localStorage.theme === 'dark' || 
-                  (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches);
-    document.documentElement.classList.toggle('dark', isDark);
-}
-
-// Cambio de tema
-themeToggleButton.addEventListener('click', () => {
-    const isDark = document.documentElement.classList.toggle('dark');
-    localStorage.theme = isDark ? 'dark' : 'light';
-});
-
-/**
- * Configuración visual de prioridades
- * @param {string} priority 
- */
-function getPriorityConfig(priority) {
-    const configs = {
-        'Alta':  { dot: 'bg-red-500', border: 'border-l-red-500 bg-red-50/20 dark:bg-red-900/10' },
-        'Media': { dot: 'bg-yellow-500', border: 'border-l-yellow-500 bg-yellow-50/20 dark:bg-yellow-900/10' },
-        'Baja':  { dot: 'bg-green-500', border: 'border-l-green-500 bg-green-50/20 dark:bg-green-900/10' }
-    };
-    return configs[priority] || configs['Media'];
-}
-
-/**
- * Filtra tareas según búsqueda, prioridad y estado
- */
-function getFilteredTasks() {
+function renderTasks() {
+    taskListElement.innerHTML = '';
+    
+    // Aplicar filtros antes de pintar
     const searchQuery = document.getElementById('search-input').value.toLowerCase();
     const priorityFilter = document.getElementById('filter-priority').value;
     const statusFilter = document.getElementById('filter-status').value;
 
-    return tasks.filter(task => {
-        const matchesSearch = task.text.toLowerCase().includes(searchQuery);
+    const filtered = tasks.filter(task => {
+        const title = task.title || task.text || "";
+        const matchesSearch = title.toLowerCase().includes(searchQuery);
         const matchesPriority = priorityFilter === 'all' || task.priority === priorityFilter;
         const matchesStatus = statusFilter === 'all' ? true : 
                             statusFilter === 'completed' ? task.completed : !task.completed;
         return matchesSearch && matchesPriority && matchesStatus;
     });
-}
 
-/**
- * Crea el elemento de la tarea para el DOM
- */
-function createTaskElement(task) {
-    const div = document.createElement('div');
-    const config = getPriorityConfig(task.priority);
-    
-    div.className = `task-item flex justify-between items-center p-4 rounded-2xl border border-slate-100 dark:border-slate-800 border-l-4 transition-all shadow-sm hover:shadow-md ${config.border} ${task.completed ? 'opacity-50 grayscale' : ''}`;
-    
-    div.innerHTML = `
-        <div class="flex items-center gap-4">
-            <input type="checkbox" ${task.completed ? 'checked' : ''} 
-                class="w-5 h-5 cursor-pointer accent-indigo-600 rounded-lg transition-transform active:scale-90"
-                onclick="toggleTask(${task.id})">
-            <div class="flex items-center gap-3">
-                <div class="w-2.5 h-2.5 rounded-full ${config.dot} animate-pulse"></div>
-                <div>
-                    <p class="font-bold text-sm leading-tight ${task.completed ? 'line-through text-slate-400' : ''}">${task.text}</p>
-                    <span class="text-[9px] font-black uppercase tracking-widest opacity-40">${task.priority}</span>
-                </div>
-            </div>
-        </div>
-        <div class="flex gap-1">
-            <button onclick="editTask(${task.id})" class="text-slate-300 hover:text-indigo-500 p-2 transition-colors">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-                </svg>
-            </button>
-            <button onclick="deleteTask(${task.id})" class="text-slate-300 hover:text-red-500 p-2 transition-colors">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                </svg>
-            </button>
-        </div>
-    `;
-    return div;
-}
-
-function renderTasks() {
-    taskListElement.innerHTML = '';
-    const filteredTasks = getFilteredTasks();
-    
-    if (filteredTasks.length === 0) {
-        taskListElement.innerHTML = `<p class="text-center py-10 text-slate-400 text-sm italic">No se encontraron tareas...</p>`;
+    if (filtered.length === 0) {
+        taskListElement.innerHTML = `<p class="text-center py-10 text-slate-400 text-sm italic">No hay tareas que mostrar...</p>`;
     } else {
-        filteredTasks.forEach(task => taskListElement.appendChild(createTaskElement(task)));
+        filtered.forEach(task => {
+            const div = document.createElement('div');
+            const config = getPriorityConfig(task.priority || 'Media');
+            
+            div.className = `task-item flex justify-between items-center p-4 rounded-2xl border border-slate-100 dark:border-slate-800 border-l-4 transition-all shadow-sm ${config.border} ${task.completed ? 'completed' : ''}`;
+            
+            div.innerHTML = `
+                <div class="flex items-center gap-4">
+                    <input type="checkbox" ${task.completed ? 'checked' : ''} class="w-5 h-5 cursor-pointer accent-indigo-600 rounded-lg">
+                    <div class="flex items-center gap-3">
+                        <div class="w-2.5 h-2.5 rounded-full ${config.dot}"></div>
+                        <div>
+                            <p class="font-bold text-sm leading-tight">${task.title || task.text}</p>
+                            <span class="text-[9px] font-black uppercase tracking-widest opacity-40">${task.priority || 'Media'}</span>
+                        </div>
+                    </div>
+                </div>
+                <button class="delete-btn text-slate-300 hover:text-red-500 p-2 transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                </button>`;
+
+            div.querySelector('.delete-btn').onclick = () => handleDeleteTask(task.id);
+            div.querySelector('input').onchange = () => handleToggleTask(task.id);
+            taskListElement.appendChild(div);
+        });
     }
     updateStats();
 }
 
+/**
+ * 3. UTILIDADES Y EVENTOS
+ */
 function updateStats() {
     const total = tasks.length;
     const completed = tasks.filter(t => t.completed).length;
-    const pending = total - completed;
     const percent = total === 0 ? 0 : Math.round((completed / total) * 100);
     
     progressBarElement.style.width = `${percent}%`;
     progressTextElement.innerText = `${percent}% completado`;
-    pendingCountElement.innerText = pending;
+    pendingCountElement.innerText = total - completed;
     completedCountElement.innerText = completed;
 }
 
-function save() {
-    localStorage.setItem('tasks', JSON.stringify(tasks));
-    renderTasks();
+function getPriorityConfig(p) {
+    const configs = {
+        'Alta':  { dot: 'bg-red-500', border: 'border-l-red-500 bg-red-50/20 dark:bg-red-900/10' },
+        'Media': { dot: 'bg-yellow-500', border: 'border-l-yellow-500 bg-yellow-50/20 dark:bg-yellow-900/10' },
+        'Baja':  { dot: 'bg-green-500', border: 'border-l-green-500 bg-green-50/20 dark:bg-green-900/10' }
+    };
+    return configs[p] || configs['Media'];
 }
 
-function addTask(text, priority) {
-    if (!text || text.trim() === "") return;
-    tasks.push({ id: Date.now(), text: text.trim(), priority, completed: false });
-    save();
-}
+// Control de Modales
+const modal = document.getElementById('modal-add');
+const openModalFunc = () => { modal.classList.replace('hidden', 'flex'); };
+const closeModalFunc = () => { modal.classList.replace('flex', 'hidden'); };
 
-// Funciones globales para botones dinámicos
-window.editTask = (id) => {
-    const task = tasks.find(t => t.id === id);
-    const newText = prompt("Edita tu tarea:", task.text);
-    if (newText && newText.trim() !== "") {
-        task.text = newText.trim();
-        save();
-    }
+document.getElementById('open-add-modal').onclick = openModalFunc;
+document.getElementById('close-modal').onclick = closeModalFunc;
+
+// Modo Oscuro
+document.getElementById('theme-toggle').onclick = () => {
+    document.documentElement.classList.toggle('dark');
 };
-
-window.toggleTask = (id) => {
-    tasks = tasks.map(t => t.id === id ? {...t, completed: !t.completed} : t);
-    save();
-};
-
-window.deleteTask = (id) => {
-    if(confirm("¿Seguro que quieres eliminar esta tarea?")) {
-        tasks = tasks.filter(t => t.id !== id);
-        save();
-    }
-};
-
-// Modales
-const modalAdd = document.getElementById('modal-add');
-const closeModal = () => {
-    modalAdd.classList.add('hidden');
-    modalAdd.classList.remove('flex');
-};
-
-document.getElementById('open-add-modal').onclick = () => {
-    modalAdd.classList.remove('hidden');
-    modalAdd.classList.add('flex');
-};
-
-document.getElementById('close-modal').onclick = closeModal;
 
 // Formularios
-document.getElementById('task-form').onsubmit = (e) => {
+const processSubmit = (e, inputId, priorityId) => {
     e.preventDefault();
-    addTask(document.getElementById('task-input').value, document.getElementById('task-priority').value);
+    const title = document.getElementById(inputId).value;
+    const priority = document.getElementById(priorityId).value;
+    handleAddTask(title, priority);
     e.target.reset();
 };
 
-document.getElementById('modal-form').onsubmit = (e) => {
-    e.preventDefault();
-    addTask(document.getElementById('modal-input').value, document.getElementById('modal-priority').value);
-    closeModal();
-    e.target.reset();
-};
+document.getElementById('task-form').onsubmit = (e) => processSubmit(e, 'task-input', 'task-priority');
+document.getElementById('modal-form').onsubmit = (e) => processSubmit(e, 'modal-input', 'modal-priority');
 
-// Filtros reactivos
-document.getElementById('search-input').oninput = renderTasks;
-document.getElementById('filter-priority').onchange = renderTasks;
-document.getElementById('filter-status').onchange = renderTasks;
-document.getElementById('reset-btn').onclick = () => { 
-    if(confirm("Se borrarán todos los datos. ¿Continuar?")) { 
-        localStorage.clear(); 
-        location.reload(); 
-    }
-};
+// Listeners de Filtros
+['search-input', 'filter-priority', 'filter-status'].forEach(id => {
+    document.getElementById(id).addEventListener('input', renderTasks);
+});
 
-// Inicialización
-applyTheme();
-renderTasks();
+// Inicio
+loadTasks();

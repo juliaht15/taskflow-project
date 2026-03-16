@@ -12,45 +12,81 @@
                 color var(--transition-speed) ease;
 }
 
-/* Animación de entrada de tareas (Mejorada con tu cubic-bezier) */
+/* Animaciones */
 @keyframes slideIn {
     from { opacity: 0; transform: translateY(12px); }
     to { opacity: 1; transform: translateY(0); }
 }
 
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+@keyframes pulse-green {
+    0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
+    100% { box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); }
+}
+
+/* Clases de Componentes */
 .task-item {
+    display: flex;
+    overflow: hidden;
     animation: slideIn 0.4s cubic-bezier(0.23, 1, 0.32, 1) forwards;
 }
 
-/* Lógica visual de tareas completadas */
-.task-completed .task-text {
+.task-item:hover {
+    transform: scale(1.01);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+/* Estado Completado */
+.task-item.completed {
+    opacity: 0.6;
+    filter: grayscale(100%);
+    border-left-color: #10b981 !important;
+}
+
+.task-item.completed p {
     text-decoration: line-through;
-    opacity: 0.5;
-    color: #94a3b8; /* Un gris suave para indicar que está terminada */
+    color: #94a3b8;
 }
 
-.task-completed {
-    border-left-color: #10b981 !important; /* Cambia el borde a verde al completar */
-    background-color: rgba(248, 250, 252, 0.5); /* Un toque de transparencia */
+/* Estado de Carga (Spinner) */
+.loading-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    gap: 1rem;
+    color: #6366f1;
 }
 
-.dark .task-completed {
-    background-color: rgba(30, 41, 59, 0.3);
+.spinner {
+    width: 24px;
+    height: 24px;
+    border: 3px solid rgba(99, 102, 241, 0.2);
+    border-top-color: #6366f1;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
 }
 
-/* Barra de progreso con tu transición fluida */
+/* Barra de progreso */
 #progress-bar {
     transition: width 0.8s cubic-bezier(0.65, 0, 0.35, 1);
 }
 
-/* Personalización del Scrollbar (Actualizado con tu estilo) */
+/* Scrollbar personalizado */
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
 .dark ::-webkit-scrollbar-thumb { background: #1e293b; }
 
-/* Efecto hover en las tareas para feedback visual */
-.task-item:hover {
-    transform: scale(1.01);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+/* Feedback de interacción */
+.task-item button:active {
+    transform: scale(0.9);
+}
+
+.task-item input[type="checkbox"]:checked {
+    animation: pulse-green 0.4s ease-out;
 }
