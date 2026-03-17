@@ -1,9 +1,10 @@
 /**
  * CAPA DE SERVICIO DE API - TASKFLOW PRO
- * Centraliza todas las peticiones fetch al servidor Express.
  */
 
+// URL LIMPIA: Hemos verificado que esta es la ruta correcta de tu backend en Vercel
 const API_URL = 'https://taskflow-project-uy2w-i6xzsfh3z-juliaht15s-projects.vercel.app/api/v1/tasks';
+
 export const taskAPI = {
     
     /**
@@ -12,12 +13,11 @@ export const taskAPI = {
     async getAll() {
         try {
             const res = await fetch(API_URL);
-            if (!res.ok) throw new Error('Error al obtener tareas');
+            if (!res.ok) throw new Error('Error en la respuesta del servidor');
             return await res.json();
         } catch (error) {
-            console.error("Error de conexión:", error);
-            // Re-lanzamos el error para que la UI lo capture y muestre el mensaje rojo
-            throw new Error('No se pudo conectar con el servidor. Verifica tu conexión.');
+            console.error("Error getAll:", error);
+            throw new Error('No se pudo conectar con el servidor. Verifica que el Backend esté online.');
         }
     },
 
@@ -38,6 +38,7 @@ export const taskAPI = {
             }
             return await res.json();
         } catch (error) {
+            console.error("Error create:", error);
             throw error;
         }
     },
@@ -47,6 +48,7 @@ export const taskAPI = {
      */
     async update(id, updates) {
         try {
+            // Construcción segura de la URL: API_URL + / + id
             const res = await fetch(`${API_URL}/${id}`, {
                 method: 'PATCH',
                 headers: { 'Content-Type': 'application/json' },
@@ -56,6 +58,7 @@ export const taskAPI = {
             if (!res.ok) throw new Error('No se pudo actualizar la tarea');
             return await res.json();
         } catch (error) {
+            console.error("Error update:", error);
             throw error;
         }
     },
@@ -72,6 +75,7 @@ export const taskAPI = {
             if (!res.ok) throw new Error('No se pudo eliminar la tarea');
             return true;
         } catch (error) {
+            console.error("Error delete:", error);
             throw error;
         }
     }
