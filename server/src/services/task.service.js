@@ -1,30 +1,29 @@
 /**
- * SERVICIO DE TAREAS - TASKFLOW PRO
- * Gestiona la lógica de negocio y la persistencia en memoria.
+ * TASKFLOW PRO - Task Service
+ * Business logic and in-memory persistence.
  */
 
-// Simulamos una base de datos con un array en memoria
 let tasks = [
-    { id: 1, title: 'Completar Fase 1 y 2', priority: 'Alta', completed: true },
-    { id: 2, title: 'Dominar el Backend con Node', priority: 'Media', completed: false }
+    { id: 1, title: 'Complete Phase 1 and 2', priority: 'High', completed: true },
+    { id: 2, title: 'Master Node.js Backend', priority: 'Medium', completed: false }
 ];
 
 /**
- * Retorna todas las tareas actuales
+ * Get all tasks
  */
 const getAllTasks = () => {
     return tasks;
 };
 
 /**
- * Crea una nueva tarea con ID único y prioridad
- * @param {Object} taskData - Contiene title y priority
+ * Create a new task
+ * @param {Object} taskData 
  */
 const createTask = (taskData) => {
     const newTask = {
-        id: Date.now(), // Generamos un ID basado en el timestamp actual
+        id: Date.now(),
         title: taskData.title,
-        priority: taskData.priority || 'Media', // Valor por defecto si no viene del Front
+        priority: taskData.priority || 'Medium',
         completed: false
     };
     tasks.push(newTask);
@@ -32,32 +31,30 @@ const createTask = (taskData) => {
 };
 
 /**
- * Actualiza parcialmente una tarea (PATCH)
- * @param {string|number} id 
- * @param {Object} updates - Campos a actualizar (ej: { completed: true })
+ * Update task fields
+ * @param {number} id 
+ * @param {Object} updates 
  */
 const updateTask = (id, updates) => {
     const index = tasks.findIndex(t => t.id === parseInt(id));
     
     if (index === -1) {
-        throw new Error('NOT_FOUND'); 
+        throw new Error('TASK_NOT_FOUND'); 
     }
 
-    // Fusionamos la tarea existente con los nuevos cambios (Spread Operator)
     tasks[index] = { ...tasks[index], ...updates };
-    
     return tasks[index];
 };
 
 /**
- * Elimina una tarea por su ID
- * @param {string|number} id 
+ * Delete task by ID
+ * @param {number} id 
  */
 const deleteTask = (id) => {
     const index = tasks.findIndex(t => t.id === parseInt(id));
     
     if (index === -1) {
-        throw new Error('NOT_FOUND'); 
+        throw new Error('TASK_NOT_FOUND'); 
     }
 
     tasks.splice(index, 1);

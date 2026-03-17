@@ -1,23 +1,22 @@
-# Dependencias
+# Dependencies
 node_modules/
 dist/
-npm-debug.log*
 .npm/
 
-# Sistema Operativo
+# OS Files
 .DS_Store
 Thumbs.db
 desktop.ini
 
-# Editor (VS Code / Cursor / Thunder Client)
+# IDE & Tooling
 .vscode/
 .history/
 *.log
 thunder-tests/
 
-# Variables de entorno y configuración local
+# Environment & Config
 .env
 .env.local
 
-# Temporales de compilación
+# Build Temporaries
 .cache/

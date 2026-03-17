@@ -1,7 +1,7 @@
 {
   "name": "taskflow-server",
   "version": "1.0.0",
-  "description": "Backend modular para la gestión de tareas de TaskFlow - Fase 3",
+  "description": "Modular backend for TaskFlow task management - Phase 3",
   "main": "src/index.js",
   "type": "commonjs",
   "scripts": {
@@ -12,7 +12,8 @@
     "express",
     "api",
     "taskflow",
-    "backend"
+    "backend",
+    "javascript"
   ],
   "author": "Julia Huertas Torres",
   "license": "ISC",

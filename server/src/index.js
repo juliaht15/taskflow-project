@@ -1,30 +1,32 @@
+/**
+ * TASKFLOW PRO - Server Entry Point
+ */
+
 const express = require('express');
-const cors = require('cors'); // Asegúrate de que esto esté instalado: npm install cors
+const cors = require('cors');
 const taskRoutes = require('./routes/task.routes');
 
 const app = express();
-// Vercel asigna el puerto automáticamente, no fuerces el 3000
 const PORT = process.env.PORT || 3000;
 
-// CONFIGURACIÓN CLAVE: CORS abierto para evitar el error rojo en el Front
-app.use(cors({
-    origin: '*',
-    methods: ['GET', 'POST', 'PATCH', 'DELETE'],
-    allowedHeaders: ['Content-Type']
-}));
-
+// Middleware
+app.use(cors());
 app.use(express.json());
 
-// Ruta de test para probar en el navegador
-app.get('/api/status', (req, res) => {
-    res.json({ message: "Servidor activo", status: "OK" });
-});
-
+// API Routes
 app.use('/api/v1/tasks', taskRoutes);
 
-// Exportar para que Vercel lo reconozca
+// Health check endpoint
+app.get('/', (req, res) => {
+    res.status(200).send('TaskFlow API is online');
+});
+
+// Export for Vercel environment
 module.exports = app;
 
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-});
+// Start server only in local development
+if (process.env.NODE_ENV !== 'production') {
+    app.listen(PORT, () => {
+        console.log(`Server running on port ${PORT}`);
+    });
+}

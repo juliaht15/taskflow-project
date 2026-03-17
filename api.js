@@ -1,81 +1,79 @@
 /**
- * CAPA DE SERVICIO DE API - TASKFLOW PRO
+ * TASKFLOW PRO - API Service Layer
  */
 
-// URL LIMPIA: Hemos verificado que esta es la ruta correcta de tu backend en Vercel
 const API_URL = 'https://taskflow-project-uy2w-i6xzsfh3z-juliaht15s-projects.vercel.app/api/v1/tasks';
 
 export const taskAPI = {
     
     /**
-     * Obtener todas las tareas (GET)
+     * Fetch all tasks (GET)
      */
     async getAll() {
         try {
-            const res = await fetch(API_URL);
-            if (!res.ok) throw new Error('Error en la respuesta del servidor');
-            return await res.json();
+            const response = await fetch(API_URL);
+            if (!response.ok) throw new Error('Server response error');
+            return await response.json();
         } catch (error) {
-            console.error("Error getAll:", error);
-            throw new Error('No se pudo conectar con el servidor. Verifica que el Backend esté online.');
+            console.error("API Error (getAll):", error);
+            throw new Error('Could not connect to the server.');
         }
     },
 
     /**
-     * Crear una nueva tarea (POST)
+     * Create a new task (POST)
      */
-    async create(title, priority = 'Media') {
+    async create(title, priority = 'Medium') {
         try {
-            const res = await fetch(API_URL, {
+            const response = await fetch(API_URL, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ title, priority })
             });
 
-            if (!res.ok) {
-                const errorData = await res.json();
-                throw new Error(errorData.error || 'Error al crear la tarea');
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || 'Error creating task');
             }
-            return await res.json();
+            return await response.json();
         } catch (error) {
-            console.error("Error create:", error);
+            console.error("API Error (create):", error);
             throw error;
         }
     },
 
     /**
-     * Actualización parcial de una tarea (PATCH)
+     * Partial update of a task (PATCH)
      */
     async update(id, updates) {
         try {
-            // Construcción segura de la URL: API_URL + / + id
-            const res = await fetch(`${API_URL}/${id}`, {
+            const response = await fetch(`${API_URL}/${id}`, {
                 method: 'PATCH',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(updates)
             });
 
-            if (!res.ok) throw new Error('No se pudo actualizar la tarea');
-            return await res.json();
+            if (!response.ok) throw new Error('Could not update task');
+            return await response.json();
         } catch (error) {
-            console.error("Error update:", error);
+            console.error("API Error (update):", error);
             throw error;
         }
     },
 
     /**
-     * Eliminar una tarea definitivamente (DELETE)
+     * Permanently delete a task (DELETE)
      */
     async delete(id) {
         try {
-            const res = await fetch(`${API_URL}/${id}`, { 
+            const response = await fetch(`${API_URL}/${id}`, { 
                 method: 'DELETE' 
             });
 
-            if (!res.ok) throw new Error('No se pudo eliminar la tarea');
+            if (!response.ok) throw new Error('Could not delete task');
             return true;
         } catch (error) {
-            console.error("Error delete:", error);
+            console.error("API Error (delete):", error);
             throw error;
         }
     }

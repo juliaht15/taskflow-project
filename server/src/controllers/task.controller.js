@@ -1,59 +1,66 @@
+/**
+ * TASKFLOW PRO - Task Controller
+ * Handles incoming HTTP requests and sends responses.
+ */
+
 const taskService = require('../services/task.service');
 
 /**
- * Obtener todas las tareas
+ * Fetch all tasks
+ * GET /api/v1/tasks
  */
 const getTasks = (req, res) => {
     try {
         const tasks = taskService.getAllTasks();
         res.status(200).json(tasks);
     } catch (error) {
-        res.status(500).json({ error: 'Error al obtener las tareas' });
+        res.status(500).json({ error: 'Error fetching tasks' });
     }
 };
 
 /**
- * Crear una nueva tarea
+ * Create a new task
+ * POST /api/v1/tasks
  */
 const createTask = (req, res) => {
-    const { title, priority } = req.body; // <-- Ahora capturamos también priority
+    const { title, priority } = req.body;
 
     if (!title || typeof title !== 'string' || title.trim().length < 3) {
         return res.status(400).json({ 
-            error: "El título debe tener al menos 3 caracteres." 
+            error: "Title must be at least 3 characters long." 
         });
     }
 
     try {
-        // Pasamos todo el objeto al servicio
         const newTask = taskService.createTask({ title, priority }); 
         res.status(201).json(newTask);
     } catch (error) {
-        res.status(500).json({ error: 'Error al crear la tarea' });
+        res.status(500).json({ error: 'Error creating task' });
     }
 };
 
 /**
- * Actualizar una tarea (NUEVO)
- * Ruta: PATCH /api/v1/tasks/:id
+ * Update a task
+ * PATCH /api/v1/tasks/:id
  */
 const updateTask = (req, res) => {
     const { id } = req.params;
-    const updates = req.body; // Contiene campos como { completed: true }
+    const updates = req.body;
 
     try {
         const updated = taskService.updateTask(id, updates);
         res.status(200).json(updated);
     } catch (error) {
-        if (error.message === 'NOT_FOUND') {
-            return res.status(404).json({ error: 'Tarea no encontrada' });
+        if (error.message === 'TASK_NOT_FOUND') {
+            return res.status(404).json({ error: 'Task not found' });
         }
-        res.status(500).json({ error: 'Error al actualizar la tarea' });
+        res.status(500).json({ error: 'Error updating task' });
     }
 };
 
 /**
- * Eliminar una tarea por ID
+ * Delete a task
+ * DELETE /api/v1/tasks/:id
  */
 const deleteTask = (req, res) => {
     const { id } = req.params;
@@ -61,16 +68,16 @@ const deleteTask = (req, res) => {
         taskService.deleteTask(id);
         res.status(204).send(); 
     } catch (error) {
-        if (error.message === 'NOT_FOUND') {
-            return res.status(404).json({ error: 'Tarea no encontrada' });
+        if (error.message === 'TASK_NOT_FOUND') {
+            return res.status(404).json({ error: 'Task not found' });
         }
-        res.status(500).json({ error: 'Error interno del servidor' });
+        res.status(500).json({ error: 'Internal server error' });
     }
 };
 
 module.exports = {
     getTasks,
     createTask,
-    updateTask, // <-- Exportamos el nuevo método
+    updateTask,
     deleteTask
 };
