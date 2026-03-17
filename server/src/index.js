@@ -1,12 +1,12 @@
 // 1. Importaciones
 const express = require('express');
 const cors = require('cors');
-require('dotenv').config();
+const config = require('./config/env'); // <-- Cambio: Ahora usamos nuestro validador
 const taskRoutes = require('./routes/task.routes');
 
 // 2. Configuración
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = config.port; // <-- Cambio: El puerto ya viene validado y limpio
 
 // 3. Middlewares de Configuración (Pipeline inicial)
 app.use(cors());
@@ -45,3 +45,4 @@ app.use((err, req, res, next) => {
 app.listen(PORT, () => {
   console.log(`Servidor corriendo en: http://localhost:${PORT}`);
 });
+module.exports = app;

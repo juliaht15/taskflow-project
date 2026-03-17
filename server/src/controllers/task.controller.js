@@ -1,9 +1,7 @@
-// 1. Importación del Servicio
 const taskService = require('../services/task.service');
 
 /**
  * Obtener todas las tareas
- * Ruta: GET /api/v1/tasks
  */
 const getTasks = (req, res) => {
     try {
@@ -16,21 +14,19 @@ const getTasks = (req, res) => {
 
 /**
  * Crear una nueva tarea
- * Ruta: POST /api/v1/tasks
- * Body: { "title": "Nombre de la tarea" }
  */
 const createTask = (req, res) => {
-    const { title } = req.body;
+    const { title, priority } = req.body; // <-- Ahora capturamos también priority
 
-    // Validación defensiva en tiempo de ejecución
     if (!title || typeof title !== 'string' || title.trim().length < 3) {
         return res.status(400).json({ 
-            error: "El título es obligatorio, debe ser texto y tener al menos 3 caracteres." 
+            error: "El título debe tener al menos 3 caracteres." 
         });
     }
 
     try {
-        const newTask = taskService.createTask({ title });
+        // Pasamos todo el objeto al servicio
+        const newTask = taskService.createTask({ title, priority }); 
         res.status(201).json(newTask);
     } catch (error) {
         res.status(500).json({ error: 'Error al crear la tarea' });
@@ -38,17 +34,33 @@ const createTask = (req, res) => {
 };
 
 /**
+ * Actualizar una tarea (NUEVO)
+ * Ruta: PATCH /api/v1/tasks/:id
+ */
+const updateTask = (req, res) => {
+    const { id } = req.params;
+    const updates = req.body; // Contiene campos como { completed: true }
+
+    try {
+        const updated = taskService.updateTask(id, updates);
+        res.status(200).json(updated);
+    } catch (error) {
+        if (error.message === 'NOT_FOUND') {
+            return res.status(404).json({ error: 'Tarea no encontrada' });
+        }
+        res.status(500).json({ error: 'Error al actualizar la tarea' });
+    }
+};
+
+/**
  * Eliminar una tarea por ID
- * Ruta: DELETE /api/v1/tasks/:id
  */
 const deleteTask = (req, res) => {
     const { id } = req.params;
-
     try {
         taskService.deleteTask(id);
-        res.status(204).send(); // Éxito sin contenido
+        res.status(204).send(); 
     } catch (error) {
-        // Manejo de error específico si el servicio lanza NOT_FOUND
         if (error.message === 'NOT_FOUND') {
             return res.status(404).json({ error: 'Tarea no encontrada' });
         }
@@ -56,9 +68,9 @@ const deleteTask = (req, res) => {
     }
 };
 
-// 2. Exportación de los métodos
 module.exports = {
     getTasks,
     createTask,
+    updateTask, // <-- Exportamos el nuevo método
     deleteTask
 };
