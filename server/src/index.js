@@ -1,13 +1,11 @@
 /**
  * TASKFLOW PRO - Server Entry Point
  */
-
 const express = require('express');
 const cors = require('cors');
 const taskRoutes = require('./routes/task.routes');
 
 const app = express();
-const PORT = process.env.PORT || 3000;
 
 // Middleware
 app.use(cors());
@@ -21,11 +19,12 @@ app.get('/', (req, res) => {
     res.status(200).send('TaskFlow API is online');
 });
 
-// Export for Vercel environment
+// EXPORTACIÓN CRÍTICA PARA VERCEL
 module.exports = app;
 
-// Start server only in local development
+// Solo encender el puerto en desarrollo local
 if (process.env.NODE_ENV !== 'production') {
+    const PORT = process.env.PORT || 3000;
     app.listen(PORT, () => {
         console.log(`Server running on port ${PORT}`);
     });
