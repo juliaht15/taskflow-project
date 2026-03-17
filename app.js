@@ -1,9 +1,59 @@
 /**
- * TASKFLOW PRO - Frontend Controller
- * All logic in English, UI remains in Spanish
+ * TASKFLOW PRO - API Service Layer (Fusionado)
  */
-import { taskAPI } from './api.js';
+const API_URL = '/api/v1/tasks';
 
+const taskAPI = {
+    async getAll() {
+        try {
+            const response = await fetch(API_URL);
+            if (!response.ok) throw new Error('Error en la respuesta del servidor');
+            return await response.json();
+        } catch (error) {
+            console.error("API Error (getAll):", error);
+            throw new Error('No se pudo conectar con el servidor.');
+        }
+    },
+    async create(title, priority = 'Medium') {
+        try {
+            const response = await fetch(API_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ title, priority })
+            });
+            if (!response.ok) throw new Error('Error al crear tarea');
+            return await response.json();
+        } catch (error) {
+            throw error;
+        }
+    },
+    async update(id, updates) {
+        try {
+            const response = await fetch(`${API_URL}/${id}`, {
+                method: 'PATCH', 
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(updates)
+            });
+            if (!response.ok) throw new Error('No se pudo actualizar la tarea');
+            return await response.json();
+        } catch (error) {
+            throw error;
+        }
+    },
+    async delete(id) {
+        try {
+            const response = await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
+            if (!response.ok) throw new Error('No se pudo eliminar la tarea');
+            return true;
+        } catch (error) {
+            throw error;
+        }
+    }
+};
+
+/**
+ * TASKFLOW PRO - Frontend Controller
+ */
 let tasks = [];
 
 // DOM Elements
@@ -16,9 +66,6 @@ const searchInput = document.getElementById('searchInput');
 const priorityFilter = document.getElementById('priorityFilter');
 const themeToggle = document.getElementById('themeToggle');
 
-/**
- * 1. DATA MANAGEMENT
- */
 async function loadTasks() {
     try {
         taskList.innerHTML = '<p class="loading">Sincronizando tareas...</p>';
@@ -33,7 +80,6 @@ async function handleAddTask(event) {
     event.preventDefault();
     const input = document.getElementById('taskInput');
     const priority = document.getElementById('taskPriority');
-    
     try {
         await taskAPI.create(input.value, priority.value);
         input.value = '';
@@ -62,12 +108,8 @@ async function handleDeleteTask(id) {
     }
 }
 
-/**
- * 2. RENDERING
- */
 function renderTasks() {
     taskList.innerHTML = '';
-    
     const query = searchInput.value.toLowerCase();
     const filter = priorityFilter.value;
 
@@ -83,46 +125,36 @@ function renderTasks() {
         filteredTasks.forEach(task => {
             const article = document.createElement('article');
             article.className = `task-item ${task.completed ? 'completed' : ''}`;
-            
             article.innerHTML = `
                 <input type="checkbox" ${task.completed ? 'checked' : ''}>
                 <span>${task.title}</span>
                 <mark class="badge priority-${task.priority}">${task.priority}</mark>
                 <button class="btn-delete" aria-label="Eliminar">🗑️</button>
             `;
-
             article.querySelector('input').onchange = () => handleToggleTask(task.id, task.completed);
             article.querySelector('.btn-delete').onclick = () => handleDeleteTask(task.id);
-            
             taskList.appendChild(article);
         });
     }
     updateStats();
 }
 
-/**
- * 3. UTILS & EVENTS
- */
 function updateStats() {
     const total = tasks.length;
     const completed = tasks.filter(t => t.completed).length;
     const percentage = total === 0 ? 0 : Math.round((completed / total) * 100);
-    
     progressBar.value = percentage;
     pendingCount.innerText = total - completed;
     completedCount.innerText = completed;
 }
 
-// Theme Management
 themeToggle.onclick = () => {
     const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
     document.documentElement.setAttribute('data-theme', isDark ? 'light' : 'dark');
 };
 
-// Event Listeners
 taskForm.onsubmit = handleAddTask;
 searchInput.oninput = renderTasks;
 priorityFilter.onchange = renderTasks;
 
-// Initialize
 loadTasks();
