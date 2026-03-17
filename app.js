@@ -1,62 +1,38 @@
-/**
- * TASKFLOW PRO - API Service Layer (Fusionado)
- */
 const API_URL = '/api/v1/tasks';
 
 const taskAPI = {
     async getAll() {
         try {
             const response = await fetch(API_URL);
-            if (!response.ok) throw new Error('Error en la respuesta del servidor');
+            if (!response.ok) throw new Error('Error en la respuesta');
             return await response.json();
         } catch (error) {
-            console.error("API Error (getAll):", error);
             throw new Error('No se pudo conectar con el servidor.');
         }
     },
     async create(title, priority = 'Medium') {
-        try {
-            const response = await fetch(API_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ title, priority })
-            });
-            if (!response.ok) throw new Error('Error al crear tarea');
-            return await response.json();
-        } catch (error) {
-            throw error;
-        }
+        const response = await fetch(API_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ title, priority })
+        });
+        return await response.json();
     },
     async update(id, updates) {
-        try {
-            const response = await fetch(`${API_URL}/${id}`, {
-                method: 'PATCH', 
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(updates)
-            });
-            if (!response.ok) throw new Error('No se pudo actualizar la tarea');
-            return await response.json();
-        } catch (error) {
-            throw error;
-        }
+        const response = await fetch(`${API_URL}/${id}`, {
+            method: 'PATCH', 
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(updates)
+        });
+        return await response.json();
     },
     async delete(id) {
-        try {
-            const response = await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
-            if (!response.ok) throw new Error('No se pudo eliminar la tarea');
-            return true;
-        } catch (error) {
-            throw error;
-        }
+        await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
+        return true;
     }
 };
 
-/**
- * TASKFLOW PRO - Frontend Controller
- */
 let tasks = [];
-
-// DOM Elements
 const taskList = document.getElementById('taskList');
 const progressBar = document.getElementById('progressBar');
 const pendingCount = document.getElementById('pendingCount');
@@ -94,7 +70,7 @@ async function handleToggleTask(id, currentStatus) {
         await taskAPI.update(id, { completed: !currentStatus });
         await loadTasks();
     } catch (error) {
-        alert("Error al actualizar estado");
+        alert("Error al actualizar");
     }
 }
 
@@ -112,7 +88,6 @@ function renderTasks() {
     taskList.innerHTML = '';
     const query = searchInput.value.toLowerCase();
     const filter = priorityFilter.value;
-
     const filteredTasks = tasks.filter(task => {
         const matchesSearch = task.title.toLowerCase().includes(query);
         const matchesPriority = filter === 'all' || task.priority === filter;
@@ -129,7 +104,7 @@ function renderTasks() {
                 <input type="checkbox" ${task.completed ? 'checked' : ''}>
                 <span>${task.title}</span>
                 <mark class="badge priority-${task.priority}">${task.priority}</mark>
-                <button class="btn-delete" aria-label="Eliminar">🗑️</button>
+                <button class="btn-delete">🗑️</button>
             `;
             article.querySelector('input').onchange = () => handleToggleTask(task.id, task.completed);
             article.querySelector('.btn-delete').onclick = () => handleDeleteTask(task.id);
