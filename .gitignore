@@ -1,5 +1,4 @@
 # Dependencies
-# Bloqueamos la carpeta pesada, pero PERMITIMOS el lock file
 node_modules/
 .pnp
 .pnp.js
@@ -27,7 +26,6 @@ Thumbs.db
 desktop.ini
 
 # IDE & Editors
-# Ignoramos configuraciones personales de VS Code
 .vscode/
 .idea/
 .history/
@@ -38,7 +36,6 @@ desktop.ini
 .code-workspace
 
 # Environment Variables
-# MUY IMPORTANTE: Nunca subir las llaves maestras
 .env
 .env.local
 .env.development.local

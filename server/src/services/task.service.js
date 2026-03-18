@@ -4,13 +4,17 @@
  */
 
 let tasks = [
-    { id: 1, title: 'Complete Phase 1 and 2', priority: 'High', completed: true, createdAt: new Date(), updatedAt: new Date() },
-    { id: 2, title: 'Master Node.js Backend', priority: 'Medium', completed: false, createdAt: new Date(), updatedAt: new Date() }
+    { id: 1, title: 'Completar Fase 1 y 2', priority: 'Alta', completed: true, createdAt: new Date(), updatedAt: new Date() },
+    { id: 2, title: 'Master Node.js Backend', priority: 'Media', completed: false, createdAt: new Date(), updatedAt: new Date() },
+    { id: 3, title: 'Comprar Pan', priority: 'Baja', completed: false, createdAt: new Date(), updatedAt: new Date() },
+    { id: 4, title: 'Revisar README', priority: 'Media', completed: false, createdAt: new Date(), updatedAt: new Date() }
+
+
 ];
 
 let nextId = 3;
 
-const VALID_PRIORITIES = ['Low', 'Medium', 'High'];
+const VALID_PRIORITIES = ['Baja', 'Media', 'Alta'];
 
 // Clase para errores personalizada
 class TaskError extends Error {
