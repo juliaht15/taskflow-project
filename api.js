@@ -28,5 +28,5 @@ export const taskAPI = {
     method: 'PATCH',
     body: JSON.stringify(updates)
   }),
-  delete: (id) => request(`${API_URL}/${id}`, { method: 'DELETE' })
+  delete: (id) => fetch(`${API_URL}/${id}`, { method: 'DELETE' })
 };

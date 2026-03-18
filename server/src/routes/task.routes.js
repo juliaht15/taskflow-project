@@ -2,11 +2,9 @@
  * TASKFLOW PRO - Task Routes
  * Maps HTTP verbs to controller methods.
  */
-
-import express from 'express';
-import taskController from '../controllers/task.controller.js';
-
+const express = require('express');
 const router = express.Router();
+const taskController = require('../controllers/task.controller');
 
 /**
  * Middleware para validar ID como número
@@ -22,48 +20,21 @@ const validateTaskId = (req, res, next) => {
 /**
  * GET /api/v1/tasks - Fetch all tasks
  */
-router.get('/', async (req, res, next) => {
-    try {
-        await taskController.getTasks(req, res);
-    } catch (err) {
-        next(err);
-    }
-});
+router.get('/', taskController.getTasks);
 
 /**
  * POST /api/v1/tasks - Create a new task
  */
-router.post('/', async (req, res, next) => {
-    try {
-        if (!req.body.title) {
-            return res.status(400).json({ error: 'El título es requerido' });
-        }
-        await taskController.createTask(req, res);
-    } catch (err) {
-        next(err);
-    }
-});
+router.post('/', taskController.createTask);
 
 /**
  * PATCH /api/v1/tasks/:id - Partially update a task
  */
-router.patch('/:id', validateTaskId, async (req, res, next) => {
-    try {
-        await taskController.updateTask(req, res);
-    } catch (err) {
-        next(err);
-    }
-});
+router.patch('/:id', validateTaskId, taskController.updateTask);
 
 /**
  * DELETE /api/v1/tasks/:id - Remove a task
  */
-router.delete('/:id', validateTaskId, async (req, res, next) => {
-    try {
-        await taskController.deleteTask(req, res);
-    } catch (err) {
-        next(err);
-    }
-});
+router.delete('/:id', validateTaskId, taskController.deleteTask);
 
-export default router;
+module.exports = router;

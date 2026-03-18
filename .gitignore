@@ -1,7 +1,8 @@
 # Dependencies
+# Bloqueamos la carpeta pesada, pero PERMITIMOS el lock file
 node_modules/
-package-lock.json
-yarn.lock
+.pnp
+.pnp.js
 
 # Build & Dist
 dist/
@@ -13,6 +14,8 @@ out/
 *.log
 logs/
 npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 
 # OS Files
 .DS_Store
@@ -24,6 +27,7 @@ Thumbs.db
 desktop.ini
 
 # IDE & Editors
+# Ignoramos configuraciones personales de VS Code
 .vscode/
 .idea/
 .history/
@@ -34,12 +38,15 @@ desktop.ini
 .code-workspace
 
 # Environment Variables
+# MUY IMPORTANTE: Nunca subir las llaves maestras
 .env
 .env.local
-.env.*.local
+.env.development.local
+.env.test.local
+.env.production.local
+*.env
 
 # Runtime & Temporary
 .npm/
-.cache/
 .vercel/
 test-results/

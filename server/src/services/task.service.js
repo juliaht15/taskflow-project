@@ -12,6 +12,7 @@ let nextId = 3;
 
 const VALID_PRIORITIES = ['Low', 'Medium', 'High'];
 
+// Clase para errores personalizada
 class TaskError extends Error {
     constructor(code, message) {
         super(message);
@@ -31,18 +32,15 @@ const validateTask = (taskData) => {
 
 /**
  * Get all tasks
- * @returns {Array} All tasks
  */
-export const getAllTasks = () => {
+const getAllTasks = () => {
     return tasks.map(t => ({ ...t }));
 };
 
 /**
  * Create a new task
- * @param {Object} taskData - Task data
- * @returns {Object} Created task
  */
-export const createTask = (taskData) => {
+const createTask = (taskData) => {
     validateTask(taskData);
     
     const newTask = {
@@ -55,17 +53,13 @@ export const createTask = (taskData) => {
     };
     
     tasks.push(newTask);
-    console.log(`✅ Task created: ${newTask.id}`);
     return { ...newTask };
 };
 
 /**
  * Update task fields
- * @param {number} id - Task ID
- * @param {Object} updates - Fields to update
- * @returns {Object} Updated task
  */
-export const updateTask = (id, updates) => {
+const updateTask = (id, updates) => {
     const index = tasks.findIndex(t => t.id === parseInt(id));
     
     if (index === -1) {
@@ -81,28 +75,25 @@ export const updateTask = (id, updates) => {
     };
     
     tasks[index] = updatedTask;
-    console.log(`✅ Task updated: ${id}`);
     return { ...updatedTask };
 };
 
 /**
  * Delete task by ID
- * @param {number} id - Task ID
- * @returns {boolean} Success
  */
-export const deleteTask = (id) => {
+const deleteTask = (id) => {
     const index = tasks.findIndex(t => t.id === parseInt(id));
     
     if (index === -1) {
         throw new TaskError('TASK_NOT_FOUND', `Tarea ${id} no encontrada`);
     }
 
-    const deleted = tasks.splice(index, 1)[0];
-    console.log(`✅ Task deleted: ${id}`);
+    tasks.splice(index, 1);
     return true;
 };
 
-export default {
+// EXPORTACIÓN CORRECTA PARA NODE.JS
+module.exports = {
     getAllTasks,
     createTask,
     updateTask,

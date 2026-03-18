@@ -1,45 +1,38 @@
 /**
  * TASKFLOW PRO - Server Entry Point
  */
-import express from 'express';
-import cors from 'cors';
-import dotenv from 'dotenv';
-import config from './config/ens.js';
-import taskRoutes from './routes/task.routes.js';
-
-// Load environment variables
-dotenv.config();
+const express = require('express');
+const cors = require('cors');
+// Nota: Quitamos los imports de config complicados para evitar el 404
+const taskRoutes = require('./routes/task.routes');
 
 const app = express();
 
 // Middleware
-app.use(cors({ origin: config.corsOrigin }));
+app.use(cors());
 app.use(express.json());
 
 // API Routes
+// Importante: Esta ruta debe coincidir con la de tu api.js
 app.use('/api/v1/tasks', taskRoutes);
 
 // Health check endpoint
 app.get('/', (req, res) => {
-    res.status(200).json({ status: 'TaskFlow API is online' });
+    res.status(200).send('TaskFlow API is online');
 });
 
-// 404 Handler
+// Manejador de rutas no encontradas (404)
 app.use((req, res) => {
-    res.status(404).json({ error: 'Ruta no encontrada' });
+    res.status(404).json({ error: 'La ruta solicitada no existe en el servidor' });
 });
 
-// Error Handler
-app.use((err, req, res, next) => {
-    console.error('Error:', err.message);
-    res.status(err.status || 500).json({ error: err.message || 'Error interno' });
-});
+// EXPORTACIÓN PARA VERCEL
+module.exports = app;
 
-export default app;
-
-// Start server in development
-if (config.isDevelopment) {
-    app.listen(config.port, () => {
-        console.log(`✅ Server running on http://localhost:${config.port}`);
+// Solo encender el puerto en desarrollo local
+if (process.env.NODE_ENV !== 'production') {
+    const PORT = process.env.PORT || 3000;
+    app.listen(PORT, () => {
+        console.log(`✅ Server running on port ${PORT}`);
     });
 }

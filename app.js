@@ -16,7 +16,9 @@ class TaskManager {
 
     async loadTasks() {
         try {
-            this.tasks = await taskAPI.getAll();
+            // CORRECCIÓN: Accedemos a .data porque el controlador devuelve { success, data }
+            const response = await taskAPI.getAll();
+            this.tasks = response.data || []; 
             this.render();
         } catch (err) {
             console.error(err);
@@ -26,7 +28,7 @@ class TaskManager {
 
     async toggleTask(id) {
         try {
-            const task = this.tasks.find(t => t.id === id);
+            const task = this.tasks.find(t => t.id == id); // Usamos == por si el ID viene como string
             if (task) {
                 await taskAPI.update(id, { completed: !task.completed });
                 await this.loadTasks();
@@ -50,7 +52,10 @@ class TaskManager {
         const query = el('searchInput').value.toLowerCase();
         const filter = el('priorityFilter').value;
 
-        el('taskList').innerHTML = this.tasks
+        // Verificamos que this.tasks sea un array antes de filtrar
+        const taskArray = Array.isArray(this.tasks) ? this.tasks : [];
+
+        el('taskList').innerHTML = taskArray
             .filter(t => t.title.toLowerCase().includes(query) && (filter === 'all' || t.priority === filter))
             .map(t => this.createTaskHTML(t))
             .join('');
@@ -61,7 +66,7 @@ class TaskManager {
     createTaskHTML(task) {
         const checked = task.completed ? 'checked' : '';
         const css = task.completed ? 'completed' : '';
-        const priority = task.priority.toLowerCase();
+        const priority = task.priority ? task.priority.toLowerCase() : 'medium';
         const title = this.escapeHTML(task.title);
 
         return `
@@ -80,8 +85,9 @@ class TaskManager {
     }
 
     updateStats() {
-        const done = this.tasks.filter(t => t.completed).length;
-        const total = this.tasks.length;
+        const taskArray = Array.isArray(this.tasks) ? this.tasks : [];
+        const done = taskArray.filter(t => t.completed).length;
+        const total = taskArray.length;
         el('progressBar').value = total ? (done / total) * 100 : 0;
         el('pendingCount').textContent = total - done;
         el('completedCount').textContent = done;
@@ -91,7 +97,9 @@ class TaskManager {
         el('taskForm').addEventListener('submit', e => this.handleFormSubmit(e));
         el('searchInput').addEventListener('input', () => this.render());
         el('priorityFilter').addEventListener('change', () => this.render());
-        el('themeToggle').addEventListener('click', () => this.toggleTheme());
+        if (el('themeToggle')) {
+            el('themeToggle').addEventListener('click', () => this.toggleTheme());
+        }
 
         el('taskList').addEventListener('change', e => {
             if (e.target.classList.contains('task-checkbox')) {
@@ -111,8 +119,10 @@ class TaskManager {
         const input = el('taskInput');
         const priority = el('taskPriority').value;
 
+        if (!input.value.trim()) return;
+
         try {
-            await taskAPI.create(input.value, priority);
+            await taskAPI.create(input.value.trim(), priority);
             input.value = '';
             await this.loadTasks();
         } catch (err) {

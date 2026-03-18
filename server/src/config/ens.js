@@ -2,33 +2,18 @@
  * TASKFLOW PRO - Environment Configuration
  */
 
-const requiredEnvVars = ['NODE_ENV'];
-
-// Validate required environment variables
-const missing = requiredEnvVars.filter(key => !process.env[key]);
-if (missing.length > 0) {
-    console.error(`❌ Variables de entorno faltantes: ${missing.join(', ')}`);
-    if (process.env.NODE_ENV === 'production') {
-        process.exit(1);
-    }
-}
-
+// Configuración por defecto para evitar que el servidor se caiga si faltan variables
 const config = {
     port: process.env.PORT || 3000,
     nodeEnv: process.env.NODE_ENV || 'development',
-    isDevelopment: process.env.NODE_ENV === 'development',
+    isDevelopment: process.env.NODE_ENV !== 'production',
     isProduction: process.env.NODE_ENV === 'production',
     corsOrigin: process.env.CORS_ORIGIN || '*',
     apiVersion: 'v1'
 };
 
-// Log config on startup
-if (config.isDevelopment) {
-    console.log('🔧 Config loaded:', {
-        port: config.port,
-        env: config.nodeEnv,
-        corsOrigin: config.corsOrigin
-    });
-}
+// Log de ayuda para saber que el servidor arrancó
+console.log(`🔧 Configuración cargada en modo: ${config.nodeEnv}`);
 
-export default config;
+// EXPORTACIÓN CORRECTA PARA NODE.JS (CommonJS)
+module.exports = config;
