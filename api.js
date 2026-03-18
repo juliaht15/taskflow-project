@@ -1,29 +1,32 @@
-const API_URL = '/api/v1/tasks';
+/**
+ * TASKFLOW PRO - API Client
+ * Conectado directamente a la instancia de producción en Vercel.
+ */
 
-// Importante: Usamos 'export' para que app.js pueda verlo
+const API_URL = 'https://taskflow-project-uy2w-mnnxp63hf-juliaht15s-projects.vercel.app/api/v1/tasks';
+
+async function request(url, options = {}) {
+  const { headers = {}, ...rest } = options;
+  const response = await fetch(url, {
+    headers: { 
+      'Content-Type': 'application/json',
+      ...headers
+    },
+    ...rest
+  });
+  if (!response.ok) throw new Error(`Error: ${response.status}`);
+  return response.json();
+}
+
 export const taskAPI = {
-    async getAll() {
-        const response = await fetch(API_URL);
-        return await response.json();
-    },
-    async create(title, priority) {
-        const response = await fetch(API_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ title, priority })
-        });
-        return await response.json();
-    },
-    async update(id, updates) {
-        const response = await fetch(`${API_URL}/${id}`, {
-            method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(updates)
-        });
-        return await response.json();
-    },
-    async delete(id) {
-        await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
-        return true;
-    }
+  getAll: () => request(API_URL),
+  create: (title, priority) => request(API_URL, {
+    method: 'POST',
+    body: JSON.stringify({ title, priority })
+  }),
+  update: (id, updates) => request(`${API_URL}/${id}`, {
+    method: 'PATCH',
+    body: JSON.stringify(updates)
+  }),
+  delete: (id) => request(`${API_URL}/${id}`, { method: 'DELETE' })
 };

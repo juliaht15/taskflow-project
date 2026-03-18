@@ -3,18 +3,22 @@
  * Handles incoming HTTP requests and sends responses.
  */
 
-const taskService = require('../services/task.service');
+import * as taskService from '../services/task.service.js';
 
 /**
  * Fetch all tasks
  * GET /api/v1/tasks
  */
-const getTasks = (req, res) => {
+export const getTasks = async (req, res, next) => {
     try {
         const tasks = taskService.getAllTasks();
-        res.status(200).json(tasks);
-    } catch (error) {
-        res.status(500).json({ error: 'Error fetching tasks' });
+        res.status(200).json({ 
+            success: true,
+            data: tasks,
+            count: tasks.length 
+        });
+    } catch (err) {
+        next(err);
     }
 };
 
@@ -22,20 +26,25 @@ const getTasks = (req, res) => {
  * Create a new task
  * POST /api/v1/tasks
  */
-const createTask = (req, res) => {
-    const { title, priority } = req.body;
-
-    if (!title || typeof title !== 'string' || title.trim().length < 3) {
-        return res.status(400).json({ 
-            error: "Title must be at least 3 characters long." 
-        });
-    }
-
+export const createTask = async (req, res, next) => {
     try {
-        const newTask = taskService.createTask({ title, priority }); 
-        res.status(201).json(newTask);
-    } catch (error) {
-        res.status(500).json({ error: 'Error creating task' });
+        const { title, priority } = req.body;
+        
+        const newTask = taskService.createTask({ title, priority });
+        console.log(`📝 New task created: ${newTask.id}`);
+        
+        res.status(201).json({ 
+            success: true,
+            data: newTask 
+        });
+    } catch (err) {
+        if (err.code === 'INVALID_TITLE') {
+            return res.status(400).json({ 
+                success: false,
+                error: err.message 
+            });
+        }
+        next(err);
     }
 };
 
@@ -43,18 +52,23 @@ const createTask = (req, res) => {
  * Update a task
  * PATCH /api/v1/tasks/:id
  */
-const updateTask = (req, res) => {
-    const { id } = req.params;
-    const updates = req.body;
-
+export const updateTask = async (req, res, next) => {
     try {
-        const updated = taskService.updateTask(id, updates);
-        res.status(200).json(updated);
-    } catch (error) {
-        if (error.message === 'TASK_NOT_FOUND') {
-            return res.status(404).json({ error: 'Task not found' });
+        const { id } = req.params;
+        const updated = taskService.updateTask(id, req.body);
+        
+        res.status(200).json({ 
+            success: true,
+            data: updated 
+        });
+    } catch (err) {
+        if (err.code === 'TASK_NOT_FOUND') {
+            return res.status(404).json({ 
+                success: false,
+                error: err.message 
+            });
         }
-        res.status(500).json({ error: 'Error updating task' });
+        next(err);
     }
 };
 
@@ -62,20 +76,27 @@ const updateTask = (req, res) => {
  * Delete a task
  * DELETE /api/v1/tasks/:id
  */
-const deleteTask = (req, res) => {
-    const { id } = req.params;
+export const deleteTask = async (req, res, next) => {
     try {
+        const { id } = req.params;
         taskService.deleteTask(id);
-        res.status(204).send(); 
-    } catch (error) {
-        if (error.message === 'TASK_NOT_FOUND') {
-            return res.status(404).json({ error: 'Task not found' });
+        
+        res.status(200).json({ 
+            success: true,
+            message: `Tarea ${id} eliminada` 
+        });
+    } catch (err) {
+        if (err.code === 'TASK_NOT_FOUND') {
+            return res.status(404).json({ 
+                success: false,
+                error: err.message 
+            });
         }
-        res.status(500).json({ error: 'Internal server error' });
+        next(err);
     }
 };
 
-module.exports = {
+export default {
     getTasks,
     createTask,
     updateTask,

@@ -1,54 +1,136 @@
 import { taskAPI } from './api.js';
 
-let tasks = [];
 const el = id => document.getElementById(id);
 
-async function loadTasks() {
-    try {
-        tasks = await taskAPI.getAll();
-        render();
-    } catch { el('taskList').innerHTML = "Error de conexión"; }
+class TaskManager {
+    constructor() {
+        this.tasks = [];
+        this.init();
+    }
+
+    async init() {
+        await this.loadTasks();
+        this.setupEventListeners();
+        this.loadTheme();
+    }
+
+    async loadTasks() {
+        try {
+            this.tasks = await taskAPI.getAll();
+            this.render();
+        } catch (err) {
+            console.error(err);
+            el('taskList').innerHTML = "❌ Error de conexión";
+        }
+    }
+
+    async toggleTask(id) {
+        try {
+            const task = this.tasks.find(t => t.id === id);
+            if (task) {
+                await taskAPI.update(id, { completed: !task.completed });
+                await this.loadTasks();
+            }
+        } catch (err) {
+            console.error('Error al actualizar:', err);
+        }
+    }
+
+    async deleteTask(id) {
+        if (!confirm('¿Borrar esta tarea?')) return;
+        try {
+            await taskAPI.delete(id);
+            await this.loadTasks();
+        } catch (err) {
+            console.error('Error al borrar:', err);
+        }
+    }
+
+    render() {
+        const query = el('searchInput').value.toLowerCase();
+        const filter = el('priorityFilter').value;
+
+        el('taskList').innerHTML = this.tasks
+            .filter(t => t.title.toLowerCase().includes(query) && (filter === 'all' || t.priority === filter))
+            .map(t => this.createTaskHTML(t))
+            .join('');
+
+        this.updateStats();
+    }
+
+    createTaskHTML(task) {
+        const checked = task.completed ? 'checked' : '';
+        const css = task.completed ? 'completed' : '';
+        const priority = task.priority.toLowerCase();
+        const title = this.escapeHTML(task.title);
+
+        return `
+            <div class="task-item ${css}">
+                <input type="checkbox" ${checked} data-id="${task.id}" class="task-checkbox">
+                <span>${title}</span>
+                <span class="badge priority-${priority}">${task.priority}</span>
+                <button class="task-delete" data-id="${task.id}" aria-label="Eliminar">🗑️</button>
+            </div>`;
+    }
+
+    escapeHTML(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    updateStats() {
+        const done = this.tasks.filter(t => t.completed).length;
+        const total = this.tasks.length;
+        el('progressBar').value = total ? (done / total) * 100 : 0;
+        el('pendingCount').textContent = total - done;
+        el('completedCount').textContent = done;
+    }
+
+    setupEventListeners() {
+        el('taskForm').addEventListener('submit', e => this.handleFormSubmit(e));
+        el('searchInput').addEventListener('input', () => this.render());
+        el('priorityFilter').addEventListener('change', () => this.render());
+        el('themeToggle').addEventListener('click', () => this.toggleTheme());
+
+        el('taskList').addEventListener('change', e => {
+            if (e.target.classList.contains('task-checkbox')) {
+                this.toggleTask(e.target.dataset.id);
+            }
+        });
+
+        el('taskList').addEventListener('click', e => {
+            if (e.target.classList.contains('task-delete')) {
+                this.deleteTask(e.target.dataset.id);
+            }
+        });
+    }
+
+    async handleFormSubmit(e) {
+        e.preventDefault();
+        const input = el('taskInput');
+        const priority = el('taskPriority').value;
+
+        try {
+            await taskAPI.create(input.value, priority);
+            input.value = '';
+            await this.loadTasks();
+        } catch (err) {
+            console.error('Error al crear:', err);
+        }
+    }
+
+    toggleTheme() {
+        const current = document.documentElement.getAttribute('data-theme');
+        const theme = current === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', theme);
+        localStorage.setItem('theme', theme);
+    }
+
+    loadTheme() {
+        const theme = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', theme);
+    }
 }
 
-function render() {
-    const query = el('searchInput').value.toLowerCase();
-    const filter = el('priorityFilter').value;
-    
-    el('taskList').innerHTML = tasks
-        .filter(t => t.title.toLowerCase().includes(query) && (filter === 'all' || t.priority === filter))
-        .map(t => `
-            <div class="task-item ${t.completed ? 'completed' : ''}">
-                <input type="checkbox" ${t.completed ? 'checked' : ''} onchange="toggle('${t.id}', ${t.completed})">
-                <span>${t.title}</span>
-                <span class="badge priority-${t.priority.toLowerCase()}">${t.priority}</span>
-                <button onclick="del('${t.id}')">🗑️</button>
-            </div>`).join('');
-    
-    updateStats();
-}
-
-window.toggle = async (id, status) => { await taskAPI.update(id, { completed: !status }); loadTasks(); };
-window.del = async (id) => { if(confirm('¿Borrar?')) { await taskAPI.delete(id); loadTasks(); } };
-
-el('taskForm').onsubmit = async (e) => {
-    e.preventDefault();
-    await taskAPI.create(el('taskInput').value, el('taskPriority').value);
-    el('taskInput').value = '';
-    loadTasks();
-};
-
-el('searchInput').oninput = render;
-el('priorityFilter').onchange = render;
-el('themeToggle').onclick = () => {
-    const t = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-    document.documentElement.setAttribute('data-theme', t);
-};
-
-const updateStats = () => {
-    const done = tasks.filter(t => t.completed).length;
-    el('progressBar').value = tasks.length ? (done / tasks.length) * 100 : 0;
-    el('pendingCount').innerText = tasks.length - done;
-    el('completedCount').innerText = done;
-};
-
-loadTasks();
+new TaskManager();

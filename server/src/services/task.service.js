@@ -4,64 +4,105 @@
  */
 
 let tasks = [
-    { id: 1, title: 'Complete Phase 1 and 2', priority: 'High', completed: true },
-    { id: 2, title: 'Master Node.js Backend', priority: 'Medium', completed: false }
+    { id: 1, title: 'Complete Phase 1 and 2', priority: 'High', completed: true, createdAt: new Date(), updatedAt: new Date() },
+    { id: 2, title: 'Master Node.js Backend', priority: 'Medium', completed: false, createdAt: new Date(), updatedAt: new Date() }
 ];
+
+let nextId = 3;
+
+const VALID_PRIORITIES = ['Low', 'Medium', 'High'];
+
+class TaskError extends Error {
+    constructor(code, message) {
+        super(message);
+        this.code = code;
+        this.status = code === 'TASK_NOT_FOUND' ? 404 : 400;
+    }
+}
+
+const validateTask = (taskData) => {
+    if (!taskData.title || taskData.title.trim().length === 0) {
+        throw new TaskError('INVALID_TITLE', 'El título no puede estar vacío');
+    }
+    if (taskData.priority && !VALID_PRIORITIES.includes(taskData.priority)) {
+        throw new TaskError('INVALID_PRIORITY', `Prioridad debe ser: ${VALID_PRIORITIES.join(', ')}`);
+    }
+};
 
 /**
  * Get all tasks
+ * @returns {Array} All tasks
  */
-const getAllTasks = () => {
-    return tasks;
+export const getAllTasks = () => {
+    return tasks.map(t => ({ ...t }));
 };
 
 /**
  * Create a new task
- * @param {Object} taskData 
+ * @param {Object} taskData - Task data
+ * @returns {Object} Created task
  */
-const createTask = (taskData) => {
+export const createTask = (taskData) => {
+    validateTask(taskData);
+    
     const newTask = {
-        id: Date.now(),
-        title: taskData.title,
+        id: nextId++,
+        title: taskData.title.trim(),
         priority: taskData.priority || 'Medium',
-        completed: false
+        completed: false,
+        createdAt: new Date(),
+        updatedAt: new Date()
     };
+    
     tasks.push(newTask);
-    return newTask;
+    console.log(`✅ Task created: ${newTask.id}`);
+    return { ...newTask };
 };
 
 /**
  * Update task fields
- * @param {number} id 
- * @param {Object} updates 
+ * @param {number} id - Task ID
+ * @param {Object} updates - Fields to update
+ * @returns {Object} Updated task
  */
-const updateTask = (id, updates) => {
+export const updateTask = (id, updates) => {
     const index = tasks.findIndex(t => t.id === parseInt(id));
     
     if (index === -1) {
-        throw new Error('TASK_NOT_FOUND'); 
+        throw new TaskError('TASK_NOT_FOUND', `Tarea ${id} no encontrada`);
     }
 
-    tasks[index] = { ...tasks[index], ...updates };
-    return tasks[index];
+    const updatedTask = {
+        ...tasks[index],
+        ...updates,
+        id: tasks[index].id,
+        createdAt: tasks[index].createdAt,
+        updatedAt: new Date()
+    };
+    
+    tasks[index] = updatedTask;
+    console.log(`✅ Task updated: ${id}`);
+    return { ...updatedTask };
 };
 
 /**
  * Delete task by ID
- * @param {number} id 
+ * @param {number} id - Task ID
+ * @returns {boolean} Success
  */
-const deleteTask = (id) => {
+export const deleteTask = (id) => {
     const index = tasks.findIndex(t => t.id === parseInt(id));
     
     if (index === -1) {
-        throw new Error('TASK_NOT_FOUND'); 
+        throw new TaskError('TASK_NOT_FOUND', `Tarea ${id} no encontrada`);
     }
 
-    tasks.splice(index, 1);
+    const deleted = tasks.splice(index, 1)[0];
+    console.log(`✅ Task deleted: ${id}`);
     return true;
 };
 
-module.exports = {
+export default {
     getAllTasks,
     createTask,
     updateTask,
