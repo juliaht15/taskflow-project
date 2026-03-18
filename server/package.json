@@ -1,20 +1,13 @@
 {
-  "name": "taskflow-server",
+  "name": "taskflow-pro",
   "version": "1.0.0",
-  "description": "Modular backend for TaskFlow task management - Phase 3",
-  "main": "src/index.js",
+  "description": "TaskFlow Pro - Modular Fullstack App",
+  "main": "server/src/index.js",
   "type": "commonjs",
   "scripts": {
-    "start": "node src/index.js",
-    "dev": "nodemon src/index.js"
+    "start": "node server/src/index.js",
+    "dev": "nodemon server/src/index.js"
   },
-  "keywords": [
-    "express",
-    "api",
-    "taskflow",
-    "backend",
-    "javascript"
-  ],
   "author": "Julia Huertas Torres",
   "license": "ISC",
   "dependencies": {

@@ -1,67 +1,45 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TaskFlow Pro | Julia Huertas</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+    <title>TaskFlow</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <nav class="container">
-        <ul>
-            <li><strong class="brand">TaskFlow Pro</strong></li>
-        </ul>
-        <ul>
-            <li><button id="themeToggle" class="outline contrast" aria-label="Cambiar tema">🌓</button></li>
-            <li><progress id="progressBar" value="0" max="100"></progress></li>
-        </ul>
-    </nav>
-
     <main class="container">
-        <div class="grid">
-            <aside>
-                <article>
-                    <header>Panel de Control</header>
-                    <div class="grid">
-                        <div><small>Pendientes</small><br><b id="pendingCount">0</b></div>
-                        <div><small>Listas</small><br><b id="completedCount">0</b></div>
-                    </div>
-                    <footer>
-                        <label for="priorityFilter">Prioridad</label>
-                        <select id="priorityFilter">
-                            <option value="all">Todas</option>
-                            <option value="High">Alta</option>
-                            <option value="Medium">Media</option>
-                            <option value="Low">Baja</option>
-                        </select>
-                    </footer>
-                </article>
-                <input type="search" id="searchInput" placeholder="Buscar tarea...">
-            </aside>
+        <nav>
+            <h1>TaskFlow <span>PRO</span></h1>
+            <button id="themeToggle">🌓</button>
+        </nav>
 
-            <section>
-                <form id="taskForm">
-                    <fieldset role="group">
-                        <input type="text" id="taskInput" placeholder="Nueva tarea..." required>
-                        <select id="taskPriority">
-                            <option value="High">Alta</option>
-                            <option value="Medium" selected>Media</option>
-                            <option value="Low">Baja</option>
-                        </select>
-                        <input type="submit" value="Añadir">
-                    </fieldset>
-                </form>
-                <div id="taskList"></div>
-            </section>
+        <section class="stats">
+            <progress id="progressBar" value="0" max="100"></progress>
+            <p><span id="pendingCount">0</span> pendientes / <span id="completedCount">0</span> hechas</p>
+        </section>
+
+        <form id="taskForm">
+            <input type="text" id="taskInput" placeholder="Nueva tarea..." required>
+            <select id="taskPriority">
+                <option value="Low">Baja</option>
+                <option value="Medium" selected>Media</option>
+                <option value="High">Alta</option>
+            </select>
+            <button type="submit">Add</button>
+        </form>
+
+        <div class="filters">
+            <input type="text" id="searchInput" placeholder="Buscar...">
+            <select id="priorityFilter">
+                <option value="all">Todas</option>
+                <option value="Low">Baja</option>
+                <option value="Medium">Media</option>
+                <option value="High">Alta</option>
+            </select>
         </div>
+
+        <div id="taskList"></div>
     </main>
-
-    <footer class="container">
-        <hr>
-        <small>&copy; 2026 Julia Huertas Torres - TaskFlow Project</small>
-    </footer>
-
-    <script src="app.js"></script>
+    <script type="module" src="app.js"></script>
 </body>
 </html>

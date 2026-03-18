@@ -9,12 +9,12 @@ const config = {
 };
 
 /**
- * Strict Validation: 
- * Ensures critical environment variables are loaded before starting.
+ * Validación de Seguridad:
+ * En producción (Vercel), no bloqueamos si falta el PORT porque 
+ * la plataforma lo asigna dinámicamente. Solo avisamos.
  */
-if (!process.env.PORT && process.env.NODE_ENV === 'production') {
-    console.error('❌ CRITICAL ERROR: PORT is not defined in environment variables.');
-    throw new Error('Server configuration failed: Missing critical variables.');
+if (!process.env.PORT && config.nodeEnv === 'production') {
+    console.warn('⚠️ Nota: PORT no definido, usando asignación dinámica de Vercel.');
 }
 
 module.exports = config;
