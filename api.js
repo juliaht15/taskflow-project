@@ -3,7 +3,7 @@
  * Conectado directamente a la instancia de producción en Vercel.
  */
 
-const API_URL = 'https://taskflow-project-uy2w-mnnxp63hf-juliaht15s-projects.vercel.app/api/v1/tasks';
+const API_URL = 'https://taskflow-project-uy2w.vercel.app/api/v1/tasks';
 
 async function request(url, options = {}) {
   const { headers = {}, ...rest } = options;
