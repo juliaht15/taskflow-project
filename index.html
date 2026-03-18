@@ -3,8 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="TaskFlow PRO - Gestor de tareas con prioridades">
-    <meta name="theme-color" content="#007aff">
     <title>TaskFlow PRO - Gestor de Tareas</title>
     <link rel="stylesheet" href="style.css">
 </head>
@@ -12,35 +10,35 @@
     <main class="container">
         <nav>
             <h1>TaskFlow <span>PRO</span></h1>
-            <button id="themeToggle" aria-label="Cambiar tema" title="Cambiar tema">🌓</button>
+            <button id="themeToggle" title="Cambiar tema">🌓</button>
         </nav>
 
         <section class="stats">
-            <progress id="progressBar" value="0" max="100" aria-label="Progreso de tareas"></progress>
+            <progress id="progressBar" value="0" max="100"></progress>
             <p><span id="pendingCount">0</span> pendientes / <span id="completedCount">0</span> hechas</p>
         </section>
 
         <form id="taskForm">
-            <input type="text" id="taskInput" placeholder="Nueva tarea..." autocomplete="off" required aria-label="Título de la tarea">
-            <select id="taskPriority" aria-label="Prioridad">
-                <option value="Low">Baja</option>
-                <option value="Medium" selected>Media</option>
-                <option value="High">Alta</option>
+            <input type="text" id="taskInput" placeholder="Nueva tarea..." required>
+            <select id="taskPriority">
+                <option value="Baja">Baja</option>
+                <option value="Media" selected>Media</option>
+                <option value="Alta">Alta</option>
             </select>
             <button type="submit">Crear</button>
         </form>
 
         <div class="filters">
-            <input type="text" id="searchInput" placeholder="Buscar..." autocomplete="off" aria-label="Buscar tareas">
-            <select id="priorityFilter" aria-label="Filtrar por prioridad">
+            <input type="text" id="searchInput" placeholder="Buscar...">
+            <select id="priorityFilter">
                 <option value="all">Todas</option>
-                <option value="Low">Baja</option>
-                <option value="Medium">Media</option>
-                <option value="High">Alta</option>
+                <option value="Baja">Baja</option>
+                <option value="Media">Media</option>
+                <option value="Alta">Alta</option>
             </select>
         </div>
 
-        <div id="taskList" aria-label="Lista de tareas"></div>
+        <ul id="taskList"></ul>
     </main>
     <script type="module" src="app.js"></script>
 </body>

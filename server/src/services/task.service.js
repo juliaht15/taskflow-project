@@ -1,23 +1,52 @@
 /**
  * TASKFLOW PRO - Task Service
- * Business logic and in-memory persistence.
+ * Lógica de negocio y persistencia volátil en memoria.
  */
 
-// Datos iniciales (Mock Data)
+// 1. Datos iniciales (Mock Data) para que la web no aparezca vacía
 let tasks = [
-    { id: 1, title: 'Completar Fase 1 y 2', priority: 'Alta', completed: true, createdAt: new Date(), updatedAt: new Date() },
-    { id: 2, title: 'Master Node.js Backend', priority: 'Media', completed: false, createdAt: new Date(), updatedAt: new Date() },
-    { id: 3, title: 'Comprar Pan', priority: 'Baja', completed: false, createdAt: new Date(), updatedAt: new Date() },
-    { id: 4, title: 'Revisar README', priority: 'Media', completed: false, createdAt: new Date(), updatedAt: new Date() }
+    { 
+        id: 1, 
+        title: 'Completar Fase 1 y 2', 
+        priority: 'Alta', 
+        completed: true, 
+        createdAt: new Date(), 
+        updatedAt: new Date() 
+    },
+    { 
+        id: 2, 
+        title: 'Master Node.js Backend', 
+        priority: 'Media', 
+        completed: false, 
+        createdAt: new Date(), 
+        updatedAt: new Date() 
+    },
+    { 
+        id: 3, 
+        title: 'Comprar Pan', 
+        priority: 'Baja', 
+        completed: false, 
+        createdAt: new Date(), 
+        updatedAt: new Date() 
+    },
+    { 
+        id: 4, 
+        title: 'Revisar README', 
+        priority: 'Media', 
+        completed: false, 
+        createdAt: new Date(), 
+        updatedAt: new Date() 
+    }
 ];
 
-// El siguiente ID debe ser 5 porque ya existen del 1 al 4
+// 2. El siguiente ID debe ser 5 para evitar duplicados con los de arriba
 let nextId = 5;
 
+// Definimos las prioridades exactas que acepta nuestro sistema
 const VALID_PRIORITIES = ['Baja', 'Media', 'Alta'];
 
 /**
- * Clase para manejo de errores de negocio
+ * Clase para manejar errores específicos de la lógica de tareas
  */
 class TaskError extends Error {
     constructor(code, message) {
@@ -28,35 +57,33 @@ class TaskError extends Error {
 }
 
 /**
- * Validación defensiva de datos
+ * Validador de datos de entrada
  */
 const validateTask = (taskData) => {
     if (!taskData.title || taskData.title.trim().length === 0) {
-        throw new TaskError('INVALID_TITLE', 'El título no puede estar vacío');
+        throw new TaskError('INVALID_TITLE', 'El título es obligatorio');
     }
-    // Validamos que la prioridad sea una de las permitidas en español
     if (taskData.priority && !VALID_PRIORITIES.includes(taskData.priority)) {
-        throw new TaskError('INVALID_PRIORITY', `Prioridad debe ser: ${VALID_PRIORITIES.join(', ')}`);
+        throw new TaskError('INVALID_PRIORITY', `La prioridad debe ser: ${VALID_PRIORITIES.join(', ')}`);
     }
 };
 
 /**
- * Obtener todas las tareas
+ * SERVICIOS EXPORTADOS
  */
+
 const getAllTasks = () => {
+    // Retornamos una copia para proteger el array original
     return tasks.map(t => ({ ...t }));
 };
 
-/**
- * Crear una nueva tarea
- */
 const createTask = (taskData) => {
     validateTask(taskData);
     
     const newTask = {
         id: nextId++,
         title: taskData.title.trim(),
-        priority: taskData.priority || 'Media', // Por defecto en español
+        priority: taskData.priority || 'Media',
         completed: false,
         createdAt: new Date(),
         updatedAt: new Date()
@@ -66,21 +93,18 @@ const createTask = (taskData) => {
     return { ...newTask };
 };
 
-/**
- * Actualizar campos de una tarea
- */
 const updateTask = (id, updates) => {
     const index = tasks.findIndex(t => t.id === parseInt(id));
     
     if (index === -1) {
-        throw new TaskError('TASK_NOT_FOUND', `Tarea con ID ${id} no encontrada`);
+        throw new TaskError('TASK_NOT_FOUND', `No existe la tarea con ID ${id}`);
     }
 
+    // Fusionamos la tarea existente con los cambios, manteniendo el ID original
     const updatedTask = {
         ...tasks[index],
         ...updates,
-        id: tasks[index].id, // El ID no cambia
-        createdAt: tasks[index].createdAt, // La fecha de creación no cambia
+        id: tasks[index].id, 
         updatedAt: new Date()
     };
     
@@ -88,21 +112,18 @@ const updateTask = (id, updates) => {
     return { ...updatedTask };
 };
 
-/**
- * Eliminar una tarea por ID
- */
 const deleteTask = (id) => {
     const index = tasks.findIndex(t => t.id === parseInt(id));
     
     if (index === -1) {
-        throw new TaskError('TASK_NOT_FOUND', `Tarea con ID ${id} no encontrada`);
+        throw new TaskError('TASK_NOT_FOUND', `No se puede eliminar: ID ${id} no existe`);
     }
 
     tasks.splice(index, 1);
     return true;
 };
 
-// EXPORTACIÓN PARA NODE.JS (CommonJS)
+// Exportación usando CommonJS (requerido para Node.js estándar)
 module.exports = {
     getAllTasks,
     createTask,

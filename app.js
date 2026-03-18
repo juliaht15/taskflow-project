@@ -1,146 +1,89 @@
 import { taskAPI } from './api.js';
 
-const el = id => document.getElementById(id);
+const el = (id) => document.getElementById(id);
 
-class TaskManager {
+class TaskApp {
     constructor() {
         this.tasks = [];
         this.init();
     }
 
     async init() {
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+
+        el('taskForm').addEventListener('submit', (e) => this.handleFormSubmit(e));
+        el('themeToggle').addEventListener('click', () => this.toggleTheme());
+        el('priorityFilter').addEventListener('change', () => this.render());
+        el('searchInput').addEventListener('input', () => this.render());
+        
         await this.loadTasks();
-        this.setupEventListeners();
-        this.loadTheme();
     }
 
     async loadTasks() {
         try {
-            // CORRECCIÓN: Accedemos a .data porque el controlador devuelve { success, data }
-            const response = await taskAPI.getAll();
-            this.tasks = response.data || []; 
+            const res = await taskAPI.getAll();
+            this.tasks = res.data || [];
             this.render();
-        } catch (err) {
-            console.error(err);
-            el('taskList').innerHTML = "❌ Error de conexión";
-        }
-    }
-
-    async toggleTask(id) {
-        try {
-            const task = this.tasks.find(t => t.id == id); // Usamos == por si el ID viene como string
-            if (task) {
-                await taskAPI.update(id, { completed: !task.completed });
-                await this.loadTasks();
-            }
-        } catch (err) {
-            console.error('Error al actualizar:', err);
-        }
-    }
-
-    async deleteTask(id) {
-        if (!confirm('¿Borrar esta tarea?')) return;
-        try {
-            await taskAPI.delete(id);
-            await this.loadTasks();
-        } catch (err) {
-            console.error('Error al borrar:', err);
-        }
-    }
-
-    render() {
-        const query = el('searchInput').value.toLowerCase();
-        const filter = el('priorityFilter').value;
-
-        // Verificamos que this.tasks sea un array antes de filtrar
-        const taskArray = Array.isArray(this.tasks) ? this.tasks : [];
-
-        el('taskList').innerHTML = taskArray
-            .filter(t => t.title.toLowerCase().includes(query) && (filter === 'all' || t.priority === filter))
-            .map(t => this.createTaskHTML(t))
-            .join('');
-
-        this.updateStats();
-    }
-
-    createTaskHTML(task) {
-        const checked = task.completed ? 'checked' : '';
-        const css = task.completed ? 'completed' : '';
-        const priority = task.priority ? task.priority.toLowerCase() : 'medium';
-        const title = this.escapeHTML(task.title);
-
-        return `
-            <div class="task-item ${css}">
-                <input type="checkbox" ${checked} data-id="${task.id}" class="task-checkbox">
-                <span>${title}</span>
-                <span class="badge priority-${priority}">${task.priority}</span>
-                <button class="task-delete" data-id="${task.id}" aria-label="Eliminar">🗑️</button>
-            </div>`;
-    }
-
-    escapeHTML(text) {
-        const div = document.createElement('div');
-        div.textContent = text;
-        return div.innerHTML;
-    }
-
-    updateStats() {
-        const taskArray = Array.isArray(this.tasks) ? this.tasks : [];
-        const done = taskArray.filter(t => t.completed).length;
-        const total = taskArray.length;
-        el('progressBar').value = total ? (done / total) * 100 : 0;
-        el('pendingCount').textContent = total - done;
-        el('completedCount').textContent = done;
-    }
-
-    setupEventListeners() {
-        el('taskForm').addEventListener('submit', e => this.handleFormSubmit(e));
-        el('searchInput').addEventListener('input', () => this.render());
-        el('priorityFilter').addEventListener('change', () => this.render());
-        if (el('themeToggle')) {
-            el('themeToggle').addEventListener('click', () => this.toggleTheme());
-        }
-
-        el('taskList').addEventListener('change', e => {
-            if (e.target.classList.contains('task-checkbox')) {
-                this.toggleTask(e.target.dataset.id);
-            }
-        });
-
-        el('taskList').addEventListener('click', e => {
-            if (e.target.classList.contains('task-delete')) {
-                this.deleteTask(e.target.dataset.id);
-            }
-        });
+        } catch (err) { console.error(err); }
     }
 
     async handleFormSubmit(e) {
         e.preventDefault();
-        const input = el('taskInput');
+        const title = el('taskInput').value.trim();
         const priority = el('taskPriority').value;
+        if (!title) return;
+        await taskAPI.create(title, priority);
+        el('taskInput').value = '';
+        await this.loadTasks();
+    }
 
-        if (!input.value.trim()) return;
+    async toggleTask(id) {
+        const task = this.tasks.find(t => t.id === id);
+        await taskAPI.update(id, { completed: !task.completed });
+        await this.loadTasks();
+    }
 
-        try {
-            await taskAPI.create(input.value.trim(), priority);
-            input.value = '';
+    async deleteTask(id) {
+        if (confirm('¿Borrar tarea?')) {
+            await taskAPI.delete(id);
             await this.loadTasks();
-        } catch (err) {
-            console.error('Error al crear:', err);
         }
     }
 
-    toggleTheme() {
-        const current = document.documentElement.getAttribute('data-theme');
-        const theme = current === 'dark' ? 'light' : 'dark';
-        document.documentElement.setAttribute('data-theme', theme);
-        localStorage.setItem('theme', theme);
+    render() {
+        const list = el('taskList');
+        const filter = el('priorityFilter').value;
+        const search = el('searchInput').value.toLowerCase();
+
+        const filtered = this.tasks.filter(t => {
+            return (filter === 'all' || t.priority === filter) && t.title.toLowerCase().includes(search);
+        });
+
+        // Stats
+        const done = this.tasks.filter(t => t.completed).length;
+        el('completedCount').innerText = done;
+        el('pendingCount').innerText = this.tasks.length - done;
+        el('progressBar').value = this.tasks.length ? (done / this.tasks.length) * 100 : 0;
+
+        list.innerHTML = filtered.map(t => `
+            <li class="task-item ${t.completed ? 'completed' : ''}">
+                <div class="task-info">
+                    <input type="checkbox" ${t.completed ? 'checked' : ''} onchange="app.toggleTask(${t.id})">
+                    <span class="task-title">${t.title}</span>
+                    <span class="badge ${t.priority.toLowerCase()}">${t.priority}</span>
+                </div>
+                <button class="delete-btn" onclick="app.deleteTask(${t.id})">🗑️</button>
+            </li>
+        `).join('');
     }
 
-    loadTheme() {
-        const theme = localStorage.getItem('theme') || 'light';
-        document.documentElement.setAttribute('data-theme', theme);
+    toggleTheme() {
+        const next = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', next);
+        localStorage.setItem('theme', next);
     }
 }
 
-new TaskManager();
+const app = new TaskApp();
+window.app = app;

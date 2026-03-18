@@ -4,27 +4,28 @@ const taskRoutes = require('./routes/task.routes');
 
 const app = express();
 
-// 1. EL LOGGER
+// Middleware de Auditoría (Logger)
 app.use((req, res, next) => {
   console.log(`[${new Date().toLocaleTimeString()}] ${req.method} ${req.url}`);
   next();
 });
 
-// 2. CONFIGURACIÓN BÁSICA
 app.use(cors());
 app.use(express.json());
 
-// 3. LAS RUTAS
+// API Routes
 app.use('/api/v1/tasks', taskRoutes);
 
-// 4. EL MANEJADOR DE ERRORES
+// Health check
+app.get('/', (req, res) => res.send('TaskFlow API Online'));
+
+// Manejo de errores global
 app.use((err, req, res, next) => {
-  console.error(err);
-  res.status(500).json({ error: 'Algo salió mal en el servidor' });
+  res.status(err.status || 500).json({ error: err.message || 'Error interno' });
 });
 
 module.exports = app;
 
 if (process.env.NODE_ENV !== 'production') {
-    app.listen(3000, () => console.log('Server en puerto 3000'));
+    app.listen(3000, () => console.log('🚀 Server running on http://localhost:3000'));
 }
