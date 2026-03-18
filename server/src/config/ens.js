@@ -13,7 +13,7 @@ const config = {
 };
 
 // Log de ayuda para saber que el servidor arrancó
-console.log(`🔧 Configuración cargada en modo: ${config.nodeEnv}`);
+console.log(`Configuración cargada en modo: ${config.nodeEnv}`);
 
 // EXPORTACIÓN CORRECTA PARA NODE.JS (CommonJS)
 module.exports = config;

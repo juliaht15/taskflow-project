@@ -26,5 +26,5 @@ app.use((err, req, res, next) => {
 module.exports = app;
 
 if (process.env.NODE_ENV !== 'production') {
-    app.listen(3000, () => console.log('🚀 Server en puerto 3000'));
+    app.listen(3000, () => console.log('Server en puerto 3000'));
 }
