@@ -1,30 +1,49 @@
-<!DOCTYPE html>
-<html lang="es" data-theme="light">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TaskFlow PRO</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-  <main class="container">
-    <nav><h1>TaskFlow <span>PRO</span></h1><button id="themeToggle" aria-label="Tema">🌓</button></nav>
-    <div id="error-alert" style="display:none"></div>
-    <section class="stats">
-      <progress id="progressBar" value="0" max="100"></progress>
-      <p><span id="pendingCount">0</span> pendientes / <span id="completedCount">0</span> hechas</p>
-    </section>
-    <form id="taskForm">
-      <input type="text" id="taskInput" placeholder="Nueva tarea..." required>
-      <select id="taskPriority"><option>Baja</option><option selected>Media</option><option>Alta</option></select>
-      <button type="submit">Crear</button>
-    </form>
-    <div class="filters">
-      <input type="text" id="searchInput" placeholder="Buscar...">
-      <select id="priorityFilter"><option value="all">Todas</option><option>Baja</option><option>Media</option><option>Alta</option></select>
-    </div>
-    <ul id="taskList"></ul>
-  </main>
-  <script type="module" src="app.js"></script>
-</body>
-</html>
+require('dotenv').config();
+const express = require('express');
+const cors = require('cors');
+const taskRoutes = require('./routes/task.routes');
+
+const app = express();
+
+// CORS - Permitir todos los orígenes
+app.use(cors({
+  origin: '*',
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  credentials: true
+}));
+
+app.use(express.json());
+
+// Health check
+app.get('/', (req, res) => {
+  res.json({ status: 'ok', service: 'TaskFlow API' });
+});
+
+app.get('/api/status', (req, res) => {
+  res.json({ status: 'operational', environment: process.env.NODE_ENV || 'development' });
+});
+
+// Rutas de API
+app.use('/api/v1/tasks', taskRoutes);
+
+// Error handler
+app.use((err, req, res, next) => {
+  console.error('Error:', err.message);
+  res.status(500).json({ error: 'Error interno del servidor' });
+});
+
+// 404 handler
+app.use((req, res) => {
+  res.status(404).json({ error: 'Endpoint no encontrado' });
+});
+
+// ✅ CRÍTICO: Exportar para Vercel
+module.exports = app;
+
+// Solo escuchar en desarrollo local
+if (process.env.NODE_ENV !== 'production') {
+  const PORT = process.env.PORT || 3000;
+  app.listen(PORT, () => {
+    console.log(`🚀 Server running on http://localhost:${PORT}`);
+  });
+}
