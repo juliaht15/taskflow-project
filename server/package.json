@@ -1,17 +1,29 @@
 {
   "name": "taskflow-pro",
   "version": "1.0.0",
-  "description": "TaskFlow Pro - Gestor de tareas fullstack modular",
+  "description": "TaskFlow Pro - Gestor de tareas fullstack modular con Node.js + Express",
   "main": "src/index.js",
   "engines": {
     "node": ">=18.0.0"
   },
   "scripts": {
     "start": "node src/index.js",
-    "dev": "nodemon src/index.js"
+    "dev": "nodemon src/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Julia Huertas Torres",
   "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/juliaht15/taskflow-project.git"
+  },
+  "keywords": [
+    "taskflow",
+    "express",
+    "nodejs",
+    "api-rest",
+    "fullstack"
+  ],
   "dependencies": {
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",

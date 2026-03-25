@@ -1,31 +1,38 @@
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
+const config = require('./config/env');
 const taskRoutes = require('./routes/task.routes');
 
 const app = express();
 
-// Middleware de Auditoría (Logger)
-app.use((req, res, next) => {
-  console.log(`[${new Date().toLocaleTimeString()}] ${req.method} ${req.url}`);
-  next();
-});
-
-app.use(cors());
+app.use(cors({ origin: config.corsOrigin, methods: ['GET','POST','PUT','PATCH','DELETE','OPTIONS'], credentials: true }));
 app.use(express.json());
 
-// API Routes
-app.use('/api/v1/tasks', taskRoutes);
-
-// Health check
-app.get('/', (req, res) => res.send('TaskFlow API Online'));
-
-// Manejo de errores global
-app.use((err, req, res, next) => {
-  res.status(err.status || 500).json({ error: err.message || 'Error interno' });
+app.use((req, res, next) => {
+    const start = Date.now();
+    console.log(`[${new Date().toISOString()}] ${req.method} ${req.originalUrl}`);
+    res.on('finish', () => console.log(`→ ${res.statusCode} (${Date.now() - start}ms)`));
+    next();
 });
+
+app.get('/', (req, res) => res.status(200).json({ status: 'ok', service: 'TaskFlow API', version: '1.0.0' }));
+app.get('/api/status', (req, res) => res.status(200).json({ status: 'operational', uptime: process.uptime(), environment: config.nodeEnv }));
+
+app.use(`${config.apiPrefix}/tasks`, taskRoutes);
+
+app.use((err, req, res, next) => {
+    console.error('❌ [ERROR]', err.message);
+    if (err.code && ['INVALID_TITLE','INVALID_PRIORITY','TASK_NOT_FOUND'].includes(err.code)) {
+        return res.status(err.status || 400).json({ success: false, error: err.message, code: err.code });
+    }
+    res.status(500).json({ success: false, error: config.isProduction ? 'Error interno del servidor' : err.message });
+});
+
+app.use((req, res) => res.status(404).json({ success: false, error: 'Endpoint no encontrado' }));
 
 module.exports = app;
 
-if (process.env.NODE_ENV !== 'production') {
-    app.listen(3000, () => console.log('🚀 Server running on http://localhost:3000'));
+if (config.isDevelopment && require.main === module) {
+    app.listen(config.port, () => console.log(`🚀 Server running on http://localhost:${config.port}`));
 }

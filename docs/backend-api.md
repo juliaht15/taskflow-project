@@ -3,11 +3,11 @@
 Esta documentación detalla la arquitectura, el diseño y el funcionamiento del servidor de TaskFlow Pro, desarrollado para la **Fase 3** del proyecto.
 
 ## Arquitectura del Sistema
-El servidor sigue una **Arquitectura por Capas (Layered Architecture)** basada en el principio de **Separación de Responsabilidades (SoC)**. Esto permite que el código sea testeable y escalable.
 
-
+El servidor sigue una **Arquitectura por Capas (Layered Architecture)** basada en el principio de **Separación de Responsabilidades (SoC)**. Esto permite que el código sea testeable, mantenible y escalable.
 
 ### Estructura de Carpetas
+
 ```text
 server/src/
 ├── config/         # Configuración y validación de variables de entorno (.env)
