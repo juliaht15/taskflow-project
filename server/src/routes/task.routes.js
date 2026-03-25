@@ -1,19 +1,15 @@
 const express = require('express');
 const router = express.Router();
-const taskController = require('../controllers/task.controller');
+const controller = require('../controllers/task.controller');
 
-const validateTaskId = (req, res, next) => {
-    const id = parseInt(req.params.id, 10);
-    if (isNaN(id) || id < 1) {
-        return res.status(400).json({ success: false, error: 'ID debe ser un número válido' });
-    }
-    req.params.id = id;
-    next();
+const validateId = (req, res, next) => {
+  if (isNaN(parseInt(req.params.id))) return res.status(400).json({ error: 'ID inválido' });
+  next();
 };
 
-router.get('/', taskController.getTasks);
-router.post('/', taskController.createTask);
-router.patch('/:id', validateTaskId, taskController.updateTask);
-router.delete('/:id', validateTaskId, taskController.deleteTask);
+router.get('/', controller.getTasks);
+router.post('/', controller.createTask);
+router.patch('/:id', validateId, controller.updateTask);
+router.delete('/:id', validateId, controller.deleteTask);
 
 module.exports = router;

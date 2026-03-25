@@ -1,51 +1,30 @@
 <!DOCTYPE html>
 <html lang="es" data-theme="light">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TaskFlow PRO - Gestor de Tareas</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TaskFlow PRO</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <main class="container">
-        <nav>
-            <h1>TaskFlow <span>PRO</span></h1>
-            <button id="themeToggle" title="Cambiar tema" aria-label="Cambiar tema">🌓</button>
-        </nav>
-
-        <!-- ✅ Alerta de errores (necesario para app.js) -->
-        <div id="error-alert" style="display:none;"></div>
-        
-        <!-- ✅ Indicador de carga (necesario para app.js) -->
-        <div id="loading" style="display:none;">Cargando...</div>
-
-        <section class="stats">
-            <progress id="progressBar" value="0" max="100"></progress>
-            <p><span id="pendingCount">0</span> pendientes / <span id="completedCount">0</span> hechas</p>
-        </section>
-
-        <form id="taskForm">
-            <input type="text" id="taskInput" placeholder="Nueva tarea..." required aria-label="Título de la tarea">
-            <select id="taskPriority" aria-label="Prioridad">
-                <option value="Baja">Baja</option>
-                <option value="Media" selected>Media</option>
-                <option value="Alta">Alta</option>
-            </select>
-            <button type="submit">Crear</button>
-        </form>
-
-        <div class="filters">
-            <input type="text" id="searchInput" placeholder="Buscar..." aria-label="Buscar tareas">
-            <select id="priorityFilter" aria-label="Filtrar por prioridad">
-                <option value="all">Todas</option>
-                <option value="Baja">Baja</option>
-                <option value="Media">Media</option>
-                <option value="Alta">Alta</option>
-            </select>
-        </div>
-
-        <ul id="taskList"></ul>
-    </main>
-    <script type="module" src="app.js"></script>
+  <main class="container">
+    <nav><h1>TaskFlow <span>PRO</span></h1><button id="themeToggle" aria-label="Tema">🌓</button></nav>
+    <div id="error-alert" style="display:none"></div>
+    <section class="stats">
+      <progress id="progressBar" value="0" max="100"></progress>
+      <p><span id="pendingCount">0</span> pendientes / <span id="completedCount">0</span> hechas</p>
+    </section>
+    <form id="taskForm">
+      <input type="text" id="taskInput" placeholder="Nueva tarea..." required>
+      <select id="taskPriority"><option>Baja</option><option selected>Media</option><option>Alta</option></select>
+      <button type="submit">Crear</button>
+    </form>
+    <div class="filters">
+      <input type="text" id="searchInput" placeholder="Buscar...">
+      <select id="priorityFilter"><option value="all">Todas</option><option>Baja</option><option>Media</option><option>Alta</option></select>
+    </div>
+    <ul id="taskList"></ul>
+  </main>
+  <script type="module" src="app.js"></script>
 </body>
 </html>
