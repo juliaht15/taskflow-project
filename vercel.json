@@ -12,7 +12,7 @@
   ],
   "rewrites": [
     {
-      "source": "/api/v1/tasks/:path*",
+      "source": "/api/(.*)",
       "destination": "server/src/index.js"
     },
     {
