@@ -2,8 +2,12 @@ const express = require('express');
 const router = express.Router();
 const controller = require('../controllers/task.controller');
 
+// Validar ID
 const validateId = (req, res, next) => {
-  if (isNaN(parseInt(req.params.id))) return res.status(400).json({ error: 'ID inválido' });
+  const id = parseInt(req.params.id, 10);
+  if (isNaN(id)) {
+    return res.status(400).json({ success: false, error: 'ID inválido' });
+  }
   next();
 };
 

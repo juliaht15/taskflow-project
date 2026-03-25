@@ -1,6 +1,8 @@
 const taskService = require('../services/task.service');
 
-const handle = (fn) => (req, res, next) => Promise.resolve(fn(req, res, next)).catch(next);
+const handle = (fn) => (req, res, next) => {
+  Promise.resolve(fn(req, res, next)).catch(next);
+};
 
 module.exports = {
   getTasks: handle((req, res) => {
