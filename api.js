@@ -18,7 +18,7 @@ async function request(url, options = {}) {
         
         return { success: true,  data };
     } catch (err) {
-        console.error('API Error:', err);
+        console.error('API Error:', err.message, url);
         throw err;
     }
 }
