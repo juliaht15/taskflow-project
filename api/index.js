@@ -6,8 +6,9 @@ const taskRoutes = require('./routes/task.routes');
 const app = express();
 
 const allowedOrigins = [
-  'https://taskflow-project-uy2w-au0e40jkb-juliaht15s-projects.vercel.app',
-  'http://localhost:5173'
+  'https://juliaht15-taskflow-project.vercel.app',
+  'http://localhost:5173',
+  'http://localhost:3000'
 ];
 
 app.use(cors({
@@ -24,18 +25,16 @@ app.use(cors({
 
 app.use(express.json());
 
+// Endpoint de salud
 app.get('/api/status', (req, res) => res.json({ 
   status: 'online', 
   env: process.env.NODE_ENV || 'development' 
 }));
 
+// Rutas
 app.use('/api/v1/tasks', taskRoutes);
 
+// Fallback para rutas no encontradas
 app.use((req, res) => res.status(404).json({ error: 'Endpoint not found' }));
 
 module.exports = app;
-
-if (process.env.NODE_ENV !== 'production') {
-  const PORT = process.env.PORT || 3000;
-  app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-}

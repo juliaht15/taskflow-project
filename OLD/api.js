@@ -1,6 +1,4 @@
-const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-  ? 'http://localhost:3000/api/v1/tasks'
-  : '/api/v1/tasks';
+const API_BASE = '/api/v1/tasks';
 
 const request = async (url, method = 'GET', body = null) => {
   try {
