@@ -46,7 +46,6 @@ desktop.ini
 .npm/
 .vercel/
 test-results/
-
 .terraform/
 .serverless/
 *.log.*

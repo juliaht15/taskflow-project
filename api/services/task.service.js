@@ -1,5 +1,5 @@
 let tasks = [
-  { id: 1, title: 'Tarea ejemplo', priority: 'Media', completed: false, createdAt: new Date() }
+  { id: 1, title: 'Sample Task', priority: 'Media', completed: false, createdAt: new Date() }
 ];
 let nextId = 2;
 const PRIORITIES = ['Baja', 'Media', 'Alta'];
@@ -11,14 +11,12 @@ class TaskError extends Error {
   }
 }
 
-const findIndex = (id) => tasks.findIndex(t => t.id === parseInt(id, 10));
-
 module.exports = {
-  getAllTasks: () => [...tasks],
+  findAll: () => [...tasks],
 
-  createTask: ({ title, priority = 'Media' }) => {
-    if (!title?.trim()) throw new TaskError(400, 'Título obligatorio');
-    if (!PRIORITIES.includes(priority)) throw new TaskError(400, 'Prioridad inválida');
+  create: ({ title, priority = 'Media' }) => {
+    if (!title?.trim()) throw new TaskError(400, 'Title is required');
+    if (!PRIORITIES.includes(priority)) throw new TaskError(400, 'Invalid priority');
 
     const task = { 
       id: nextId++, 
@@ -31,21 +29,21 @@ module.exports = {
     return task;
   },
 
-  updateTask: (id, updates) => {
+  update: (id, updates) => {
     const task = tasks.find(t => t.id === parseInt(id, 10));
-    if (!task) throw new TaskError(404, 'Tarea no encontrada');
+    if (!task) throw new TaskError(404, 'Task not found');
 
     if (updates.priority && !PRIORITIES.includes(updates.priority)) {
-      throw new TaskError(400, 'Prioridad inválida');
+      throw new TaskError(400, 'Invalid priority');
     }
 
     Object.assign(task, updates, { updatedAt: new Date() });
     return { ...task };
   },
 
-  deleteTask: (id) => {
-    const index = findIndex(id);
-    if (index === -1) throw new TaskError(404, 'Tarea no encontrada');
+  delete: (id) => {
+    const index = tasks.findIndex(t => t.id === parseInt(id, 10));
+    if (index === -1) throw new TaskError(404, 'Task not found');
     tasks.splice(index, 1);
     return true;
   },

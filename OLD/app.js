@@ -6,11 +6,9 @@ class App {
   tasks = [];
 
   async init() {
-    // Configuración inicial de UI
     const savedTheme = localStorage.getItem('theme') || 'light';
     document.documentElement.setAttribute('data-theme', savedTheme);
 
-    // Event Listeners centralizados
     $('taskForm').onsubmit = (e) => this.handleSubmit(e);
     $('themeToggle').onclick = () => this.toggleTheme();
     ['priorityFilter', 'searchInput'].forEach(id => $(id).oninput = () => this.render());
@@ -24,21 +22,27 @@ class App {
       const res = await taskAPI.getAll();
       this.tasks = res.data || [];
       this.render();
-    } catch (err) { this.showAlert(err.message); }
+    } catch (err) {
+      this.showAlert(err.message);
+    }
   }
 
   async handleSubmit(e) {
     e.preventDefault();
     const input = $('taskInput');
     const title = input.value.trim();
-    if (title.length < 3) return this.showAlert('Mínimo 3 caracteres');
+    const priority = $('taskPriority').value;
+
+    if (title.length < 3) return this.showAlert('Minimum 3 characters required');
 
     try {
-      const newTask = await taskAPI.create(title, $('taskPriority').value);
-      this.tasks.push(newTask.data); // Optimistic UI: añadir sin recargar todo
+      const response = await taskAPI.create(title, priority);
+      this.tasks.push(response.data);
       input.value = '';
       this.render();
-    } catch (err) { this.showAlert('Error al crear'); }
+    } catch (err) {
+      this.showAlert('Error creating task');
+    }
   }
 
   async handleAction(e) {
@@ -46,16 +50,20 @@ class App {
     if (!li) return;
     const id = parseInt(li.dataset.id);
 
-    if (e.target.classList.contains('delete-btn')) {
-      if (!confirm('¿Borrar tarea?')) return;
-      await taskAPI.delete(id);
-      this.tasks = this.tasks.filter(t => t.id !== id);
-    } else if (e.target.type === 'checkbox') {
-      const task = this.tasks.find(t => t.id === id);
-      task.completed = !task.completed;
-      await taskAPI.update(id, { completed: task.completed });
+    try {
+      if (e.target.classList.contains('delete-btn')) {
+        if (!confirm('Delete task?')) return;
+        await taskAPI.delete(id);
+        this.tasks = this.tasks.filter(t => t.id !== id);
+      } else if (e.target.type === 'checkbox') {
+        const task = this.tasks.find(t => t.id === id);
+        task.completed = !task.completed;
+        await taskAPI.update(id, { completed: task.completed });
+      }
+      this.render();
+    } catch (err) {
+      this.showAlert('Action failed');
     }
-    this.render();
   }
 
   render() {
@@ -78,7 +86,7 @@ class App {
           <span class="title">${this.esc(t.title)}</span>
           <span class="badge priority-${t.priority.toLowerCase()}">${t.priority}</span>
         </div>
-        <button class="delete-btn" aria-label="Eliminar">🗑️</button>
+        <button class="delete-btn" aria-label="Delete">Delete</button>
       </li>
     `).join('');
   }

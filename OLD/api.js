@@ -1,7 +1,6 @@
-// Configuración dinámica de la URL base
-const API_BASE = window.location.hostname === 'localhost' 
-  ? 'http://localhost:3000/api/v1/tasks' 
-  : 'https://tu-backend-real.com/api/v1/tasks'; // Reemplaza con tu URL de producción
+const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+  ? 'http://localhost:3000/api/v1/tasks'
+  : '/api/v1/tasks';
 
 const request = async (url, method = 'GET', body = null) => {
   try {
@@ -13,7 +12,6 @@ const request = async (url, method = 'GET', body = null) => {
 
     const res = await fetch(url, options);
     
-    // 204 No Content (habitual en DELETE) no tiene JSON
     if (res.status === 204) return { success: true };
 
     const data = await res.json();
@@ -21,7 +19,7 @@ const request = async (url, method = 'GET', body = null) => {
 
     return { success: true, data };
   } catch (err) {
-    console.error(`❌ API [${method}] ${url}:`, err.message);
+    console.error(`API Error [${method}] ${url}:`, err.message);
     throw err;
   }
 };

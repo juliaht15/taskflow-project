@@ -5,10 +5,9 @@ const taskRoutes = require('./routes/task.routes');
 
 const app = express();
 
-// Configuración Profesional de CORS
 const allowedOrigins = [
   'https://taskflow-project-uy2w-au0e40jkb-juliaht15s-projects.vercel.app',
-  'http://localhost:5173' // Para tu desarrollo local con Vite
+  'http://localhost:5173'
 ];
 
 app.use(cors({
@@ -16,7 +15,7 @@ app.use(cors({
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
-      callback(new Error('No permitido por CORS'));
+      callback(new Error('CORS restriction'));
     }
   },
   credentials: true
@@ -24,23 +23,19 @@ app.use(cors({
 
 app.use(express.json());
 
-// Endpoints de salud y rutas
 app.get('/api/status', (req, res) => res.json({ status: 'online', env: process.env.NODE_ENV }));
 app.use('/api/v1/tasks', taskRoutes);
 
-// Manejo de errores centralizado (Conciso)
 app.use((err, req, res, next) => {
   const status = err.status || 500;
-  res.status(status).json({ error: err.message || 'Server Error' });
+  res.status(status).json({ error: err.message || 'Internal Server Error' });
 });
 
-// 404
-app.use((req, res) => res.status(404).json({ error: 'Not Found' }));
+app.use((req, res) => res.status(404).json({ error: 'Endpoint not found' }));
 
 module.exports = app;
 
-// Init local
 if (process.env.NODE_ENV !== 'production') {
   const PORT = process.env.PORT || 3000;
-  app.listen(PORT, () => console.log(`🚀 Server: http://localhost:${PORT}`));
+  app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 }
