@@ -1,115 +1,51 @@
 import { taskAPI } from './api.js';
 
-const $ = id => document.getElementById(id);
+const taskForm = document.getElementById('taskForm');
+const taskInput = document.getElementById('taskInput');
+const taskList = document.getElementById('taskList');
 
-class App {
-  tasks = [];
-
-  async init() {
-    const savedTheme = localStorage.getItem('theme') || 'light';
-    document.documentElement.setAttribute('data-theme', savedTheme);
-
-    $('taskForm').onsubmit = (e) => this.handleSubmit(e);
-    $('themeToggle').onclick = () => this.toggleTheme();
-    ['priorityFilter', 'searchInput'].forEach(id => $(id).oninput = () => this.render());
-    $('taskList').onclick = (e) => this.handleAction(e);
-
-    await this.fetchTasks();
-  }
-
-  async fetchTasks() {
+async function loadTasks() {
     try {
-      const res = await taskAPI.getAll();
-      this.tasks = res.data || [];
-      this.render();
+        const response = await taskAPI.getAll();
+        if (response.success) renderTasks(response.data);
     } catch (err) {
-      this.showAlert(err.message);
+        console.error("Error:", err);
     }
-  }
-
-  async handleSubmit(e) {
-    e.preventDefault();
-    const input = $('taskInput');
-    const title = input.value.trim();
-    const priority = $('taskPriority').value;
-
-    if (title.length < 3) return this.showAlert('Minimum 3 characters required');
-
-    try {
-      const response = await taskAPI.create(title, priority);
-      this.tasks.push(response.data);
-      input.value = '';
-      this.render();
-    } catch (err) {
-      this.showAlert('Error creating task');
-    }
-  }
-
-  async handleAction(e) {
-    const li = e.target.closest('li');
-    if (!li) return;
-    const id = parseInt(li.dataset.id);
-
-    try {
-      if (e.target.classList.contains('delete-btn')) {
-        if (!confirm('Delete task?')) return;
-        await taskAPI.delete(id);
-        this.tasks = this.tasks.filter(t => t.id !== id);
-      } else if (e.target.type === 'checkbox') {
-        const task = this.tasks.find(t => t.id === id);
-        task.completed = !task.completed;
-        await taskAPI.update(id, { completed: task.completed });
-      }
-      this.render();
-    } catch (err) {
-      this.showAlert('Action failed');
-    }
-  }
-
-  render() {
-    const filter = $('priorityFilter').value;
-    const search = $('searchInput').value.toLowerCase();
-    
-    const filtered = this.tasks.filter(t => 
-      (filter === 'all' || t.priority === filter) && 
-      t.title.toLowerCase().includes(search)
-    );
-
-    const completed = this.tasks.filter(t => t.completed).length;
-    $('completedCount').textContent = completed;
-    $('pendingCount').textContent = this.tasks.length - completed;
-
-    $('taskList').innerHTML = filtered.map(t => `
-      <li data-id="${t.id}" class="task-item ${t.completed ? 'completed' : ''}">
-        <div class="task-info">
-          <input type="checkbox" ${t.completed ? 'checked' : ''}>
-          <span class="title">${this.esc(t.title)}</span>
-          <span class="badge priority-${t.priority.toLowerCase()}">${t.priority}</span>
-        </div>
-        <button class="delete-btn" aria-label="Delete">Delete</button>
-      </li>
-    `).join('');
-  }
-
-  esc(t) {
-    const div = document.createElement('div');
-    div.textContent = t;
-    return div.innerHTML;
-  }
-
-  showAlert(msg) {
-    const el = $('error-alert');
-    if (!el) return;
-    el.textContent = msg;
-    el.style.display = 'block';
-    setTimeout(() => el.style.display = 'none', 3000);
-  }
-
-  toggleTheme() {
-    const theme = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
-    document.documentElement.setAttribute('data-theme', theme);
-    localStorage.setItem('theme', theme);
-  }
 }
 
-new App().init();
+function renderTasks(tasks) {
+    taskList.innerHTML = '';
+    tasks.forEach(task => {
+        const li = document.createElement('li');
+        li.className = `task-item ${task.completed ? 'completed' : ''}`;
+        li.innerHTML = `
+            <span>${task.title} [${task.priority}]</span>
+            <button onclick="handleDelete(${task.id})">🗑️</button>
+            <button onclick="handleToggle(${task.id}, ${task.completed})">✔️</button>
+        `;
+        taskList.appendChild(li);
+    });
+    document.getElementById('pendingCount').innerText = tasks.length;
+}
+
+taskForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const title = taskInput.value;
+    const priority = document.getElementById('taskPriority').value;
+    await taskAPI.create(title, priority);
+    taskInput.value = '';
+    loadTasks();
+});
+
+// Funciones globales para los botones
+window.handleDelete = async (id) => {
+    await taskAPI.delete(id);
+    loadTasks();
+};
+
+window.handleToggle = async (id, currentStatus) => {
+    await taskAPI.update(id, { completed: !currentStatus });
+    loadTasks();
+};
+
+loadTasks();
