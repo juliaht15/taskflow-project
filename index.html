@@ -1,41 +1,66 @@
-require('dotenv').config();
-const express = require('express');
-const cors = require('cors');
-const taskRoutes = require('./routes/task.routes');
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TaskFlow Pro | Gestor de Tareas</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-top">
+                <h1>🚀 TaskFlow <span class="pro-badge">PRO</span></h1>
+                <button id="themeToggle" class="btn-icon" aria-label="Cambiar tema">🌓</button>
+            </div>
+            
+            <div class="stats-bar">
+                <div class="stat-item">
+                    <span class="stat-value" id="pendingCount">0</span>
+                    <span class="stat-label">Pendientes</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-value" id="completedCount">0</span>
+                    <span class="stat-label">Completadas</span>
+                </div>
+            </div>
+        </header>
 
-const app = express();
+        <main>
+            <div id="error-alert" class="alert-error" style="display: none;"></div>
 
-const allowedOrigins = [
-  'https://juliaht15-taskflow-project.vercel.app/',
-  'http://localhost:5173'
-];
+            <form id="taskForm" class="task-form">
+                <div class="input-group">
+                    <input type="text" id="taskInput" placeholder="¿Qué hay que hacer hoy?" required minlength="3">
+                    <select id="taskPriority">
+                        <option value="Baja">Baja</option>
+                        <option value="Media" selected>Media</option>
+                        <option value="Alta">Alta</option>
+                    </select>
+                    <button type="submit" class="btn-primary">Añadir</button>
+                </div>
+            </form>
 
-app.use(cors({
-  origin: (origin, callback) => {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error('CORS restriction'));
-    }
-  },
-  credentials: true
-}));
+            <div class="filters">
+                <input type="text" id="searchInput" placeholder="Buscar tareas...">
+                <select id="priorityFilter">
+                    <option value="all">Todas las prioridades</option>
+                    <option value="Baja">Baja</option>
+                    <option value="Media">Media</option>
+                    <option value="Alta">Alta</option>
+                </select>
+            </div>
 
-app.use(express.json());
+            <ul id="taskList" class="task-list">
+                </ul>
+        </main>
 
-app.get('/api/status', (req, res) => res.json({ status: 'online', env: process.env.NODE_ENV }));
-app.use('/api/v1/tasks', taskRoutes);
+        <footer>
+            <p>TaskFlow Project &copy; 2026 | Desarrollado por Julia Huertas</p>
+        </footer>
+    </div>
 
-app.use((err, req, res, next) => {
-  const status = err.status || 500;
-  res.status(status).json({ error: err.message || 'Internal Server Error' });
-});
-
-app.use((req, res) => res.status(404).json({ error: 'Endpoint not found' }));
-
-module.exports = app;
-
-if (process.env.NODE_ENV !== 'production') {
-  const PORT = process.env.PORT || 3000;
-  app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-}
+    <script type="module" src="./OLD/app.js"></script>
+</body>
+</html>
