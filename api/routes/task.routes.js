@@ -1,10 +1,12 @@
 const express = require('express');
 const router = express.Router();
-// Ruta corregida: subimos un nivel para buscar la carpeta controllers
 const controller = require('../controllers/task.controller');
 
+// Middleware de validación
 const validateId = (req, res, next) => {
-  if (isNaN(parseInt(req.params.id, 10))) return res.status(400).json({ error: 'ID inválido' });
+  if (isNaN(parseInt(req.params.id, 10))) {
+    return res.status(400).json({ error: 'ID numérico inválido' });
+  }
   next();
 };
 
