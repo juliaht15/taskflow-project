@@ -1,3 +1,8 @@
+# Archivos y carpetas que Vercel NO debe tocar al desplegar
 OLD/
 docs/
 node_modules/
+.env
+.git/
+.vscode/
+*.md
