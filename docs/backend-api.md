@@ -43,3 +43,12 @@ El servidor implementa una **Arquitectura por Capas (Layered Architecture)**. Es
 El backend está configurado como una **Serverless Function**. 
 * **Configuración**: `vercel.json` mapea todas las rutas `/api/*` al punto de entrada.
 * **Runtime**: Node.js 18.x+.
+
+## Herramientas del Ecosistema Backend
+
+Para el desarrollo, pruebas y mantenimiento de esta API, se consideran las siguientes herramientas estándar de la industria:
+
+* **Postman / Thunder Client**: Herramientas esenciales para el testing de endpoints. Permiten simular peticiones de clientes (GET, POST, etc.) antes de integrarlas en el frontend, facilitando la depuración de errores 400 o 500.
+* **Axios**: Una librería basada en promesas para realizar peticiones HTTP. Aunque en este proyecto usamos `fetch` nativo, Axios es muy valorado por su capacidad de interceptar peticiones y transformar datos automáticamente.
+* **Swagger (OpenAPI)**: Es el estándar para documentar APIs interactivas. Permite generar una página web donde otros desarrolladores pueden ver y probar los endpoints de la API de forma visual.
+* **Sentry**: Plataforma de monitorización de errores en tiempo real. Si el servidor falla en producción, Sentry envía una alerta inmediata con la traza del error para que el desarrollador pueda corregirlo antes de que afecte a más usuarios.
