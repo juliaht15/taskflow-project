@@ -117,7 +117,7 @@ export default function App() {
               value={input} 
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && agregarTarea()}
-              className="flex-1 min-w-50 px-6 py-4 rounded-xl bg-white/50 border-none focus:ring-2 ring-indigo-500/20 outline-none transition-all placeholder:text-slate-400 font-medium"
+              className="flex-1 min-w-[200px] px-6 py-4 rounded-xl bg-white/50 border-none focus:ring-2 ring-indigo-500/20 outline-none transition-all placeholder:text-slate-400 font-medium"
               placeholder="¿Qué tienes pendiente hoy, Julia?"
             />
             
