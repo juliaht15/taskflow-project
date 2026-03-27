@@ -1,4 +1,5 @@
 // src/App.tsx
+import { useState } from 'react';
 import { DataTable } from './components/DataTable';
 
 interface Tarea {
@@ -8,12 +9,24 @@ interface Tarea {
 }
 
 function App() {
-  const misTareas: Tarea[] = [
+  // ESTADO DINÁMICO: Para que los botones y añadir funcionen
+  const [misTareas, setMisTareas] = useState<Tarea[]>([
     { id: 1, titulo: 'Aprender Genéricos en TS', prioridad: 'Alta' },
-    { id: 2, titulo: 'Configurar PostCSS v4', prioridad: 'Media' },
-    { id: 3, titulo: 'Implementar DataTable Genérica', prioridad: 'Baja' },
-    { id: 4, titulo: 'Añadir Estilos Profesionales', prioridad: 'Alta' },
-  ];
+    { id: 2, titulo: 'Configurar Tailwind v4', prioridad: 'Media' },
+  ]);
+  const [nuevaTarea, setNuevaTarea] = useState('');
+  const [prioridadSel, setPrioridadSel] = useState<'Alta' | 'Media' | 'Baja'>('Baja');
+
+  const añadirTarea = () => {
+    if (!nuevaTarea.trim()) return;
+    const item: Tarea = {
+      id: misTareas.length + 1,
+      titulo: nuevaTarea,
+      prioridad: prioridadSel
+    };
+    setMisTareas([...misTareas, item]);
+    setNuevaTarea('');
+  };
 
   const columnas: { key: keyof Tarea; label: string }[] = [
     { key: 'id', label: 'ID' },
@@ -22,57 +35,48 @@ function App() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#FDFDFF] text-slate-800 py-16 px-4 sm:px-6 lg:px-8 font-sans">
+    <div className="min-h-screen bg-[#FDFDFF] py-12 px-4 font-sans">
       <div className="max-w-4xl mx-auto">
-        {/* Cabecera Sobria e Impecable */}
-        <header className="mb-14 pb-8 border-b border-slate-100 flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-extrabold tracking-tighter text-slate-950">
-              <span className="text-blue-600">TaskFlow</span> Architect
-            </h1>
-            <p className="mt-2 text-slate-600 font-medium">
-              Desarrollo Frontend Estricto & Tipado Genérico
-            </p>
-          </div>
-           <div className="flex gap-2">
-             <span className="bg-white text-slate-900 text-[10px] px-3 py-1.5 rounded-full font-bold uppercase tracking-wider border border-slate-200 shadow-inner">v4.1.2</span>
-             <span className="bg-blue-50 text-blue-700 text-[10px] px-3 py-1.5 rounded-full font-bold uppercase tracking-wider border border-blue-100">FULL_TS</span>
-           </div>
+        <header className="mb-10 pb-6 border-b border-slate-100 flex justify-between items-center">
+          <h1 className="text-2xl font-black text-slate-900 uppercase">TaskFlow <span className="text-blue-600">Architect</span></h1>
+          <span className="text-[10px] bg-slate-100 px-2 py-1 rounded font-bold">V.PRO</span>
         </header>
 
-        {/* Contenedor Principal (Tarjeta Elegante) */}
-        <main className="bg-white rounded-2xl shadow-[0_15px_60px_rgba(0,0,0,0.03)] border border-slate-100 overflow-hidden">
-          <div className="px-8 py-5 border-b border-slate-100 bg-white flex justify-between items-center">
-            <h2 className="text-xl font-bold text-slate-950">
-               Panel de Control
-            </h2>
-            <button className="bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold px-5 py-2 rounded-xl transition-all shadow-md hover:shadow-blue-200">
-                + Nueva Entrada
-            </button>
-          </div>
-          
+        {/* BARRA DE BÚSQUEDA / AÑADIR (Funcional) */}
+        <div className="mb-8 flex gap-3 p-4 bg-white rounded-2xl shadow-sm border border-slate-100">
+          <input 
+            type="text" 
+            value={nuevaTarea}
+            onChange={(e) => setNuevaTarea(e.target.value)}
+            placeholder="Nueva tarea..." 
+            className="flex-1 px-4 py-2 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+          />
+          <select 
+            value={prioridadSel}
+            onChange={(e) => setPrioridadSel(e.target.value as any)}
+            className="px-3 py-2 rounded-xl border border-slate-200 bg-white"
+          >
+            <option value="Alta">Alta</option>
+            <option value="Media">Media</option>
+            <option value="Baja">Baja</option>
+          </select>
+          <button 
+            onClick={añadirTarea}
+            className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-xl font-bold transition-all shadow-lg shadow-blue-200"
+          >
+            Añadir
+          </button>
+        </div>
+
+        <main className="bg-white rounded-2xl shadow-xl shadow-slate-200/50 border border-slate-100 overflow-hidden">
           <DataTable data={misTareas} columns={columnas} />
         </main>
 
-        {/* Footer Minimalista con Firma Discreta */}
-        <footer className="mt-16 pt-10 border-t border-slate-100 text-center">
-          <div className="space-y-3">
-            {/* Firma Julia (Elegante y Sutil) */}
-            <p className="text-[13px] font-medium text-slate-400">
-              Desarrollado por <span className="font-semibold text-slate-500">Julia</span> • <span className="text-slate-400">TaskFlow Project</span>
-            </p>
-            
-            {/* Cita Inspiradora (Sutil) */}
-            <p className="text-xs italic text-slate-400 max-w-lg mx-auto leading-relaxed">
-              "La arquitectura es la base de la escalabilidad, la belleza de la simplicidad y la fuerza de la estructura."
-            </p>
-          </div>
-
-          <div className="mt-10 flex gap-4 justify-center">
-             <span className="text-[10px] font-medium text-slate-400 border border-slate-100 px-3 py-1 rounded-full bg-white">React 19</span>
-             <span className="text-[10px] font-medium text-slate-400 border border-slate-100 px-3 py-1 rounded-full bg-white">TypeScript 5.x</span>
-             <span className="text-[10px] font-medium text-slate-400 border border-slate-100 px-3 py-1 rounded-full bg-white">Tailwind v4</span>
-          </div>
+        <footer className="mt-16 text-center border-t border-slate-100 pt-8">
+          <p className="text-sm font-medium text-slate-400">
+            Desarrollado por <span className="font-bold text-slate-600 underline decoration-blue-200">Julia</span>
+          </p>
+          <p className="mt-2 text-[10px] text-slate-300 uppercase tracking-[0.2em]">TaskFlow Project // 2026</p>
         </footer>
       </div>
     </div>
