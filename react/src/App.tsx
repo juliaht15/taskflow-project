@@ -13,6 +13,7 @@ function App() {
     { id: 1, titulo: 'Aprender Genéricos', prioridad: 'Alta' },
     { id: 2, titulo: 'Configurar tsconfig', prioridad: 'Media' },
     { id: 3, titulo: 'Hacer el desplegable', prioridad: 'Baja' },
+    { id: 4, titulo: 'Prueba de Reactividad', prioridad: 'Alta' },
   ];
 
   // Definimos qué columnas queremos ver de la Tarea

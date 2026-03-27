@@ -6,17 +6,18 @@ export function generarReporte(estudiante: Estudiante, matricula: EstadoMatricul
 
     switch (matricula.tipo) {
         case "ACTIVA":
-            // Aquí TS sabe que existe 'asignaturas'
             detalle = `Cursando ${matricula.asignaturas.length} asignaturas.`;
             break;
         case "SUSPENDIDA":
-            // Aquí TS sabe que existe 'motivo'
             detalle = `Motivo de suspensión: ${matricula.motivo}`;
             break;
         case "FINALIZADA":
-            // Aquí TS sabe que existe 'notaMedia'
             detalle = `Graduado con media de ${matricula.notaMedia}`;
             break;
+        default:
+
+            const _exhaustivo: never = matricula;
+            return `Error: Estado no controlado ${_exhaustivo}`;
     }
 
     return `🎓 ESTUDIANTE: ${estudiante.nombre} | ESTADO: ${matricula.tipo} | ${detalle}`;
