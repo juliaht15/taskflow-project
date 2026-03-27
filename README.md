@@ -1,25 +1,26 @@
-# 🚀 TaskFlow Pro - Julia Project
+# 🚀 TaskFlow Pro | Fullstack Management System
 
-Este proyecto es una aplicación de gestión de tareas profesional desarrollada con **React 19**, **TypeScript 5** y **Tailwind CSS v4**. Se centra en la implementación de componentes genéricos y una interfaz de usuario pulida.
+**TaskFlow Pro** es una plataforma de gestión de tareas de alto rendimiento construida con un enfoque en la **seguridad de tipos (Type-Safety)** y un diseño **Glass-morphism** minimalista.
 
-## 🛠️ Tecnologías Utilizadas
+![Licencia](https://img.shields.io/badge/Status-Production-success)
+![Vite](https://img.shields.io/badge/Frontend-React_18-blue)
+![TypeScript](https://img.shields.io/badge/Language-TypeScript_5-blue)
 
-- **Frontend:** React (Vite)
-- **Lenguaje:** TypeScript (Tipado estricto y Genéricos)
-- **Estilos:** Tailwind CSS v4 (Diseño "Mármol Pulido")
-- **Despliegue:** Vercel
+## 💎 Características Principales
+- **Arquitectura Modular**: Separación clara entre lógica de negocio (TS) e interfaz (React).
+- **DataTable Genérica**: Componente reutilizable con soporte para Generics de TypeScript.
+- **Validación Exhaustiva**: Uso de `never` type y uniones discriminadas para prevenir errores en tiempo de ejecución.
+- **UI/UX Premium**: Interfaz táctil y responsiva con Tailwind CSS.
+
+## 🛠️ Stack Tecnológico
+- **Frontend**: React + Vite.
+- **Estilos**: Tailwind CSS (Glass-morphism effects).
+- **Core**: TypeScript (Generics, Enums, Advanced Interfaces).
+- **Despliegue**: Vercel.
 
 ## 🏗️ Estructura del Proyecto
+- `/typescript`: Lógica de backend simulada, clientes API y tipado avanzado.
+- `/react`: Aplicación cliente con componentes optimizados.
 
-El repositorio está organizado de forma modular:
-- `/react`: Aplicación principal TaskFlow Pro.
-- `/typescript`: Ejercicios de lógica y tipado.
-- `/docs`: Documentación de arquitectura.
-
-## 🌐 Despliegue en Vivo
-
-Puedes acceder a la versión de producción aquí: 
-👉 [https://juliaht15-taskflow-project.vercel.app/](https://juliaht15-taskflow-project.vercel.app/)
-
----
-*Proyecto desarrollado por **Julia Huertas Torres** — TaskFlow Pro Edition 2026*
+## 👤 Autora
+**Julia Huertas** - *Fullstack Architect Candidate 2026*
