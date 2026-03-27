@@ -1,0 +1,14 @@
+{
+	"servers": {
+		"my-mcp-server-be75b45f": {
+			"type": "stdio",
+			"command": "npx",
+			"args": [
+				"-y",
+				"@modelcontextprotocol/server-filesystem",
+				"C:\\Users\\julia\\Desktop\\taskflow-project"
+			]
+		}
+	},
+	"inputs": []
+}
