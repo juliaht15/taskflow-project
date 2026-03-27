@@ -1,3 +1,5 @@
+import type { ReactNode } from 'react'; // Corregido aquí
+
 interface Column<T> {
   key: keyof T;
   label: string;
@@ -10,22 +12,24 @@ interface DataTableProps<T> {
 
 export function DataTable<T>({ data, columns }: DataTableProps<T>) {
   
-  // Función interna para dar estilo a las etiquetas de prioridad
-  const renderCellContent = (value: any, key: string) => {
+  const renderCellContent = (value: any, key: string): ReactNode => {
+    // Si es un objeto de React (botones, spans con estilos), lo devolvemos
+    if (typeof value === 'object' && value !== null) {
+      return value as ReactNode;
+    }
+
     const valStr = String(value);
 
-    // Si la columna es 'prioridad' (o 'priority'), aplicamos colores
+    // Prioridades con colores
     if (key.toLowerCase() === 'prioridad' || key.toLowerCase() === 'priority') {
       const colors: Record<string, string> = {
         alta: "bg-red-100 text-red-700 border-red-200",
         media: "bg-amber-100 text-amber-700 border-amber-200",
         baja: "bg-emerald-100 text-emerald-700 border-emerald-200",
       };
-      
       const style = colors[valStr.toLowerCase()] || "bg-slate-100 text-slate-600";
-      
       return (
-        <span className={`px-3 py-1 rounded-full text-xs font-bold border ${style}`}>
+        <span className={`px-3 py-1 rounded-full text-[10px] font-black border ${style}`}>
           {valStr.toUpperCase()}
         </span>
       );
@@ -52,16 +56,9 @@ export function DataTable<T>({ data, columns }: DataTableProps<T>) {
         <tbody className="divide-y divide-slate-50">
           {data.length > 0 ? (
             data.map((row, rowIndex) => (
-              <tr 
-                key={rowIndex} 
-                className="group hover:bg-blue-50/40 transition-all duration-200"
-              >
+              <tr key={rowIndex} className="group hover:bg-blue-50/40 transition-all duration-200">
                 {columns.map((col) => (
-                  <td 
-                    key={String(col.key)} 
-                    className="px-6 py-4 text-slate-600 font-medium"
-                  >
-                    {/* Llamamos a nuestra función mágica de renderizado */}
+                  <td key={String(col.key)} className="px-6 py-4 text-slate-600 font-medium">
                     {renderCellContent(row[col.key], String(col.key))}
                   </td>
                 ))}
