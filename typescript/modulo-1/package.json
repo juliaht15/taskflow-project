@@ -1,0 +1,9 @@
+{
+  "name": "modulo-1-fundamentos",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Fundamentos de TypeScript para TaskFlow",
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  }
+}

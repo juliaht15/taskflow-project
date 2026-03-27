@@ -1,40 +1,34 @@
-require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const taskRoutes = require('./routes/task.routes');
 
 const app = express();
 
+// Configuración de CORS simplificada y limpia
 const allowedOrigins = [
   'https://juliaht15-taskflow-project.vercel.app',
-  'http://localhost:5173',
-  'http://localhost:3000'
+  'http://localhost:5173'
 ];
 
 app.use(cors({
-  origin: (origin, callback) => {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error('CORS restriction'));
-    }
-  },
-  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  origin: allowedOrigins,
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true
 }));
 
 app.use(express.json());
 
-// Endpoint de salud
-app.get('/api/status', (req, res) => res.json({ 
-  status: 'online', 
-  env: process.env.NODE_ENV || 'development' 
-}));
+// API Status - Útil para saber si el backend responde
+app.get('/api/health', (req, res) => {
+  res.json({ status: 'ok', project: 'TaskFlow Pro' });
+});
 
-// Rutas
-app.use('/api/v1/tasks', taskRoutes);
+// Rutas de la API
+app.use('/api/tasks', taskRoutes);
 
-// Fallback para rutas no encontradas
-app.use((req, res) => res.status(404).json({ error: 'Endpoint not found' }));
+// Manejo de errores 404
+app.use((req, res) => {
+  res.status(404).json({ error: 'Endpoint no encontrado' });
+});
 
 module.exports = app;

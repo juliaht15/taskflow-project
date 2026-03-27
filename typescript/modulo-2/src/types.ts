@@ -1,4 +1,4 @@
-// src/types.ts
+// --- INTERFACES BÁSICAS ---
 
 export interface Asignatura {
     id: string;
@@ -13,6 +13,7 @@ export interface Estudiante {
 }
 
 // --- UNIÓN DISCRIMINADA (Patrón de oro) ---
+
 export interface MatriculaActiva {
     tipo: "ACTIVA"; // El discriminante
     asignaturas: Asignatura[];
@@ -28,4 +29,7 @@ export interface MatriculaFinalizada {
     notaMedia: number;
 }
 
+/** * IMPORTANTE: Aquí es donde definimos EstadoMatricula. 
+ * Debe llevar 'export' para que otros archivos puedan usarlo.
+ */
 export type EstadoMatricula = MatriculaActiva | MatriculaSuspendida | MatriculaFinalizada;
