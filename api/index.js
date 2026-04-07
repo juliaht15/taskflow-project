@@ -17,17 +17,17 @@ app.use(cors({
 
 app.use(express.json());
 
-// Health check accesible en /api/health
+// Accessible at /api/health
 app.get('/health', (req, res) => {
   res.json({ status: 'ok', project: 'TaskFlow Pro' });
 });
 
-// Rutas accesibles en /api/tasks
+// Accessible at /api/tasks
 app.use('/tasks', taskRoutes);
 
-// Manejo de errores 404 para la API
+// Error handler for API
 app.use((req, res) => {
-  res.status(404).json({ error: 'Endpoint de API no encontrado', path: req.url });
+  res.status(404).json({ error: 'Endpoint no encontrado en la API' });
 });
 
 module.exports = app;
