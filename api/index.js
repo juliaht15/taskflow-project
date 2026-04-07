@@ -7,16 +7,17 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Importante: No pongas '/api/tasks', pon solo '/tasks'
+// RUTAS
+// Al usar /api/(.*) en vercel.json, aquí registramos solo '/tasks'
 app.use('/tasks', taskRoutes);
 
 app.get('/health', (req, res) => {
-  res.json({ status: 'ok', project: 'TaskFlow Pro' });
+  res.json({ status: 'ok', message: 'Servidor funcionando' });
 });
 
-// Manejador de errores para rutas de API no encontradas
+// Manejo de error 404 para la API
 app.use((req, res) => {
-  res.status(404).json({ error: 'Ruta de API no encontrada', path: req.url });
+  res.status(404).json({ error: 'Ruta de API no encontrada' });
 });
 
 module.exports = app;
