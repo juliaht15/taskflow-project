@@ -2,13 +2,13 @@ const express = require('express');
 const router = express.Router();
 const TaskService = require('../services/task.service');
 
-// GET /api/tasks
+// Esta ruta responde a GET /api/tasks
 router.get('/', (req, res) => {
   const tasks = TaskService.findAll();
   res.json(tasks);
 });
 
-// POST /api/tasks
+// Esta ruta responde a POST /api/tasks
 router.post('/', (req, res) => {
   try {
     const newTask = TaskService.create(req.body);

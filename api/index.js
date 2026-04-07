@@ -4,30 +4,19 @@ const taskRoutes = require('./routes/task.routes');
 
 const app = express();
 
-const allowedOrigins = [
-  'https://juliaht15-taskflow-project.vercel.app',
-  'http://localhost:5173'
-];
-
-app.use(cors({
-  origin: allowedOrigins,
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  credentials: true
-}));
-
+app.use(cors());
 app.use(express.json());
 
-// Accessible at /api/health
+// Importante: No pongas '/api/tasks', pon solo '/tasks'
+app.use('/tasks', taskRoutes);
+
 app.get('/health', (req, res) => {
   res.json({ status: 'ok', project: 'TaskFlow Pro' });
 });
 
-// Accessible at /api/tasks
-app.use('/tasks', taskRoutes);
-
-// Error handler for API
+// Manejador de errores para rutas de API no encontradas
 app.use((req, res) => {
-  res.status(404).json({ error: 'Endpoint no encontrado en la API' });
+  res.status(404).json({ error: 'Ruta de API no encontrada', path: req.url });
 });
 
 module.exports = app;
