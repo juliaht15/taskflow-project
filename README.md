@@ -1,26 +1,31 @@
-# 🚀 TaskFlow Pro | Fullstack Management System
+# 🚀 TaskFlow Pro | Fullstack Project
 
-**TaskFlow Pro** es una plataforma de gestión de tareas de alto rendimiento construida con un enfoque en la **seguridad de tipos (Type-Safety)** y un diseño **Glass-morphism** minimalista.
+**TaskFlow Pro** es una plataforma de gestión de tareas de alto rendimiento. Proyecto integral desarrollado en 4 fases: **Frontend**, **IA**, **Backend (Node/Express)** y **TypeScript Estricto**.
 
-![Licencia](https://img.shields.io/badge/Status-Production-success)
-![Vite](https://img.shields.io/badge/Frontend-React_18-blue)
-![TypeScript](https://img.shields.io/badge/Language-TypeScript_5-blue)
+### 🔗 Despliegue y Demo
+* **Frontend (Production):** [juliaht15-taskflow-project.vercel.app]
+* **API Documentation:** `https://juliaht15-taskflow-project.vercel.app/api/v1/tasks`
 
-## 💎 Características Principales
-- **Arquitectura Modular**: Separación clara entre lógica de negocio (TS) e interfaz (React).
-- **DataTable Genérica**: Componente reutilizable con soporte para Generics de TypeScript.
-- **Validación Exhaustiva**: Uso de `never` type y uniones discriminadas para prevenir errores en tiempo de ejecución.
-- **UI/UX Premium**: Interfaz táctil y responsiva con Tailwind CSS.
+---
+
+## 🏗️ Estructura del Ecosistema
+```text
+├── /react         # Frontend: React 18 + Vite + TS (Fase 4)
+├── /server        # Backend: API RESTful en Node.js + Express (Fase 3)
+├── /typescript    # Core: Laboratorios de tipado avanzado y lógica
+└── /docs/ai       # Documentación: Prompt Engineering y Análisis de IA (Fase 2)
+```
+
+## 💎 Key Features
+- **Type-Safe Architecture**: Uso de Generics y Uniones Discriminadas para robustez total.
+- **Modular Data Management**: Integración de API externa eliminando LocalStorage (Fase 3).
+- **Glass-morphism UI**: Interfaz minimalista y responsiva con Tailwind CSS.
+- **AI-Optimized**: Flujo de trabajo refactorizado mediante herramientas de IA (Fase 2).
 
 ## 🛠️ Stack Tecnológico
-- **Frontend**: React + Vite.
-- **Estilos**: Tailwind CSS (Glass-morphism effects).
-- **Core**: TypeScript (Generics, Enums, Advanced Interfaces).
-- **Despliegue**: Vercel.
-
-## 🏗️ Estructura del Proyecto
-- `/typescript`: Lógica de backend simulada, clientes API y tipado avanzado.
-- `/react`: Aplicación cliente con componentes optimizados.
+- **Frontend**: React, Vite, Tailwind CSS.
+- **Backend**: Node.js, Express, Cors, Dotenv.
+- **Dev Tools**: TypeScript, Postman, Cursor IDE.
 
 ## 👤 Autora
 **Julia Huertas** - *Fullstack Architect Candidate 2026*
