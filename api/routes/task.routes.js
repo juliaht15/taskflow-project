@@ -2,13 +2,13 @@ const express = require('express');
 const router = express.Router();
 const TaskService = require('../services/task.service');
 
-// Responde a GET /api/tasks
+// GET /api/tasks
 router.get('/', (req, res) => {
   const tasks = TaskService.findAll();
   res.json(tasks);
 });
 
-// Responde a POST /api/tasks
+// POST /api/tasks
 router.post('/', (req, res) => {
   try {
     const newTask = TaskService.create(req.body);
