@@ -1,24 +1,21 @@
 const express = require('express');
 const router = express.Router();
-const controller = require('../controllers/task.controller');
+const TaskService = require('../services/task.service');
 
-// Middleware para validar que el ID sea un número
-const validateId = (req, res, next) => {
-  if (isNaN(Number(req.params.id))) {
-    return res.status(400).json({ error: 'El ID debe ser un número válido' });
+// GET /api/tasks
+router.get('/', (req, res) => {
+  const tasks = TaskService.findAll();
+  res.json(tasks);
+});
+
+// POST /api/tasks
+router.post('/', (req, res) => {
+  try {
+    const newTask = TaskService.create(req.body);
+    res.status(201).json(newTask);
+  } catch (error) {
+    res.status(error.status || 400).json({ error: error.message });
   }
-  next();
-};
-
-// Rutas principales: /api/tasks
-router.route('/')
-  .get(controller.getTasks)
-  .post(controller.createTask);
-
-// Rutas con ID: /api/tasks/:id
-router.route('/:id')
-  .all(validateId) // Se aplica a todos los métodos que usen :id
-  .patch(controller.updateTask)
-  .delete(controller.deleteTask);
+});
 
 module.exports = router;

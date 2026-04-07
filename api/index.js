@@ -4,7 +4,6 @@ const taskRoutes = require('./routes/task.routes');
 
 const app = express();
 
-// Configuración de CORS simplificada y limpia
 const allowedOrigins = [
   'https://juliaht15-taskflow-project.vercel.app',
   'http://localhost:5173'
@@ -18,17 +17,17 @@ app.use(cors({
 
 app.use(express.json());
 
-// API Status - Útil para saber si el backend responde
-app.get('/api/health', (req, res) => {
+// Health check accesible en /api/health
+app.get('/health', (req, res) => {
   res.json({ status: 'ok', project: 'TaskFlow Pro' });
 });
 
-// Rutas de la API
-app.use('/api/tasks', taskRoutes);
+// Rutas accesibles en /api/tasks
+app.use('/tasks', taskRoutes);
 
-// Manejo de errores 404
+// Manejo de errores 404 para la API
 app.use((req, res) => {
-  res.status(404).json({ error: 'Endpoint no encontrado' });
+  res.status(404).json({ error: 'Endpoint de API no encontrado', path: req.url });
 });
 
 module.exports = app;
