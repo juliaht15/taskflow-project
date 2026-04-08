@@ -1,8 +1,9 @@
-import type { ReactNode } from 'react'; // Corregido aquí
+import type { ReactNode } from 'react';
 
 interface Column<T> {
-  key: keyof T;
+  key: keyof T | string; // ← Cambiado: ahora acepta string también
   label: string;
+  render?: (item: T) => ReactNode; // ← Añadido: para contenido personalizado
 }
 
 interface DataTableProps<T> {
@@ -12,8 +13,16 @@ interface DataTableProps<T> {
 
 export function DataTable<T>({ data, columns }: DataTableProps<T>) {
   
-  const renderCellContent = (value: any, key: string): ReactNode => {
-    // Si es un objeto de React (botones, spans con estilos), lo devolvemos
+  const renderCellContent = (row: T, column: Column<T>): ReactNode => {
+    // Si hay una función render personalizada, la usamos
+    if (column.render) {
+      return column.render(row);
+    }
+
+    // Si no, obtenemos el valor normal
+    const value = (row as Record<string, any>)[String(column.key)];
+    
+    // Si es un objeto de React (botones, spans), lo devolvemos
     if (typeof value === 'object' && value !== null) {
       return value as ReactNode;
     }
@@ -21,7 +30,7 @@ export function DataTable<T>({ data, columns }: DataTableProps<T>) {
     const valStr = String(value);
 
     // Prioridades con colores
-    if (key.toLowerCase() === 'prioridad' || key.toLowerCase() === 'priority') {
+    if (String(column.key).toLowerCase() === 'prioridad' || String(column.key).toLowerCase() === 'priority') {
       const colors: Record<string, string> = {
         alta: "bg-red-100 text-red-700 border-red-200",
         media: "bg-amber-100 text-amber-700 border-amber-200",
@@ -59,7 +68,7 @@ export function DataTable<T>({ data, columns }: DataTableProps<T>) {
               <tr key={rowIndex} className="group hover:bg-blue-50/40 transition-all duration-200">
                 {columns.map((col) => (
                   <td key={String(col.key)} className="px-6 py-4 text-slate-600 font-medium">
-                    {renderCellContent(row[col.key], String(col.key))}
+                    {renderCellContent(row, col)}
                   </td>
                 ))}
               </tr>
