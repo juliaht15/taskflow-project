@@ -6,7 +6,7 @@ import './App.css';
 export interface Task {
   id: number;
   title: string;
-  priority: 'High' | 'Medium' | 'Low';
+  priority: 'Alta' | 'Media' | 'Baja';
   completed: boolean;
 }
 
@@ -18,13 +18,13 @@ export interface Column<T> {
 
 export default function App() {
   const [tasks, setTasks] = useState<Task[]>([
-    { id: 1, title: 'Configurar Arquitectura TaskFlow Pro', priority: 'High', completed: true },
-    { id: 2, title: 'Despliegue final en Vercel', priority: 'Medium', completed: false },
-    { id: 3, title: 'Limpieza de archivos duplicados', priority: 'Low', completed: false },
+    { id: 1, title: 'Configurar Arquitectura TaskFlow Pro', priority: 'Alta', completed: true },
+    { id: 2, title: 'Despliegue final en Vercel', priority: 'Media', completed: false },
+    { id: 3, title: 'Limpieza de archivos duplicados', priority: 'Baja', completed: false },
   ]);
 
   const [input, setInput] = useState('');
-  const [selectedPriority, setSelectedPriority] = useState<'High' | 'Medium' | 'Low'>('Medium');
+  const [selectedPriority, setSelectedPriority] = useState<'Alta' | 'Media' | 'Baja'>('Media');
   const [search, setSearch] = useState('');
 
   const addTask = (): void => {
@@ -64,9 +64,9 @@ export default function App() {
       label: 'Prioridad',
       render: (task: Task) => {
         const colors: Record<string, string> = {
-          High: 'bg-red-100 text-red-700 border-red-200',
-          Medium: 'bg-amber-100 text-amber-700 border-amber-200',
-          Low: 'bg-emerald-100 text-emerald-700 border-emerald-200',
+          Alta: 'bg-red-100 text-red-700 border-red-200',
+          Media: 'bg-amber-100 text-amber-700 border-amber-200',
+          Baja: 'bg-emerald-100 text-emerald-700 border-emerald-200',
         };
         return (
           <span className={`px-3 py-1 rounded-full text-[10px] font-black border ${colors[task.priority]}`}>
@@ -134,12 +134,12 @@ export default function App() {
             />
             <select
               value={selectedPriority}
-              onChange={(e) => setSelectedPriority(e.target.value as 'High' | 'Medium' | 'Low')}
+              onChange={(e) => setSelectedPriority(e.target.value as 'Alta' | 'Media' | 'Baja')}
               className="px-4 py-4 rounded-xl bg-white/50 border-none text-slate-500 font-bold outline-none cursor-pointer hover:bg-white transition-colors text-sm"
             >
-              <option value="High">Alta</option>
-              <option value="Medium">Media</option>
-              <option value="Low">Baja</option>
+              <option value="Alta">Alta</option>
+              <option value="Media">Media</option>
+              <option value="Baja">Baja</option>
             </select>
             <button
               onClick={addTask}
