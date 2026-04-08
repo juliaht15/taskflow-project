@@ -1,29 +1,40 @@
-/* Estilos globales personalizados para TaskFlow Pro */
-
-:root {
-  --marble-gradient: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+/* Smooth scroll y selección de texto */
+* {
+  scroll-behavior: smooth;
+  user-select: none;
 }
 
-body {
-  margin: 0;
-  background: var(--marble-gradient);
-  min-height: 100vh;
+/* Mejora en inputs y botones al enfocar */
+input:focus, select:focus, button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.3);
 }
 
-/* Animación suave para la entrada de las filas de la tabla */
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+/* Animación de entrada más suave */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 tr {
-  animation: fadeIn 0.4s ease forwards;
+  animation: slideIn 0.3s ease-out forwards;
 }
 
-/* Efecto de cristal para los contenedores */
-.glass-card {
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+tr:nth-child(1) { animation-delay: 0.05s; }
+tr:nth-child(2) { animation-delay: 0.1s; }
+tr:nth-child(3) { animation-delay: 0.15s; }
+
+/* Efecto hover más elegante en botones */
+button {
+  will-change: transform;
+}
+
+button:active {
+  transform: scale(0.98);
 }

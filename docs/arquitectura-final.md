@@ -1,29 +1,101 @@
-# 🏛️ Arquitectura del Proyecto: TaskFlow Pro
+# 🏛️ Arquitectura Final - TaskFlow Pro
 
-## 1. Estructura de Módulos
-Hemos dividido el proyecto en tres capas lógicas para asegurar la escalabilidad:
-- **Módulo 1 (Lógica):** Utilidades matemáticas puras con TypeScript estricto.
-- **Módulo 2 (Dominio):** Modelado de la universidad usando Interfaces y Uniones Discriminadas para evitar estados imposibles.
-- **Módulo 3 (Frontend):** Implementación en React de componentes genéricos reutilizables.
+> Documento de entrega - Fase 4: TypeScript Estricto + React
 
-## 2. Decisiones Técnicas
-- **Tipado Genérico:** Implementamos una `DataTable<T>` que permite visualizar cualquier estructura de datos, garantizando seguridad de tipos en tiempo de compilación.
-- **Tailwind CSS v4:** Configuración moderna mediante `@tailwindcss/postcss` para un diseño ágil y responsive.
-- **NodeNext:** Uso del sistema de módulos más reciente de Node para compatibilidad con ESM.
+---
 
-## 3. Beneficios de TypeScript
-Gracias al uso de TS, hemos reducido los errores en tiempo de ejecución al validar las propiedades de las matrículas y los datos de las tablas antes de que lleguen al navegador.
+## 1. Estructura del Proyecto
 
-# Informe de Arquitectura - TaskFlow Pro
+El proyecto sigue una arquitectura modular dividida en tres capas:
 
-## Estado del Proyecto
-La Fase 4 se ha completado con éxito, integrando una interfaz de usuario en React con un sistema de tipos estricto.
+| Módulo | Propósito | Tecnologías |
+|--------|-----------|-------------|
+| **Lógica** | Utilidades matemáticas puras | TypeScript estricto |
+| **Dominio** | Modelado de entidades con interfaces | Interfaces, Uniones Discriminadas |
+| **Frontend** | UI reactiva y tipada | React 18 + Vite + TypeScript |
 
-## Hitos Logrados
-1. **Componentes Genéricos**: Se ha desarrollado una tabla (`DataTable.tsx`) que acepta cualquier tipo de dato `T` mediante el uso de Generics.
-2. **Seguridad de Tipos**: La aplicación valida en tiempo real que los datos pasados a la tabla coincidan con las interfaces definidas.
-3. **Estilizado Moderno**: Implementación de Tailwind CSS v4 para un diseño limpio y profesional.
+---
 
-## Conclusión
-El proyecto ahora es escalable, fácil de mantener y está protegido contra los errores más comunes de JavaScript gracias a TypeScript.
-Módulo 4: Arquitectura Visual Orientada a Tipos > > Justificación: > El diseño no es solo estética; es comunicación. En este proyecto, hemos utilizado Tailwind CSS v4 para crear una interfaz de usuario estricta. Esto significa que cada estado de los datos (ej. prioridad Alta/Media/Baja) tiene una representación visual única y consistente. > > Puntos Clave: > 1.  badges Reactivos: Al usar clases de Tailwind basadas en el valor de item.prioridad, garantizamos que si el tipo de unión en TypeScript cambia, la interfaz se adaptará de forma coherente. > 2.  Glassmorphism Controlado: El uso de degradados sutiles (bg-gradient-to-r) y sombras profundas (shadow-[0_20px_70px...]) en el footer de autoría crea una sensación de "elevación", resaltando la autoría sin romper la limpieza minimalista de la tabla principal. > 3.  Diseño Atómico con Tailwind v4: La nueva versión de Tailwind permite un diseño más eficiente mediante clases de utilidad más potentes, lo que reduce la deuda técnica y facilita el mantenimiento a largo plazo.
+## 2. Decisiones Técnicas Clave
+
+### 2.1 Componentes Genéricos (`DataTable<T>`)
+
+```ts
+export function DataTable<T>({ data, columns }: DataTableProps<T>) { ... }
+```
+
+- **Beneficio**: Reutilización total sin sacrificar seguridad de tipos.
+- **Impacto**: Una sola tabla sirve para `Task`, `User`, `Product`, etc.
+
+### 2.2 Uniones Discriminadas para Estados
+
+```ts
+type Priority = 'High' | 'Medium' | 'Low';
+```
+
+- **Beneficio**: El compilador garantiza que solo se usen valores válidos.
+- **Impacto**: Cero errores por typos en prioridades.
+
+### 2.3 Exhaustiveness Checking con `never`
+
+```ts
+default:
+  const _exhaustive: never = priority;
+  throw new Error(`Prioridad no manejada: ${_exhaustive}`);
+```
+
+- **Beneficio**: Si añadimos `'Urgent'` en el futuro, TypeScript obliga a actualizar todos los `switch`.
+- **Impacto**: Código escalable y mantenible a largo plazo.
+
+---
+
+## 3. Beneficios de TypeScript vs JavaScript
+
+| Aspecto | JavaScript | TypeScript |
+|---------|-----------|------------|
+| **Errores de props** | Se detectan en producción (pantalla blanca) | Se detectan al compilar (aviso inmediato) |
+| **Refactorización** | Riesgo alto de romper funcionalidad | Seguro con renombrado y type-checking |
+| **Documentación** | Comentarios que pueden desactualizarse | Los tipos son documentación viva y verificada |
+| **Autocompletado** | Básico | Inteligente con inferencia contextual |
+
+---
+
+## 4. Diseño Visual Orientado a Tipos
+
+El diseño no es solo estética: es comunicación estructurada.
+
+### 4.1 Badges Reactivos con Tailwind
+
+```ts
+const colors: Record<Priority, string> = {
+  High: 'bg-red-100 text-red-700',
+  Medium: 'bg-amber-100 text-amber-700',
+  Low: 'bg-emerald-100 text-emerald-700',
+};
+```
+
+- Si cambia la unión `Priority`, el diseño se adapta automáticamente.
+- Coherencia visual garantizada por el sistema de tipos.
+
+### 4.2 Glassmorphism Controlado
+
+- Degradados sutiles (`bg-gradient-to-br`) y sombras profundas para jerarquía visual.
+- Efecto `backdrop-blur` para contenedores, manteniendo legibilidad.
+
+### 4.3 Animaciones con Propósito
+
+- Entrada escalonada de filas (`animation-delay`) para guiar la atención.
+- Transiciones suaves en botones para feedback táctil.
+
+---
+
+## 5. Conclusión
+
+TaskFlow Pro demuestra cómo TypeScript transforma el desarrollo frontend:
+
+- ✅ **Menos bugs**: Validación en tiempo de compilación.
+- ✅ **Más confianza**: Refactorizar sin miedo.
+- ✅ **Mejor UX**: Estados visuales coherentes con el modelo de datos.
+
+> "El tipado estático no es una restricción: es un contrato que protege al usuario final."
+```
