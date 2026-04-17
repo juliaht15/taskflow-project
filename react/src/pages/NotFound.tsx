@@ -8,7 +8,7 @@ export const NotFound = () => {
         </p>
         <a
           href="/"
-          className="inline-flex items-center px-6 py-3 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-medium hover:shadow-lg transition-all duration-300"
+          className="inline-flex items-center px-6 py-3 rounded-xl bg-linear-to-r from-indigo-500 to-purple-600 text-white font-medium hover:shadow-lg transition-all duration-300"
         >
           Volver al inicio
         </a>
