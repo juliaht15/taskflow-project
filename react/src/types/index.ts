@@ -22,3 +22,9 @@ export interface Task {
   createdAt: string;
   updatedAt?: string;
 }
+
+export interface Column {
+  key: string;
+  label: string;
+  render?: (item: Task) => React.ReactNode;
+}

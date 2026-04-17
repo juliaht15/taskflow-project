@@ -1,10 +1,10 @@
-import { useTasks } from '../../context/TaskContext';
+import { useApp } from '../../context/AppContext'; //
 import { TaskCard } from './TaskCard';
 import { Card } from '../ui/Card';
 import { Loader2, Inbox } from 'lucide-react';
 
 export const TaskList = () => {
-  const { state, deleteTask, toggleTask } = useTasks();
+  const { state, deleteTask, toggleTask } = useApp(); //
 
   if (state.loading) {
     return (
@@ -39,7 +39,7 @@ export const TaskList = () => {
 
   return (
     <div className="space-y-4">
-      {state.tasks.map((task) => (
+      {state.tasks.map((task) => ( // 
         <TaskCard key={task.id} task={task} onToggle={toggleTask} onDelete={deleteTask} />
       ))}
     </div>
