@@ -1,26 +1,25 @@
 @import "tailwindcss";
 
-/* Definimos el tema para Tailwind 4 */
 @theme {
-  --color-brand: #4f46e5;      /* Este es el color índigo principal */
-  --color-brand-dark: #4338ca; /* Una versión un poco más oscura para el hover */
-}
-
-@layer base {
-  html {
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
-  }
+  --color-wix-primary: #000000;
+  --color-wix-secondary: #ffffff;
+  --color-wix-accent: #6366f1;
+  --color-wix-gradient-1: #6366f1;
+  --color-wix-gradient-2: #a855f7;
+  --color-wix-gradient-3: #ec4899;
+  --color-wix-bg: #f8fafc;
+  --color-wix-card: #ffffff;
+  --color-wix-text: #0f172a;
+  --color-wix-text-muted: #64748b;
   
-  body {
-    @apply bg-slate-50 text-slate-900;
-  }
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  
+  --shadow-wix-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-wix: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-wix-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --shadow-wix-hover: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
 }
 
-/* Ahora sí puedes usar @apply con brand porque Tailwind ya sabe qué es */
-@layer components {
-  .btn-primary {
-    @apply px-4 py-2 bg-brand text-white rounded-lg hover:bg-brand-dark transition-colors duration-200 shadow-sm;
-  }
+body {
+  @apply font-sans bg-wix-bg text-wix-text antialiased;
 }

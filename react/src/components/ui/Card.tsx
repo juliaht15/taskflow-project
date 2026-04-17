@@ -12,11 +12,11 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(
       <div
         ref={ref}
         className={cn(
-          'rounded-2xl p-6 transition-wix',
+          'rounded-2xl p-6 transition-all duration-300 ease-out',
           gradient 
-            ? 'gradient-primary text-white shadow-wix-lg' 
-            : 'bg-wix-card shadow-wix border border-gray-100',
-          hover && 'hover-lift',
+            ? 'bg-linear-to-r from-wix-gradient-1 to-wix-gradient-3 text-white shadow-lg' 
+            : 'bg-white shadow-md border border-gray-100',
+          hover && 'hover:-translate-y-1 hover:shadow-xl',
           className
         )}
         {...props}

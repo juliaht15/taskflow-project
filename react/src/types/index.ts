@@ -1,25 +1,20 @@
-import type { ReactNode } from 'react';
-
-// Definimos los tipos de prioridad como un tipo propio para reusarlo
-export type Priority = 'Alta' | 'Media' | 'Baja';
+export type Priority = 'low' | 'medium' | 'high';
+export type TaskStatus = 'pending' | 'inProgress' | 'completed';
 
 export interface Task {
-  id: number;
+  id: string;
   title: string;
-  description?: string; // He añadido descripción opcional, ¡siempre viene bien!
+  description?: string;
   priority: Priority;
+  status: TaskStatus;
   completed: boolean;
-  createdAt: string; // Útil para ordenar las tareas por fecha
+  dueDate?: string;
+  createdAt: string;
+  updatedAt?: string;
 }
 
-export interface Column<T> {
-  key: keyof T | string;
+export interface Column {
+  key: string;
   label: string;
-  render?: (item: T) => ReactNode;
-  headerClassName?: string; // Para controlar el ancho de las columnas desde el objeto
-}
-
-// Interfaz para el Layout (opcional pero recomendada)
-export interface LayoutProps {
-  children: ReactNode;
+  render?: (item: Task) => React.ReactNode;
 }

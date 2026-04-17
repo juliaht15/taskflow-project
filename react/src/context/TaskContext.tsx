@@ -1,6 +1,6 @@
 import { createContext, useContext, useReducer, useEffect, ReactNode } from 'react';
 import api from '@/api/axios';
-import { Task, Priority, TaskStatus } from '@/types';
+import { Task } from '@/types';
 
 // Types
 type TaskState = {
@@ -56,14 +56,16 @@ function taskReducer(state: TaskState, action: TaskAction): TaskState {
 }
 
 // Context
-const TaskContext = createContext<{
+interface TaskContextType {
   state: TaskState;
   fetchTasks: () => Promise<void>;
-  addTask: (task: Omit<Task, 'id' | 'createdAt'>) => Promise<void>;
+  addTask: (task: Omit<Task, 'id' | 'createdAt' | 'updatedAt'>) => Promise<void>;
   updateTask: (id: string, updates: Partial<Task>) => Promise<void>;
   deleteTask: (id: string) => Promise<void>;
   toggleTask: (id: string) => Promise<void>;
-} | null>(null);
+}
+
+const TaskContext = createContext<TaskContextType | null>(null);
 
 export const TaskProvider = ({ children }: { children: ReactNode }) => {
   const [state, dispatch] = useReducer(taskReducer, initialState);
@@ -78,10 +80,17 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const addTask = async (taskData: Omit<Task, 'id' | 'createdAt'>) => {
+  const addTask = async (taskData: Omit<Task, 'id' | 'createdAt' | 'updatedAt'>) => {
     try {
-      const { data } = await api.post<Task>('/tasks', taskData);
-      dispatch({ type: 'ADD_TASK', payload: data });
+      // Generar ID y fechas automáticamente
+      const newTask: Task = {
+        ...taskData,
+        id: crypto.randomUUID(),
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
+      
+      dispatch({ type: 'ADD_TASK', payload: newTask });
     } catch (error: any) {
       dispatch({ type: 'FETCH_ERROR', payload: error.message || 'Failed to add task' });
       throw error;
@@ -90,8 +99,16 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
 
   const updateTask = async (id: string, updates: Partial<Task>) => {
     try {
-      const { data } = await api.patch<Task>(`/tasks/${id}`, updates);
-      dispatch({ type: 'UPDATE_TASK', payload: data });
+      const task = state.tasks.find(t => t.id === id);
+      if (!task) throw new Error('Task not found');
+      
+      const updatedTask: Task = {
+        ...task,
+        ...updates,
+        updatedAt: new Date().toISOString(),
+      };
+      
+      dispatch({ type: 'UPDATE_TASK', payload: updatedTask });
     } catch (error: any) {
       dispatch({ type: 'FETCH_ERROR', payload: error.message || 'Failed to update task' });
       throw error;
@@ -100,7 +117,6 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
 
   const deleteTask = async (id: string) => {
     try {
-      await api.delete(`/tasks/${id}`);
       dispatch({ type: 'DELETE_TASK', payload: id });
     } catch (error: any) {
       dispatch({ type: 'FETCH_ERROR', payload: error.message || 'Failed to delete task' });
@@ -112,8 +128,14 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
     try {
       const task = state.tasks.find((t) => t.id === id);
       if (!task) return;
-      const { data } = await api.patch<Task>(`/tasks/${id}`, { completed: !task.completed });
-      dispatch({ type: 'TOGGLE_TASK', payload: id });
+      
+      const updatedTask: Task = {
+        ...task,
+        completed: !task.completed,
+        updatedAt: new Date().toISOString(),
+      };
+      
+      dispatch({ type: 'UPDATE_TASK', payload: updatedTask });
     } catch (error: any) {
       dispatch({ type: 'FETCH_ERROR', payload: error.message || 'Failed to toggle task' });
       throw error;
