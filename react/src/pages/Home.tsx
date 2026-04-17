@@ -1,65 +1,35 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react'; // Añadimos useEffect
+import { useTaskContext } from '../context/TaskContext';
 import { DataTable } from '../components/DataTable';
-import type { Task, Column } from '../types'; 
+import type { Task, Column } from '../types';
 
 export default function Home() {
-  // 1. Estado inicial con la propiedad createdAt añadida para cumplir con la interfaz Task
-  const [tasks, setTasks] = useState<Task[]>([
-    { 
-      id: 1, 
-      title: 'Configurar Arquitectura TaskFlow Pro', 
-      priority: 'Alta', 
-      completed: true, 
-      createdAt: new Date().toISOString() 
-    },
-    { 
-      id: 2, 
-      title: 'Despliegue final en Vercel', 
-      priority: 'Media', 
-      completed: false, 
-      createdAt: new Date().toISOString() 
-    },
-    { 
-      id: 3, 
-      title: 'Limpieza de archivos duplicados', 
-      priority: 'Baja', 
-      completed: false, 
-      createdAt: new Date().toISOString() 
-    },
-  ]);
-
+  const { tasks, addTask, deleteTask, toggleTask } = useTaskContext();
   const [input, setInput] = useState('');
   const [selectedPriority, setSelectedPriority] = useState<Task['priority']>('Media');
   const [search, setSearch] = useState('');
+  
+  // ESTADOS DE RED (Punto 12)
+  const [loading, setLoading] = useState(true);
 
-  // 2. Función para añadir tareas incluyendo la fecha obligatoria
-  const addTask = (): void => {
+  useEffect(() => {
+    // Simulamos una llamada a la API de 1 segundo
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 1000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  const handleAddTask = (): void => {
     if (!input.trim()) return;
-    const newTask: Task = {
-      id: Date.now(),
-      title: input,
-      priority: selectedPriority,
-      completed: false,
-      createdAt: new Date().toISOString(),
-    };
-    setTasks([newTask, ...tasks]);
+    addTask(input, selectedPriority);
     setInput('');
-  };
-
-  const deleteTask = (id: number): void => {
-    setTasks(tasks.filter(t => t.id !== id));
-  };
-
-  const toggleTask = (id: number): void => {
-    setTasks(tasks.map(t =>
-      t.id === id ? { ...t, completed: !t.completed } : t
-    ));
   };
 
   const columns: Column<Task>[] = [
     {
       key: 'title',
-      label: 'Descripción de la Tarea',
+      label: 'Descripción',
       render: (task) => (
         <span className={task.completed ? 'line-through text-slate-300 italic' : 'font-medium text-slate-700'}>
           {task.title}
@@ -87,20 +57,10 @@ export default function Home() {
       label: 'Acciones',
       render: (task) => (
         <div className="flex gap-2">
-          <button
-            onClick={() => toggleTask(task.id)}
-            className={`px-3 py-1 rounded-lg text-[10px] font-black transition-all border ${
-              task.completed
-                ? 'bg-slate-100 text-slate-400 border-slate-200'
-                : 'bg-indigo-50 text-indigo-600 border-indigo-100 hover:bg-indigo-600 hover:text-white'
-            }`}
-          >
+          <button onClick={() => toggleTask(task.id)} className="text-[10px] font-bold text-indigo-600 hover:underline">
             {task.completed ? 'DESHACER' : 'COMPLETAR'}
           </button>
-          <button
-            onClick={() => deleteTask(task.id)}
-            className="px-3 py-1 rounded-lg bg-white text-red-400 border border-red-100 hover:bg-red-500 hover:text-white transition-all text-[10px] font-black"
-          >
+          <button onClick={() => deleteTask(task.id)} className="text-[10px] font-bold text-red-400 hover:underline">
             ELIMINAR
           </button>
         </div>
@@ -113,56 +73,48 @@ export default function Home() {
   );
 
   return (
-    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
-      {/* Sección de entrada */}
-      <section className="bg-white p-3 rounded-2xl shadow-xl shadow-slate-200/50 border border-slate-100">
-        <div className="flex flex-wrap gap-2">
-          <input
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={(e) => e.key === 'Enter' && addTask()}
-            className="flex-1 min-w-50 px-4 py-3 rounded-xl bg-slate-50 border-transparent focus:bg-white focus:ring-2 ring-indigo-500/10 outline-none transition-all placeholder:text-slate-400"
-            placeholder="¿Cuál es el siguiente paso?"
-          />
-          <select
-            value={selectedPriority}
-            onChange={(e) => setSelectedPriority(e.target.value as Task['priority'])}
-            className="px-4 py-3 rounded-xl bg-slate-50 border-transparent text-slate-500 font-bold outline-none cursor-pointer hover:bg-white transition-colors text-sm"
-          >
-            <option value="Alta">Alta</option>
-            <option value="Media">Media</option>
-            <option value="Baja">Baja</option>
-          </select>
-          <button
-            onClick={addTask}
-            className="bg-indigo-600 text-white px-8 py-3 rounded-xl font-bold hover:bg-indigo-700 transition-all active:scale-95 shadow-lg shadow-indigo-200"
-          >
-            Añadir
-          </button>
-        </div>
+    <div className="space-y-8 animate-in fade-in duration-700">
+      {/* Input de tareas */}
+      <section className="bg-white p-3 rounded-2xl shadow-xl border border-slate-100 flex gap-2">
+        <input
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          className="flex-1 px-4 py-3 rounded-xl bg-slate-50 outline-none"
+          placeholder="¿Qué hay que hacer?"
+        />
+        <select 
+          value={selectedPriority} 
+          onChange={(e) => setSelectedPriority(e.target.value as Task['priority'])}
+          className="bg-slate-50 px-4 rounded-xl text-sm font-bold outline-none"
+        >
+          <option value="Alta">Alta</option>
+          <option value="Media">Media</option>
+          <option value="Baja">Baja</option>
+        </select>
+        <button onClick={handleAddTask} className="bg-indigo-600 text-white px-6 py-3 rounded-xl font-bold">
+          Añadir
+        </button>
       </section>
 
-      {/* Buscador y Tabla */}
-      <div className="bg-white rounded-3xl shadow-2xl shadow-slate-200/60 overflow-hidden border border-slate-100">
-        <div className="p-4 border-b border-slate-50 bg-slate-50/30">
-          <div className="relative max-w-xs">
-            <span className="absolute left-3 top-1/2 -translate-y-1/2 opacity-40">🔍</span>
-            <input
-              type="text"
-              placeholder="Buscar tareas..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-9 pr-4 py-2 text-xs rounded-lg border border-slate-200 bg-white focus:border-indigo-400 outline-none transition-all"
-            />
-          </div>
+      {/* Tabla con estado de carga */}
+      <div className="bg-white rounded-3xl shadow-xl overflow-hidden border border-slate-100">
+        <div className="p-4 border-b border-slate-50">
+          <input
+            type="text"
+            placeholder="Buscar..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="w-full max-w-xs px-4 py-2 text-xs rounded-lg border border-slate-200 outline-none"
+          />
         </div>
-        
-        <DataTable<Task> data={filteredTasks} columns={columns} />
-        
-        {filteredTasks.length === 0 && (
+
+        {loading ? (
           <div className="py-20 text-center">
-            <p className="text-slate-400 text-sm italic">No se encontraron tareas en el flujo.</p>
+            <div className="animate-spin inline-block w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full mb-4"></div>
+            <p className="text-slate-400 text-sm animate-pulse">Cargando flujo de tareas...</p>
           </div>
+        ) : (
+          <DataTable<Task> data={filteredTasks} columns={columns} />
         )}
       </div>
     </div>

@@ -1,52 +1,18 @@
-# 🚀 TaskFlow Pro
+# 🚀 TaskFlow Pro - Julia Project
 
-> Plataforma de gestión de tareas con arquitectura TypeScript estricta.
+Sistema profesional de gestión de tareas.
 
-**Autora**: Julia Huertas | Fullstack Architect Candidate 2026
+## 🔗 Enlaces del Proyecto
+- **🌐 Demo en vivo:** [Visitar App en Vercel](https://juliaht15-taskflow-project.vercel.app/)
+- **📋 Gestión del Proyecto:** [Tablero Trello](https://trello.com/b/CFXX99qx/task-flow-phase-5)
+- **💻 Repositorio:** [GitHub](https://github.com/juliaht15/taskflow-project.git)
 
----
+## 🛠️ Tecnologías
+- React 19 + Vite
+- TypeScript (Strict Mode)
+- Tailwind CSS v4
+- Context API & Custom Hooks
+- LocalStorage Persistence
 
-## 🔗 Enlaces
-
-| Entorno | URL |
-|---------|-----|
-| **Frontend (Producción)** | [juliaht15-taskflow-project.vercel.app](https://juliaht15-taskflow-project.vercel.app) |
-| **Repositorio** | [github.com/juliaht15/taskflow-project](https://github.com/juliaht15/taskflow-project) |
-
----
-
-## 🏗️ Estructura del Proyecto
-taskflow-project/
-├── react/ # Frontend: React 18 + Vite + TypeScript (Fase 4)
-├── typescript/ # Laboratorios de tipado avanzado (Fases 1-2)
-└── docs/ # Documentación arquitectónica
-
----
-
-## ✨ Características
-
-- **Arquitectura tipada**: Genéricos y uniones discriminadas para seguridad total.
-- **UI moderna**: Diseño glass-morphism con Tailwind CSS v4.
-- **Experiencia fluida**: Animaciones sutiles y estados visuales coherentes.
-- **Código mantenible**: Funciones puras, componentes reutilizables y 0 errores de TypeScript.
-
----
-
-## 🛠️ Stack Tecnológico
-
-| Área | Tecnologías |
-|------|-------------|
-| **Frontend** | React 18, Vite, TypeScript, Tailwind CSS v4 |
-| **Build** | npm, ESModules, NodeNext |
-| **Deploy** | Vercel (Serverless) |
-
----
-
-## ✅ Verificación de Calidad
-
-```bash
-cd react
-npx tsc --noEmit    # Debe reportar: Found 0 errors.
-npm run build       # Build exitoso sin warnings
-
-💡 Proyecto desarrollado como parte del Bootcamp Fullstack Architect 2026.
+## 📂 Documentación
+Toda la documentación detallada (Agile, Arquitectura, API, etc.) se encuentra en la carpeta `/docs`.
