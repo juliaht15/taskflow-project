@@ -1,35 +1,43 @@
-let tasks = [
-  { id: 1, title: 'Bienvenida a TaskFlow Pro', priority: 'Media', completed: false, createdAt: new Date() }
-];
-let nextId = 2;
+const mongoose = require('mongoose');
+
+// Definimos el Modelo de Datos para MongoDB
+const taskSchema = new mongoose.Schema({
+  title: { type: String, required: true },
+  priority: { type: String, default: 'Media' },
+  completed: { type: Boolean, default: false },
+  createdAt: { type: Date, default: Date.now }
+});
+
+const Task = mongoose.model('Task', taskSchema);
 
 const TaskService = {
-  findAll: () => [...tasks],
+  // Buscar todas las tareas en la base de datos
+  findAll: async () => {
+    return await Task.find().sort({ createdAt: -1 });
+  },
 
-  create: ({ title, priority = 'Media' }) => {
-    if (!title?.trim()) throw new Error('El título es obligatorio');
-    const task = { 
-      id: nextId++, 
-      title: title.trim(), 
-      priority, 
-      completed: false, 
-      createdAt: new Date() 
-    };
-    tasks.push(task);
+  // Crear una nueva tarea en MongoDB
+  create: async (taskData) => {
+    if (!taskData.title?.trim()) throw { status: 400, message: 'El título es obligatorio' };
+    const task = new Task({
+      title: taskData.title.trim(),
+      priority: taskData.priority,
+      completed: false
+    });
+    return await task.save();
+  },
+
+  // Actualizar por ID (funciona para completar o editar)
+  update: async (id, updates) => {
+    const task = await Task.findByIdAndUpdate(id, updates, { new: true });
+    if (!task) throw { status: 404, message: 'Tarea no encontrada' };
     return task;
   },
 
-  update: (id, updates) => {
-    const task = tasks.find(t => t.id === Number(id));
-    if (!task) throw new Error('Tarea no encontrada');
-    Object.assign(task, updates);
-    return { ...task };
-  },
-
-  delete: (id) => {
-    const index = tasks.findIndex(t => t.id === Number(id));
-    if (index === -1) throw new Error('Tarea no encontrada');
-    tasks.splice(index, 1);
+  // Eliminar por ID
+  delete: async (id) => {
+    const result = await Task.findByIdAndDelete(id);
+    if (!result) throw { status: 404, message: 'Tarea no encontrada' };
     return true;
   }
 };

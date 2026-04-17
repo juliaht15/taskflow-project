@@ -1,9 +1,26 @@
 @import "tailwindcss";
 
+/* Definimos el tema para Tailwind 4 */
+@theme {
+  --color-brand: #4f46e5;      /* Este es el color índigo principal */
+  --color-brand-dark: #4338ca; /* Una versión un poco más oscura para el hover */
+}
+
 @layer base {
   html {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+  
+  body {
+    @apply bg-slate-50 text-slate-900;
+  }
+}
+
+/* Ahora sí puedes usar @apply con brand porque Tailwind ya sabe qué es */
+@layer components {
+  .btn-primary {
+    @apply px-4 py-2 bg-brand text-white rounded-lg hover:bg-brand-dark transition-colors duration-200 shadow-sm;
   }
 }

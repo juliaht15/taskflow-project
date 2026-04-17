@@ -6,13 +6,19 @@ export default {
   ],
   theme: {
     extend: {
-      // Aquí podrías añadir colores personalizados de "Julia Project" si quisieras
       colors: {
         brand: {
           light: '#818cf8',
           DEFAULT: '#4f46e5',
           dark: '#3730a3',
-        }
+        },
+        // Un gris azulado elegante para el fondo (opcional)
+        surface: '#f8fafc', 
+      },
+      // Añadimos una transición suave por defecto para los botones
+      transitionProperty: {
+        'height': 'height',
+        'spacing': 'margin, padding',
       }
     },
   },

@@ -1,10 +1,5 @@
-import type { ReactNode } from 'react';
-
-interface Column<T> {
-  key: keyof T | string;
-  label: string;
-  render?: (item: T) => ReactNode;
-}
+import { type ReactNode } from 'react';
+import type { Column } from '../types';
 
 interface DataTableProps<T> {
   data: T[];
@@ -14,17 +9,15 @@ interface DataTableProps<T> {
 export function DataTable<T>({ data, columns }: DataTableProps<T>) {
   const renderCell = (row: T, column: Column<T>): ReactNode => {
     if (column.render) return column.render(row);
-    
     const value = (row as Record<string, unknown>)[String(column.key)];
-    if (typeof value === 'object' && value !== null) return value as ReactNode;
-    
-    return String(value);
+    return typeof value === 'object' && value !== null ? (value as ReactNode) : String(value);
   };
 
   if (data.length === 0) {
     return (
-      <div className="px-6 py-10 text-center text-slate-400 italic">
-        No hay tareas disponibles...
+      <div className="px-6 py-16 text-center">
+        <div className="text-4xl mb-4 opacity-20">📁</div>
+        <p className="text-slate-400 italic font-medium">No hay registros disponibles</p>
       </div>
     );
   }
@@ -32,13 +25,10 @@ export function DataTable<T>({ data, columns }: DataTableProps<T>) {
   return (
     <div className="overflow-x-auto">
       <table className="w-full text-left text-sm border-separate border-spacing-0">
-        <thead className="bg-slate-50/80 backdrop-blur-sm sticky top-0">
+        <thead className="bg-slate-50/80 backdrop-blur-md sticky top-0 z-10">
           <tr>
             {columns.map(col => (
-              <th
-                key={String(col.key)}
-                className="px-6 py-4 text-slate-400 font-bold uppercase text-[10px] tracking-widest border-b border-slate-100"
-              >
+              <th key={String(col.key)} className="px-6 py-4 text-slate-400 font-black uppercase text-[10px] tracking-[0.15em] border-b border-slate-100">
                 {col.label}
               </th>
             ))}
@@ -46,9 +36,9 @@ export function DataTable<T>({ data, columns }: DataTableProps<T>) {
         </thead>
         <tbody className="divide-y divide-slate-50">
           {data.map((row, index) => (
-            <tr key={index} className="group hover:bg-blue-50/40 transition-all duration-200">
+            <tr key={(row as any).id || index} className="group hover:bg-indigo-50/30 transition-all duration-200">
               {columns.map(col => (
-                <td key={String(col.key)} className="px-6 py-4 text-slate-600 font-medium">
+                <td key={String(col.key)} className="px-6 py-4 text-slate-600">
                   {renderCell(row, col)}
                 </td>
               ))}

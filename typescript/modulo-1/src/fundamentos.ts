@@ -26,3 +26,5 @@ const miPrimeraTarea: TareaBasica = {
 
 console.log(`🚀 Proyecto: ${nombreProyecto}`);
 console.log(`📝 Tarea actual: ${miPrimeraTarea.titulo} [${miPrimeraTarea.prioridad}]`);
+// Usamos las variables para evitar avisos de "unused variables"
+console.log(`Estado: ${estaFinalizado ? "Completado" : "En curso"} (${tareasPendientes} tareas, etiquetas: ${etiquetas.join(", ")})`);

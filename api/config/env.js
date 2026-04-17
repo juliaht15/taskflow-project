@@ -4,17 +4,18 @@ const nodeEnv = process.env.NODE_ENV || 'development';
 
 module.exports = {
   // Puerto del servidor
-  port: Number(process.env.PORT) || 3000,
+  port: process.env.PORT || 3000,
   
   // Entorno actual
   nodeEnv,
   isProduction: nodeEnv === 'production',
 
-  // Configuración de CORS: En producción usamos la URL de Vercel, en local permitimos todo
+  // Configuración de CORS
+  // En local, es vital que coincida con el puerto de Vite (5173)
   corsOrigin: nodeEnv === 'production' 
     ? 'https://juliaht15-taskflow-project.vercel.app' 
     : 'http://localhost:5173',
 
-  // Prefijo de la API (Consistente con nuestras rutas)
+  // Prefijo de la API
   apiPrefix: '/api'
 };

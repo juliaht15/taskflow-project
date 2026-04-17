@@ -29,7 +29,20 @@ export interface MatriculaFinalizada {
     notaMedia: number;
 }
 
-/** * IMPORTANTE: Aquí es donde definimos EstadoMatricula. 
- * Debe llevar 'export' para que otros archivos puedan usarlo.
+/** * IMPORTANTE: Definición de EstadoMatricula. 
  */
 export type EstadoMatricula = MatriculaActiva | MatriculaSuspendida | MatriculaFinalizada;
+
+// --- FUNCIÓN DE UTILIDAD (Ejemplo de uso del patrón) ---
+export function obtenerResumenMatricula(estado: EstadoMatricula): string {
+    switch (estado.tipo) {
+        case "ACTIVA":
+            return `Matrícula activa con ${estado.asignaturas.length} asignaturas.`;
+        case "SUSPENDIDA":
+            return `Matrícula suspendida por: ${estado.motivo}`;
+        case "FINALIZADA":
+            return `Estudios finalizados con nota media de ${estado.notaMedia}`;
+        default:
+            return "Estado desconocido";
+    }
+}

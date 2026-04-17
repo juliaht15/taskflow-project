@@ -1,9 +1,9 @@
 const taskService = require('../services/task.service');
 
 // Obtener todas las tareas
-exports.getTasks = (req, res) => {
+exports.getTasks = async (req, res) => {
   try {
-    const tasks = taskService.findAll();
+    const tasks = await taskService.findAll();
     res.json(tasks);
   } catch (err) {
     res.status(err.status || 500).json({ error: err.message });
@@ -11,9 +11,9 @@ exports.getTasks = (req, res) => {
 };
 
 // Crear una tarea
-exports.createTask = (req, res) => {
+exports.createTask = async (req, res) => {
   try {
-    const task = taskService.create(req.body);
+    const task = await taskService.create(req.body);
     res.status(201).json(task);
   } catch (err) {
     res.status(err.status || 500).json({ error: err.message });
@@ -21,9 +21,9 @@ exports.createTask = (req, res) => {
 };
 
 // Actualizar una tarea (completar o editar)
-exports.updateTask = (req, res) => {
+exports.updateTask = async (req, res) => {
   try {
-    const task = taskService.update(req.params.id, req.body);
+    const task = await taskService.update(req.params.id, req.body);
     res.json(task);
   } catch (err) {
     res.status(err.status || 500).json({ error: err.message });
@@ -31,10 +31,10 @@ exports.updateTask = (req, res) => {
 };
 
 // Eliminar una tarea
-exports.deleteTask = (req, res) => {
+exports.deleteTask = async (req, res) => {
   try {
-    taskService.delete(req.params.id);
-    res.status(204).send(); // 204 significa "Éxito, pero no hay contenido que devolver"
+    await taskService.delete(req.params.id);
+    res.status(204).send(); 
   } catch (err) {
     res.status(err.status || 500).json({ error: err.message });
   }

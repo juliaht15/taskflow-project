@@ -1,12 +1,12 @@
-# Dependencias (Las carpetas más pesadas)
+# Dependencias
 node_modules/
-react/node_modules/
+**/node_modules/
 .pnp
 .pnp.js
 
 # Producción / Builds
 dist/
-react/dist/
+**/dist/
 build/
 
 # Logs de errores
@@ -18,11 +18,8 @@ yarn-debug.log*
 .vercel
 .env
 .env*.local
-.env.local
 
 # Archivos del Sistema y Editores
-.vscode/
-!.vscode/extensions.json
-.idea/
 .DS_Store
 Thumbs.db
+.idea/

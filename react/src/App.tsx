@@ -1,18 +1,17 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { Layout } from './components/Layout.tsx';
-import Home from './pages/Home.tsx';
-import NotFound from './pages/NotFound.tsx';
+import { Routes, Route } from 'react-router-dom';
+import { Layout } from './components/Layout';
+import Home from './pages/Home';
+import NotFound from './pages/NotFound';
 import './App.css';
 
 export default function App() {
   return (
-    <Router>
-      <Layout>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </Layout>
-    </Router>
+    <Layout>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        {/* Aquí puedes añadir más rutas en el futuro */}
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </Layout>
   );
 }

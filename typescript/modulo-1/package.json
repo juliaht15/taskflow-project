@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "type": "module",
   "description": "Fundamentos de TypeScript para TaskFlow",
+  "scripts": {
+    "start": "tsc && node dist/fundamentos.js",
+    "build": "tsc"
+  },
   "devDependencies": {
     "typescript": "^5.0.0"
   }

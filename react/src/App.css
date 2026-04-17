@@ -1,20 +1,35 @@
-/* Smooth scroll y selección de texto */
+/* Reset suave y comportamiento global */
 * {
   scroll-behavior: smooth;
+}
+
+/* Permitimos selección de texto, pero la evitamos en botones e iconos */
+body {
+  user-select: text;
+}
+
+button, 
+nav, 
+svg, 
+.no-select {
   user-select: none;
 }
 
-/* Mejora en inputs y botones al enfocar */
-input:focus, select:focus, button:focus {
+/* Mejora en inputs y botones al enfocar (Focus Ring consistente) */
+input:focus, 
+select:focus, 
+textarea:focus {
   outline: none;
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.3);
+  border-color: #6366f1;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+  transition: box-shadow 0.2s ease;
 }
 
-/* Animación de entrada más suave */
+/* Animación de entrada para elementos de lista/tablas */
 @keyframes slideIn {
   from {
     opacity: 0;
-    transform: translateY(8px);
+    transform: translateY(10px);
   }
   to {
     opacity: 1;
@@ -22,19 +37,23 @@ input:focus, select:focus, button:focus {
   }
 }
 
+/* Aplicamos la animación a las filas con un pequeño retraso */
 tr {
-  animation: slideIn 0.3s ease-out forwards;
+  opacity: 0; /* Empiezan invisibles para que la animación se vea limpia */
+  animation: slideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 tr:nth-child(1) { animation-delay: 0.05s; }
 tr:nth-child(2) { animation-delay: 0.1s; }
 tr:nth-child(3) { animation-delay: 0.15s; }
+tr:nth-child(4) { animation-delay: 0.2s; }
 
-/* Efecto hover más elegante en botones */
+/* Micro-interacciones en botones */
 button {
   will-change: transform;
+  transition: transform 0.1s ease, background-color 0.2s ease;
 }
 
 button:active {
-  transform: scale(0.98);
+  transform: scale(0.96);
 }

@@ -1,5 +1,6 @@
 // src/index.ts
-import { Estudiante, EstadoMatricula } from './types.js';
+// Cambiamos './types.js' por './api-client.js' para que coincida con tus archivos
+import { Estudiante, EstadoMatricula } from './api-client.js';
 import { generarReporte } from './reportes.js';
 
 const alumno: Estudiante = {
@@ -16,4 +17,7 @@ const miMatricula: EstadoMatricula = {
     ]
 };
 
+// Imprimimos el resultado final en la consola
+console.log("-----------------------------------------");
 console.log(generarReporte(alumno, miMatricula));
+console.log("-----------------------------------------");

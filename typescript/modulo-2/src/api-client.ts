@@ -1,4 +1,26 @@
-// src/api-client.ts
+// --- INTERFACES DE DATOS ---
+
+export interface Asignatura {
+    id: string;
+    nombre: string;
+    creditos: number;
+}
+
+export interface Estudiante {
+    readonly id: number;
+    nombre: string;
+    email: string;
+}
+
+// --- UNIÓN DISCRIMINADA PARA MATRÍCULAS ---
+
+export interface MatriculaActiva { tipo: "ACTIVA"; asignaturas: Asignatura[]; }
+export interface MatriculaSuspendida { tipo: "SUSPENDIDA"; motivo: string; }
+export interface MatriculaFinalizada { tipo: "FINALIZADA"; notaMedia: number; }
+
+export type EstadoMatricula = MatriculaActiva | MatriculaSuspendida | MatriculaFinalizada;
+
+// --- ESTRUCTURA DE RESPUESTA GENÉRICA ---
 
 export interface RespuestaAPI<T> {
     success: boolean;
@@ -6,16 +28,23 @@ export interface RespuestaAPI<T> {
     error?: string;
 }
 
-// Función genérica <T> que puede devolver cualquier tipo de dato
+// --- CLIENTE API GENÉRICO ---
+
+/**
+ * Función genérica <T> que realiza peticiones simuladas.
+ * El uso de Promise<RespuestaAPI<T>> asegura que quien llame a la función
+ * sepa exactamente qué tipo de datos recibirá.
+ */
 export async function obtenerRecurso<T>(url: string): Promise<RespuestaAPI<T>> {
-    console.log(`📡 Conectando a: ${url}...`);
+    console.log(`📡 Solicitando recurso a: ${url}...`);
     
-    // Simulamos una respuesta de red con un retardo
+    // Simulamos un retraso de red de 500ms
     return new Promise((resolve) => {
         setTimeout(() => {
+            // En una app real, aquí haríamos un fetch(url)
             resolve({
                 success: true,
-                data: {} as T // En un caso real, aquí vendría el JSON del fetch
+                data: {} as T 
             });
         }, 500);
     });

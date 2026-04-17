@@ -1,9 +1,3 @@
-import js from '@eslint/js'
-import globals from 'globals'
-import reactHooks from 'eslint-plugin-react-hooks'
-import reactRefresh from 'eslint-plugin-react-refresh'
-import tseslint from 'typescript-eslint'
-
 export default tseslint.config(
   { ignores: ['dist', 'node_modules', '.vercel'] },
   {
@@ -13,8 +7,11 @@ export default tseslint.config(
     ],
     files: ['**/*.{ts,tsx}'],
     languageOptions: {
-      ecmaVersion: 2020,
-      globals: globals.browser,
+      ecmaVersion: 'latest', // Cambiamos 2020 por 'latest'
+      globals: {
+        ...globals.browser,
+        ...globals.es2021, // Añadimos globales modernos
+      },
     },
     plugins: {
       'react-hooks': reactHooks,
@@ -26,9 +23,10 @@ export default tseslint.config(
         'warn',
         { allowConstantExport: true },
       ],
-      // Desactivamos reglas que suelen molestar en proyectos de aprendizaje
       '@typescript-eslint/no-unused-vars': 'warn',
       '@typescript-eslint/no-explicit-any': 'off',
+      // Sugerencia extra: evita que te olvides de las dependencias en los arrays de los Hooks
+      'react-hooks/exhaustive-deps': 'warn',
     },
   },
 )
