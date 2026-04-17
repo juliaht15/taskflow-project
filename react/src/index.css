@@ -1,25 +1,10 @@
 @import "tailwindcss";
 
-@theme {
-  --color-wix-primary: #000000;
-  --color-wix-secondary: #ffffff;
-  --color-wix-accent: #6366f1;
-  --color-wix-gradient-1: #6366f1;
-  --color-wix-gradient-2: #a855f7;
-  --color-wix-gradient-3: #ec4899;
-  --color-wix-bg: #f8fafc;
-  --color-wix-card: #ffffff;
-  --color-wix-text: #0f172a;
-  --color-wix-text-muted: #64748b;
-  
-  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
-  
-  --shadow-wix-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-  --shadow-wix: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-  --shadow-wix-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-  --shadow-wix-hover: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
 }
 
-body {
-  @apply font-sans bg-wix-bg text-wix-text antialiased;
+/* Dark mode */
+.dark {
+  color-scheme: dark;
 }
