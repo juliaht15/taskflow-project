@@ -1,17 +1,22 @@
-import { Routes, Route } from 'react-router-dom';
-import { Layout } from './components/layout/Layout';
-import Home from './pages/Home';
-import NotFound from './pages/NotFound';
-import './App.css';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { TaskProvider } from '@/context/TaskContext';
+import { Layout } from '@/components/layout/Layout';
+import { HomePage } from '@/pages/Home';
+import { NotFound } from '@/pages/NotFound';
 
-export default function App() {
+function App() {
   return (
-    <Layout>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        {/* Aquí puedes añadir más rutas en el futuro */}
-        <Route path="*" element={<NotFound />} />
-      </Routes>
-    </Layout>
+    <BrowserRouter>
+      <TaskProvider>
+        <Layout>
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </Layout>
+      </TaskProvider>
+    </BrowserRouter>
   );
 }
+
+export default App;

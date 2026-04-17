@@ -24,7 +24,6 @@ export const Hero = () => {
 
   return (
     <section className="relative overflow-hidden">
-      {/* Background gradient */}
       <div className="absolute inset-0 bg-linear-to-br from-wix-gradient-1/10 via-transparent to-wix-gradient-3/10" />
       
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-32">
@@ -62,7 +61,6 @@ export const Hero = () => {
           </motion.div>
         </div>
 
-        {/* Feature cards */}
         <div className="grid md:grid-cols-3 gap-6 mt-16">
           {features.map((feature, index) => (
             <motion.div
