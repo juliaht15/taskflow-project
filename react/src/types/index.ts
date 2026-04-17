@@ -13,6 +13,7 @@ export interface Task {
   updatedAt?: string;
 }
 
+// Column NO es genérico - corregido:
 export interface Column {
   key: string;
   label: string;
