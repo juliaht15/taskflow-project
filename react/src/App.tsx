@@ -1,8 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { TaskProvider } from '@/context/TaskContext';
-import { Layout } from '@/components/layout/Layout';
-import { HomePage } from '@/pages/Home';
-import { NotFound } from '@/pages/NotFound';
+import { TaskProvider } from './context/TaskContext';
+import { Layout } from './components/layout/Layout';
+import { HomePage } from './pages/Home';
 
 function App() {
   return (
@@ -11,7 +10,6 @@ function App() {
         <Layout>
           <Routes>
             <Route path="/" element={<HomePage />} />
-            <Route path="*" element={<NotFound />} />
           </Routes>
         </Layout>
       </TaskProvider>
