@@ -1,26 +1,39 @@
-/** @type {import('tailwindcss').Config} */
-export default {
-  content: [
-    "./index.html",
-    "./src/**/*.{js,ts,jsx,tsx}",
-  ],
-  theme: {
-    extend: {
-      colors: {
-        brand: {
-          light: '#818cf8',
-          DEFAULT: '#4f46e5',
-          dark: '#3730a3',
-        },
-        // Un gris azulado elegante para el fondo (opcional)
-        surface: '#f8fafc', 
-      },
-      // Añadimos una transición suave por defecto para los botones
-      transitionProperty: {
-        'height': 'height',
-        'spacing': 'margin, padding',
-      }
-    },
-  },
-  plugins: [],
+/* react/src/index.css o globals.css */
+@import "tailwindcss";
+
+@theme {
+  --color-wix-primary: #000000;
+  --color-wix-secondary: #ffffff;
+  --color-wix-accent: #6366f1;
+  --color-wix-gradient-1: #6366f1;
+  --color-wix-gradient-2: #a855f7;
+  --color-wix-gradient-3: #ec4899;
+  --color-wix-bg: #f8fafc;
+  --color-wix-card: #ffffff;
+  --color-wix-text: #0f172a;
+  --color-wix-text-muted: #64748b;
+  
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  
+  --shadow-wix-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-wix: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-wix-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --shadow-wix-hover: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+}
+
+/* Animaciones suaves */
+@layer utilities {
+  .transition-wix {
+    @apply transition-all duration-300 ease-out;
+  }
+  .hover-lift {
+    @apply hover:-translate-y-1 hover:shadow-wix-hover transition-wix;
+  }
+  .gradient-primary {
+    @apply bg-gradient-to-r from-wix-gradient-1 via-wix-gradient-2 to-wix-gradient-3;
+  }
+}
+
+body {
+  @apply font-sans bg-wix-bg text-wix-text antialiased;
 }

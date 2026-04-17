@@ -1,83 +1,150 @@
-import { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
-import type { Task } from '../types';
+import { createContext, useContext, useReducer, useEffect, ReactNode } from 'react';
+import api from '@/api/axios';
+import { Task, Priority, TaskStatus } from '@/types';
 
-interface TaskContextType {
+// Types
+type TaskState = {
   tasks: Task[];
   loading: boolean;
   error: string | null;
-  addTask: (title: string, priority: Task['priority']) => Promise<void>;
-  deleteTask: (id: number) => Promise<void>;
-  toggleTask: (id: number) => Promise<void>;
+};
+
+type TaskAction =
+  | { type: 'FETCH_START' }
+  | { type: 'FETCH_SUCCESS'; payload: Task[] }
+  | { type: 'FETCH_ERROR'; payload: string }
+  | { type: 'ADD_TASK'; payload: Task }
+  | { type: 'UPDATE_TASK'; payload: Task }
+  | { type: 'DELETE_TASK'; payload: string }
+  | { type: 'TOGGLE_TASK'; payload: string };
+
+// Initial state
+const initialState: TaskState = {
+  tasks: [],
+  loading: false,
+  error: null,
+};
+
+// Reducer
+function taskReducer(state: TaskState, action: TaskAction): TaskState {
+  switch (action.type) {
+    case 'FETCH_START':
+      return { ...state, loading: true, error: null };
+    case 'FETCH_SUCCESS':
+      return { ...state, loading: false, tasks: action.payload };
+    case 'FETCH_ERROR':
+      return { ...state, loading: false, error: action.payload };
+    case 'ADD_TASK':
+      return { ...state, tasks: [...state.tasks, action.payload] };
+    case 'UPDATE_TASK':
+      return {
+        ...state,
+        tasks: state.tasks.map((t) => (t.id === action.payload.id ? action.payload : t)),
+      };
+    case 'DELETE_TASK':
+      return { ...state, tasks: state.tasks.filter((t) => t.id !== action.payload) };
+    case 'TOGGLE_TASK':
+      return {
+        ...state,
+        tasks: state.tasks.map((t) =>
+          t.id === action.payload ? { ...t, completed: !t.completed } : t
+        ),
+      };
+    default:
+      return state;
+  }
 }
 
-const TaskContext = createContext<TaskContextType | undefined>(undefined);
+// Context
+const TaskContext = createContext<{
+  state: TaskState;
+  fetchTasks: () => Promise<void>;
+  addTask: (task: Omit<Task, 'id' | 'createdAt'>) => Promise<void>;
+  updateTask: (id: string, updates: Partial<Task>) => Promise<void>;
+  deleteTask: (id: string) => Promise<void>;
+  toggleTask: (id: string) => Promise<void>;
+} | null>(null);
 
 export const TaskProvider = ({ children }: { children: ReactNode }) => {
-  const [tasks, setTasks] = useState<Task[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  // CAMBIO CLAVE: Usa la URL de Render cuando la tengas.
-  // Por ahora, para probar localmente, mantén el localhost:3000
-  const API_URL = 'http://localhost:3000/api/tasks'; 
+  const [state, dispatch] = useReducer(taskReducer, initialState);
 
   const fetchTasks = async () => {
+    dispatch({ type: 'FETCH_START' });
     try {
-      setLoading(true);
-      const response = await fetch(API_URL);
-      if (!response.ok) throw new Error('Error al conectar con la API');
-      const data = await response.json();
-      setTasks(data);
-    } catch (err) {
-      setError('⚠️ No se pudo conectar con el servidor.');
-    } finally {
-      setLoading(false);
+      const { data } = await api.get<Task[]>('/tasks');
+      dispatch({ type: 'FETCH_SUCCESS', payload: data });
+    } catch (error: any) {
+      dispatch({ type: 'FETCH_ERROR', payload: error.message || 'Failed to fetch tasks' });
     }
   };
 
-  useEffect(() => { fetchTasks(); }, []);
-
-  const addTask = async (title: string, priority: Task['priority']) => {
+  const addTask = async (taskData: Omit<Task, 'id' | 'createdAt'>) => {
     try {
-      const response = await fetch(API_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ title, priority }),
-      });
-      const newTask = await response.json();
-      setTasks(prev => [newTask, ...prev]);
-    } catch (err) {
-      setError('Error al guardar la tarea');
+      const { data } = await api.post<Task>('/tasks', taskData);
+      dispatch({ type: 'ADD_TASK', payload: data });
+    } catch (error: any) {
+      dispatch({ type: 'FETCH_ERROR', payload: error.message || 'Failed to add task' });
+      throw error;
     }
   };
 
-  const deleteTask = async (id: number) => {
+  const updateTask = async (id: string, updates: Partial<Task>) => {
     try {
-      await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
-      setTasks(prev => prev.filter(t => t.id !== id));
-    } catch (err) {
-      setError('Error al eliminar');
+      const { data } = await api.patch<Task>(`/tasks/${id}`, updates);
+      dispatch({ type: 'UPDATE_TASK', payload: data });
+    } catch (error: any) {
+      dispatch({ type: 'FETCH_ERROR', payload: error.message || 'Failed to update task' });
+      throw error;
     }
   };
 
-  const toggleTask = async (id: number) => {
+  const deleteTask = async (id: string) => {
     try {
-      await fetch(`${API_URL}/${id}`, { method: 'PATCH' });
-      setTasks(prev => prev.map(t => t.id === id ? { ...t, completed: !t.completed } : t));
-    } catch (err) {
-      setError('Error al actualizar');
+      await api.delete(`/tasks/${id}`);
+      dispatch({ type: 'DELETE_TASK', payload: id });
+    } catch (error: any) {
+      dispatch({ type: 'FETCH_ERROR', payload: error.message || 'Failed to delete task' });
+      throw error;
     }
   };
+
+  const toggleTask = async (id: string) => {
+    try {
+      const task = state.tasks.find((t) => t.id === id);
+      if (!task) return;
+      const { data } = await api.patch<Task>(`/tasks/${id}`, { completed: !task.completed });
+      dispatch({ type: 'TOGGLE_TASK', payload: id });
+    } catch (error: any) {
+      dispatch({ type: 'FETCH_ERROR', payload: error.message || 'Failed to toggle task' });
+      throw error;
+    }
+  };
+
+  // Fetch tasks on mount
+  useEffect(() => {
+    fetchTasks();
+  }, []);
 
   return (
-    <TaskContext.Provider value={{ tasks, loading, error, addTask, deleteTask, toggleTask }}>
+    <TaskContext.Provider
+      value={{
+        state,
+        fetchTasks,
+        addTask,
+        updateTask,
+        deleteTask,
+        toggleTask,
+      }}
+    >
       {children}
     </TaskContext.Provider>
   );
 };
 
-export const useTaskContext = () => {
+export const useTasks = () => {
   const context = useContext(TaskContext);
-  if (!context) throw new Error('useTaskContext debe usarse dentro de TaskProvider');
+  if (!context) {
+    throw new Error('useTasks must be used within TaskProvider');
+  }
   return context;
 };
