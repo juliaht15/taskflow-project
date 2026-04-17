@@ -3,7 +3,7 @@
 <div align="center">
 
 ![GitHub top language](https://img.shields.io/github/languages/top/juliaht15/taskflow-project?style=for-the-badge)
-[![Deployed on Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-black?style=for-the-badge&logo=vercel)](https://juljaht15-taskflow-project.vercel.app)
+[![Deployed on Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-black?style=for-the-badge&logo=vercel)](https://juliaht15-taskflow-project.vercel.app)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
 
 </div>
@@ -128,13 +128,12 @@ Puedes encontrar guías específicas en la carpeta [`/docs`](https://www.google.
 
 ## 👩‍💻 Autor
 
-**Julia**
+**Julia Huertas**
 
   * GitHub: [@juliaht15](https://github.com/juliaht15)
   * Proyecto final de Fase 5 - Fullstack Development.
 
 -----
-
 \<div align="center"\>
 
 **Hecho por Julia Huertas - 2026**
