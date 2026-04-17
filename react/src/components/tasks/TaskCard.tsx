@@ -67,7 +67,12 @@ export const TaskCard = ({ task, onToggle, onDelete }: TaskCardProps) => {
           </div>
         </div>
 
-        <Button variant="ghost" size="sm" onClick={() => onDelete(task.id)} className="text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20 dark:hover:text-red-400">
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => onDelete(task.id)}
+          className="text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20 dark:hover:text-red-400"
+        >
           <Trash2 className="w-4 h-4" />
         </Button>
       </div>
