@@ -26,7 +26,7 @@
 
 ## 🚀 Demo e Infraestructura
 
-* 🌐 **Live Demo:** [https://juljaht15-taskflow-project.vercel.app](https://juljaht15-taskflow-project.vercel.app)
+* 🌐 **Live Demo:** [https://juliaht15-taskflow-project.vercel.app](https://juliaht15-taskflow-project.vercel.app)
 * 📌 **Gestión Ágil (Trello):** [Ver Tablero Kanban](https://trello.com/b/CFXX99qx/task-flow-phase-5)
 
 ---
@@ -134,6 +134,4 @@ Puedes encontrar guías específicas en la carpeta [`/docs`](https://www.google.
   * Proyecto final de Fase 5 - Fullstack Development.
 
 -----
-\<div align="center"\>
-
 **Hecho por Julia Huertas - 2026**
