@@ -17,31 +17,26 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // IMPORTANTE: Puerto 3000 para coincidir con tu servidor Node.js
-  const API_URL = 'http://localhost:3000/api/tasks';
+  // CAMBIO CLAVE: Usa la URL de Render cuando la tengas.
+  // Por ahora, para probar localmente, mantén el localhost:3000
+  const API_URL = 'http://localhost:3000/api/tasks'; 
 
-  // 1. Obtener tareas (GET) - Punto 12: Estado de carga y éxito
   const fetchTasks = async () => {
     try {
       setLoading(true);
-      setError(null);
       const response = await fetch(API_URL);
-      if (!response.ok) throw new Error('No se pudo obtener la lista del servidor');
+      if (!response.ok) throw new Error('Error al conectar con la API');
       const data = await response.json();
       setTasks(data);
     } catch (err) {
-      console.error(err);
-      setError('Error de conexión: ¿Está el servidor Node.js encendido?');
+      setError('⚠️ No se pudo conectar con el servidor.');
     } finally {
       setLoading(false);
     }
   };
 
-  useEffect(() => {
-    fetchTasks();
-  }, []);
+  useEffect(() => { fetchTasks(); }, []);
 
-  // 2. Crear tarea (POST)
   const addTask = async (title: string, priority: Task['priority']) => {
     try {
       const response = await fetch(API_URL, {
@@ -49,35 +44,28 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ title, priority }),
       });
-      if (!response.ok) throw new Error('Error al crear la tarea');
       const newTask = await response.json();
-      setTasks((prev) => [newTask, ...prev]);
+      setTasks(prev => [newTask, ...prev]);
     } catch (err) {
-      setError('No se pudo añadir la tarea al servidor');
+      setError('Error al guardar la tarea');
     }
   };
 
-  // 3. Eliminar tarea (DELETE)
   const deleteTask = async (id: number) => {
     try {
-      const response = await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
-      if (!response.ok) throw new Error('Error al eliminar');
-      setTasks((prev) => prev.filter((t) => t.id !== id));
+      await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
+      setTasks(prev => prev.filter(t => t.id !== id));
     } catch (err) {
-      setError('Error al eliminar la tarea');
+      setError('Error al eliminar');
     }
   };
 
-  // 4. Actualizar estado (PATCH)
   const toggleTask = async (id: number) => {
     try {
-      const response = await fetch(`${API_URL}/${id}`, { method: 'PATCH' });
-      if (!response.ok) throw new Error('Error al actualizar');
-      setTasks((prev) =>
-        prev.map((t) => (t.id === id ? { ...t, completed: !t.completed } : t))
-      );
+      await fetch(`${API_URL}/${id}`, { method: 'PATCH' });
+      setTasks(prev => prev.map(t => t.id === id ? { ...t, completed: !t.completed } : t));
     } catch (err) {
-      setError('Error al cambiar el estado de la tarea');
+      setError('Error al actualizar');
     }
   };
 
@@ -90,8 +78,6 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
 
 export const useTaskContext = () => {
   const context = useContext(TaskContext);
-  if (!context) {
-    throw new Error('useTaskContext debe usarse dentro de un TaskProvider');
-  }
+  if (!context) throw new Error('useTaskContext debe usarse dentro de TaskProvider');
   return context;
 };
