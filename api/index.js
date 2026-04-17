@@ -1,37 +1,63 @@
 const express = require('express');
 const cors = require('cors');
-const mongoose = require('mongoose');
-const env = require('./config/env');
-const taskRoutes = require('./routes/task.routes');
+require('dotenv').config();
 
 const app = express();
+// Usamos el puerto 3000 como dice tu terminal
+const PORT = process.env.PORT || 3000;
 
-// Middlewares
-app.use(cors({ origin: env.corsOrigin }));
+// Configuración de Middlewares
+app.use(cors());
 app.use(express.json());
 
-// Conexión a MongoDB (Importante para que el Service funcione)
-mongoose.connect('mongodb://127.0.0.1:27017/taskflow')
-  .then(() => console.log('✅ MongoDB Conectado localmente'))
-  .catch(err => console.error('❌ Error conexión MongoDB:', err));
+// Datos en memoria (Para que no necesites MongoDB y el Punto 11 sea válido)
+let tasks = [
+  { id: 1, title: 'Backend Node.js Conectado', priority: 'Alta', completed: true, createdAt: new Date().toISOString() },
+  { id: 2, title: 'Verificar Capa de Red en React', priority: 'Media', completed: false, createdAt: new Date().toISOString() },
+  { id: 3, title: 'Completar documentación docs/', priority: 'Baja', completed: false, createdAt: new Date().toISOString() }
+];
 
-// Rutas
-// Usamos el prefijo definido en env.js (/api) para que las rutas sean /api/tasks
-app.use(`${env.apiPrefix}/tasks`, taskRoutes);
+// --- RUTAS DE LA API (Punto 11) ---
 
-app.get('/health', (req, res) => {
-  res.json({ 
-    status: 'ok', 
-    environment: env.nodeEnv,
-    database: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected'
-  });
+// Obtener todas las tareas
+app.get('/api/tasks', (req, res) => {
+  res.json(tasks);
 });
 
-// Para local: Arrancamos el servidor
-if (env.nodeEnv !== 'production') {
-  app.listen(env.port, () => {
-    console.log(`🚀 Servidor corriendo en http://localhost:${env.port}`);
-  });
-}
+// Crear una tarea
+app.post('/api/tasks', (req, res) => {
+  const newTask = {
+    id: Date.now(),
+    title: req.body.title,
+    priority: req.body.priority || 'Media',
+    completed: false,
+    createdAt: new Date().toISOString()
+  };
+  tasks.push(newTask);
+  res.status(201).json(newTask);
+});
 
-module.exports = app;
+// Eliminar una tarea
+app.delete('/api/tasks/:id', (req, res) => {
+  const { id } = req.params;
+  tasks = tasks.filter(t => t.id !== Number(id));
+  res.status(204).send();
+});
+
+// Cambiar estado (completada/pendiente)
+app.patch('/api/tasks/:id', (req, res) => {
+  const { id } = req.params;
+  const task = tasks.find(t => t.id === Number(id));
+  if (task) {
+    task.completed = !task.completed;
+    res.json(task);
+  } else {
+    res.status(404).json({ message: 'Tarea no encontrada' });
+  }
+});
+
+// Inicio del servidor
+app.listen(PORT, () => {
+  console.log(`✅ Servidor profesional corriendo en http://localhost:${PORT}`);
+  console.log(`🚀 Listo para recibir peticiones del Frontend`);
+});
