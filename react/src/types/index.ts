@@ -1,6 +1,17 @@
+export type Theme = 'light' | 'dark';
 export type Priority = 'low' | 'medium' | 'high';
-export type TaskStatus = 'pending' | 'inProgress' | 'completed';
-export type TaskTimeframe = 'daily' | 'weekly' | 'monthly' | 'general';
+export type Timeframe = 'today' | 'thisWeek' | 'thisMonth';
+
+export interface Task {
+  id: string;
+  title: string;
+  description: string;
+  completed: boolean;
+  priority: Priority;
+  timeframe: Timeframe;
+  projectId: string;
+  createdAt: string;
+}
 
 export interface Project {
   id: string;
@@ -9,22 +20,9 @@ export interface Project {
   createdAt: string;
 }
 
-export interface Task {
-  id: string;
-  title: string;
-  description?: string;
-  priority: Priority;
-  status: TaskStatus;
-  timeframe: TaskTimeframe;
-  projectId?: string;
-  completed: boolean;
-  dueDate?: string;
-  createdAt: string;
-  updatedAt?: string;
-}
-
-export interface Column {
-  key: string;
-  label: string;
-  render?: (item: Task) => React.ReactNode;
+export interface AppState {
+  tasks: Task[];
+  projects: Project[];
+  loading: boolean;
+  theme: Theme;
 }
