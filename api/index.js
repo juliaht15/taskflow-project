@@ -3,57 +3,61 @@ const cors = require('cors');
 require('dotenv').config();
 
 const app = express();
-
-// CONFIGURACIÓN DE CORS: Permitimos tanto local como tu dominio de Vercel
-app.use(cors({
-  origin: ['http://localhost:5173', 'https://juliaht15-taskflow-project.vercel.app'],
-  methods: ['GET', 'POST', 'PATCH', 'DELETE'],
-  allowedHeaders: ['Content-Type']
-}));
-
-app.use(express.json());
-
-// Puerto dinámico para Render/Producción
 const PORT = process.env.PORT || 3000;
 
+app.use(cors({ origin: ['http://localhost:5173', 'https://juliaht15-taskflow-project.vercel.app'] }));
+app.use(express.json());
+
 // Datos en memoria
-let tasks = [
-  { id: 1, title: 'Servidor real funcionando', priority: 'Alta', completed: true, createdAt: new Date().toISOString() },
-  { id: 2, title: 'Configurar variables de entorno', priority: 'Media', completed: false, createdAt: new Date().toISOString() }
+let tasks = [];
+let projects = [
+  { id: '1', name: 'Proyecto Personal', color: 'bg-blue-500', createdAt: new Date().toISOString() },
+  { id: '2', name: 'Trabajo', color: 'bg-purple-500', createdAt: new Date().toISOString() }
 ];
 
-// RUTAS
-app.get('/api/tasks', (req, res) => {
-  res.json(tasks);
-});
+// RUTAS - TAREAS
+app.get('/api/tasks', (req, res) => res.json({ success: true, data: tasks }));
 
 app.post('/api/tasks', (req, res) => {
-  const newTask = { 
-    id: Date.now(), 
-    ...req.body, 
-    completed: false, 
-    createdAt: new Date().toISOString() 
-  };
+  const newTask = { id: Date.now().toString(), ...req.body, completed: false, createdAt: new Date().toISOString() };
   tasks.push(newTask);
-  res.status(201).json(newTask);
+  res.status(201).json({ success: true, data: newTask });
 });
 
 app.patch('/api/tasks/:id', (req, res) => {
-  const { id } = req.params;
-  const task = tasks.find(t => t.id === Number(id));
-  if (task) {
-    task.completed = !task.completed;
-    res.json(task);
-  } else {
-    res.status(404).send();
-  }
+  const index = tasks.findIndex(t => t.id === req.params.id);
+  if (index === -1) return res.status(404).json({ error: 'No encontrada' });
+  tasks[index] = { ...tasks[index], ...req.body, updatedAt: new Date().toISOString() };
+  res.json({ success: true, data: tasks[index] });
 });
 
 app.delete('/api/tasks/:id', (req, res) => {
-  tasks = tasks.filter(t => t.id !== Number(req.params.id));
+  tasks = tasks.filter(t => t.id !== req.params.id);
   res.status(204).send();
 });
 
-app.listen(PORT, () => {
-  console.log(`✅ Servidor producción listo en puerto ${PORT}`);
+// RUTAS - PROYECTOS
+app.get('/api/projects', (req, res) => res.json({ success: true, data: projects }));
+
+app.post('/api/projects', (req, res) => {
+  const newProject = { id: Date.now().toString(), ...req.body, createdAt: new Date().toISOString() };
+  projects.push(newProject);
+  res.status(201).json({ success: true, data: newProject });
 });
+
+// RUTA - ESTADÍSTICAS
+app.get('/api/stats', (req, res) => {
+  res.json({
+    success: true,
+    data: {
+      totalTasks: tasks.length,
+      completed: tasks.filter(t => t.completed).length,
+      pending: tasks.filter(t => !t.completed).length,
+      totalProjects: projects.length
+    }
+  });
+});
+
+app.listen(PORT, () => console.log(`✅ Servidor corriendo en puerto ${PORT}`));
+
+module.exports = app;
