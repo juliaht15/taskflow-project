@@ -1,10 +1,3 @@
-¡Entendido! He reorganizado el **README.md** siguiendo exactamente el orden que me has pedido: Introducción y Demo primero, seguido de la configuración técnica, y cerrando con el detalle de qué hace la app y cómo está construida por dentro.
-
-Aquí tienes la versión final lista para copiar:
-
-### C:\Users\julia\Desktop\taskflow-project\README.md
-
-````markdown
 # TaskFlow Pro - Gestión de Tareas Profesional
 
 <div align="center">
@@ -34,6 +27,7 @@ Sigue estos pasos para levantar el entorno de desarrollo localmente:
 git clone [https://github.com/juliaht15/taskflow-project.git](https://github.com/juliaht15/taskflow-project.git)
 cd taskflow-project
 ```
+
 ````
 
 ### 2. Configurar el Backend (API)
@@ -97,9 +91,10 @@ graph TD
 
 ---
 
-**Autor:** [Julia Huertas](https://github.com/juliaht15)  
+**Autor:** [Julia Huertas](https://github.com/juliaht15)
 _Proyecto Final - Desarrollo Fullstack 2026_
 
 ```
 
 ```
+````
