@@ -24,15 +24,11 @@ Sigue estos pasos para levantar el entorno de desarrollo localmente:
 ### 1. Clonar el repositorio
 
 ```bash
-git clone [https://github.com/juliaht15/taskflow-project.git](https://github.com/juliaht15/taskflow-project.git)
+git clone https://github.com/juliaht15/taskflow-project.git
 cd taskflow-project
 ```
 
-````
-
 ### 2. Configurar el Backend (API)
-
-El servidor corre por defecto en el puerto **5000**.
 
 ```bash
 cd api
@@ -42,12 +38,9 @@ npm run dev
 
 ### 3. Configurar el Frontend (React)
 
-La aplicación cliente se despliega en el puerto **5173**.
-
 ```bash
-cd react
+cd ../react
 npm install
-# Asegúrate de que el .env apunte a http://localhost:5000/api
 npm run dev
 ```
 
@@ -55,21 +48,19 @@ npm run dev
 
 ## 🚀 Funcionalidades
 
-- 📊 **Gestión de Ciclo de Vida:** Creación, edición, completado y eliminación de tareas en tiempo real.
-- 🔍 **Filtro de Búsqueda Inteligente:** Localización instantánea de tareas mediante un buscador dinámico.
-- 📁 **Categorización por Proyectos:** Organización jerárquica con etiquetas visuales y selección de proyectos.
-- 🌗 **Tematización Dual:** Soporte nativo para Modo Claro y Modo Oscuro con persistencia en el navegador.
-- 🛡️ **Validación de Datos:** Uso de TypeScript en todo el flujo para asegurar la integridad de la información y prevenir errores de tipo (como el manejo automático de `createdAt`).
+- **Gestión de Ciclo de Vida:** Creación, edición, completado y eliminación de tareas en tiempo real.
+- **Filtro de Búsqueda Inteligente:** Localización instantánea de tareas mediante un buscador dinámico.
+- **Categorización por Proyectos:** Organización jerárquica con etiquetas visuales y selección de proyectos.
+- **Tematización Dual:** Soporte nativo para Modo Claro y Modo Oscuro con persistencia.
+- **Validación de Datos:** Uso de TypeScript en todo el flujo para asegurar la integridad de la información.
 
 ---
 
 ## 🏗️ Arquitectura y Stack Tecnológico
 
-La aplicación utiliza una arquitectura desacoplada para separar la lógica de negocio de la interfaz de usuario.
-
 ### Stack Técnico
 
-- **Frontend:** React 18/19, Tailwind CSS (Diseño), Lucide React (Iconografía), Context API (Estado).
+- **Frontend:** React 18/19, Tailwind CSS, Lucide React, Context API.
 - **Backend:** Node.js, Express, TypeScript.
 - **Seguridad:** Middlewares de CORS y validación de esquemas.
 
@@ -91,10 +82,5 @@ graph TD
 
 ---
 
-**Autor:** [Julia Huertas](https://github.com/juliaht15)
+**Autor:** [Julia Huertas](https://github.com/juliaht15)  
 _Proyecto Final - Desarrollo Fullstack 2026_
-
-```
-
-```
-````
