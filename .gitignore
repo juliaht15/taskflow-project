@@ -8,19 +8,29 @@ node_modules/
 dist/
 **/dist/
 build/
+.vercel
+out/
 
-# Logs de errores
+# Logs de errores y TypeScript
 *.log
 npm-debug.log*
 yarn-debug.log*
+*.tsbuildinfo
 
-# Configuración de Vercel y variables de entorno
-.vercel
+# Variables de entorno
 .env
 .env*.local
+.env.example
 
 # Archivos del Sistema y Editores
 .DS_Store
 Thumbs.db
 .idea/
 .vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+# Configuración específica de Vite
+*.local

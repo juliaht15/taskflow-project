@@ -1,37 +1,55 @@
-import { useApp } from '../context/AppContext';
-import { Layout, TaskForm, TaskList, ProjectWidget, UrgentTasksWidget, StatsWidget } from '../components';
+import { useApp } from "../context/AppContext";
+import {
+  Layout,
+  TaskForm,
+  TaskList,
+  ProjectWidget,
+  UrgentTasksWidget,
+  StatsWidget,
+} from "../components";
 
 export default function HomePage() {
-  const { state: { tasks, projects } } = useApp();
+  // Usamos la desestructuración del estado que definimos en AppState
+  const { tasks, projects } = useApp();
 
   return (
     <Layout>
-      {/* Estadísticas */}
-      <StatsWidget tasks={tasks} />
+      <div className="max-w-7xl mx-auto space-y-8">
+        {/* Sección superior: Estadísticas rápidas */}
+        <StatsWidget tasks={tasks} />
 
-      {/* Grid principal - 3 columnas */}
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-        {/* Izquierda - Proyectos */}
-        <div className="lg:col-span-1">
-          <ProjectWidget projects={projects} />
-        </div>
+        {/* Grid principal responsivo: 1 columna en móvil, 4 en pantallas grandes */}
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+          {/* Columna Izquierda: Gestión de Proyectos */}
+          <aside className="lg:col-span-1">
+            <ProjectWidget projects={projects} />
+          </aside>
 
-        {/* Centro - Formulario y Lista de Tareas */}
-        <div className="lg:col-span-2 space-y-6">
-          <TaskForm />
-          
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border dark:border-gray-700 p-6">
-            <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-              <span className="text-2xl">📋</span>
-              Mis Tareas ({tasks.length})
-            </h2>
-            <TaskList />
-          </div>
-        </div>
+          {/* Columna Central: El "Feed" de trabajo */}
+          <main className="lg:col-span-2 space-y-6">
+            <TaskForm />
 
-        {/* Derecha - Tareas Urgentes */}
-        <div className="lg:col-span-1">
-          <UrgentTasksWidget tasks={tasks} />
+            <div className="card-container p-6">
+              <header className="flex items-center justify-between mb-6">
+                <h2 className="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-3">
+                  <span className="p-2 bg-purple-100 dark:bg-purple-900/30 rounded-lg">
+                    📋
+                  </span>
+                  Mis Tareas
+                </h2>
+                <span className="px-3 py-1 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 text-sm font-medium rounded-full">
+                  {tasks.length} en total
+                </span>
+              </header>
+
+              <TaskList />
+            </div>
+          </main>
+
+          {/* Columna Derecha: Prioridades */}
+          <aside className="lg:col-span-1">
+            <UrgentTasksWidget tasks={tasks} />
+          </aside>
         </div>
       </div>
     </Layout>

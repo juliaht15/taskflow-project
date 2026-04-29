@@ -1,3 +1,10 @@
+¡Entendido! He reorganizado el **README.md** siguiendo exactamente el orden que me has pedido: Introducción y Demo primero, seguido de la configuración técnica, y cerrando con el detalle de qué hace la app y cómo está construida por dentro.
+
+Aquí tienes la versión final lista para copiar:
+
+### C:\Users\julia\Desktop\taskflow-project\README.md
+
+````markdown
 # TaskFlow Pro - Gestión de Tareas Profesional
 
 <div align="center">
@@ -8,130 +15,91 @@
 
 </div>
 
-> **TaskFlow Pro** es una plataforma Fullstack diseñada para la organización eficiente de tareas y proyectos. Combina una interfaz moderna de alto rendimiento con una arquitectura robusta basada en React y Express.
+## 📖 Introducción y Demo
+
+**TaskFlow Pro** es una plataforma Fullstack diseñada para la organización eficiente de tareas y proyectos. El objetivo principal es ofrecer una experiencia de usuario fluida (SaaS-style) con un rendimiento óptimo, permitiendo a los usuarios gestionar su carga de trabajo diaria con una interfaz moderna y profesional.
+
+- 🌐 **Live Demo:** [https://juliaht15-taskflow-project.vercel.app](https://juliaht15-taskflow-project.vercel.app)
+- 📌 **Gestión Ágil:** [Ver Tablero Kanban en Trello](https://trello.com/b/CFXX99qx/task-flow-phase-5)
 
 ---
 
-## 🌟 Características Principales
+## ⚙️ Instalación y Configuración
 
-* 📊 **Dashboard Interactivo:** Visualiza KPIs y métricas de productividad en tiempo real.
-* 📅 **Gestión por Timeframes:** Filtra tus responsabilidades en vistas Diarias, Semanales y Mensuales.
-* 📁 **Organización por Proyectos:** Agrupa tareas por categorías con identificación visual por colores.
-* 🌗 **Modo Oscuro Nativo:** Interfaz adaptable con persistencia de preferencia en `localStorage`.
-* 📱 **Responsive Design:** Experiencia optimizada para móviles, tablets y escritorio.
-* 🛡️ **Type Safety:** Desarrollo íntegro en TypeScript para minimizar errores en tiempo de ejecución.
-* 🚀 **API RESTful:** Backend estructurado para una comunicación fluida y escalable.
+Sigue estos pasos para levantar el entorno de desarrollo localmente:
 
----
-
-## 🚀 Demo e Infraestructura
-
-* 🌐 **Live Demo:** [https://juliaht15-taskflow-project.vercel.app](https://juliaht15-taskflow-project.vercel.app)
-* 📌 **Gestión Ágil (Trello):** [Ver Tablero Kanban](https://trello.com/b/CFXX99qx/task-flow-phase-5)
-
----
-
-## 🛠️ Stack Tecnológico
-
-### Frontend
-* **React 19** + Vite
-* **Tailwind CSS v4** (Estilos de última generación)
-* **Lucide React** (Iconografía consistente)
-* **React Router v6** (Navegación SPA)
-* **Axios** (Cliente HTTP centralizado)
-
-### Backend
-* **Node.js** + **Express**
-* **TypeScript** (Middleware y controladores tipados)
-* **CORS** (Seguridad en comunicaciones)
-
----
-
-## 🏗️ Arquitectura del Sistema
-
-La aplicación sigue un modelo de separación de responsabilidades para facilitar el mantenimiento:
-
-```mermaid
-graph TD
-    A[Frontend React/Vite] -->|Peticiones Axios| B[Backend Express API]
-    subgraph "Cliente (Vercel)"
-    A --> D[Context API / State]
-    A --> E[Componentes UI]
-    end
-    subgraph "Servidor (Express)"
-    B --> G[Rutas REST]
-    B --> H[Controladores]
-    B --> I[Servicios de Datos]
-    end
-````
-
------
-
-## 📦 Instalación y Ejecución Local
-
-Sigue estos pasos para levantar el entorno de desarrollo:
-
-### 1\. Clonar y Preparar
+### 1. Clonar el repositorio
 
 ```bash
 git clone [https://github.com/juliaht15/taskflow-project.git](https://github.com/juliaht15/taskflow-project.git)
 cd taskflow-project
 ```
+````
 
-### 2\. Configurar Frontend
+### 2. Configurar el Backend (API)
 
-```bash
-cd react
-npm install
-# Crear variables de entorno
-echo "VITE_API_URL=http://localhost:3000/api" > .env.local
-npm run dev
-```
-
-### 3\. Configurar Backend
+El servidor corre por defecto en el puerto **5000**.
 
 ```bash
-# En una nueva terminal
 cd api
 npm install
 npm run dev
 ```
 
------
+### 3. Configurar el Frontend (React)
 
-## 📡 API Endpoints (Base URL: `/api`)
+La aplicación cliente se despliega en el puerto **5173**.
 
-### Tareas (`/tasks`)
+```bash
+cd react
+npm install
+# Asegúrate de que el .env apunte a http://localhost:5000/api
+npm run dev
+```
 
-  * `GET /tasks`: Lista completa de tareas.
-  * `POST /tasks`: Crear nueva tarea (requiere título y prioridad).
-  * `PATCH /tasks/:id`: Actualizar estado o descripción.
-  * `DELETE /tasks/:id`: Eliminar registro permanente.
+---
 
-### Proyectos (`/projects`)
+## 🚀 Funcionalidades
 
-  * `GET /projects`: Obtener categorías existentes.
-  * `POST /projects`: Crear nuevo grupo de trabajo.
+- 📊 **Gestión de Ciclo de Vida:** Creación, edición, completado y eliminación de tareas en tiempo real.
+- 🔍 **Filtro de Búsqueda Inteligente:** Localización instantánea de tareas mediante un buscador dinámico.
+- 📁 **Categorización por Proyectos:** Organización jerárquica con etiquetas visuales y selección de proyectos.
+- 🌗 **Tematización Dual:** Soporte nativo para Modo Claro y Modo Oscuro con persistencia en el navegador.
+- 🛡️ **Validación de Datos:** Uso de TypeScript en todo el flujo para asegurar la integridad de la información y prevenir errores de tipo (como el manejo automático de `createdAt`).
 
------
+---
 
-## 📚 Documentación Detallada
+## 🏗️ Arquitectura y Stack Tecnológico
 
-Puedes encontrar guías específicas en la carpeta [`/docs`](https://www.google.com/search?q=./docs/):
+La aplicación utiliza una arquitectura desacoplada para separar la lógica de negocio de la interfaz de usuario.
 
-  * 📖 [Componentes](https://www.google.com/search?q=./docs/components.md) - Guía de la UI reutilizable.
-  * ⚛️ [Hooks & Logic](https://www.google.com/search?q=./docs/hooks.md) - Optimización con `useMemo` y `useCallback`.
-  * 🔄 [Estado Global](https://www.google.com/search?q=./docs/context.md) - Implementación de Context API.
-  * 🚀 [Despliegue](https://www.google.com/search?q=./docs/deployment.md) - Configuración de Vercel y builds.
+### Stack Técnico
 
------
+- **Frontend:** React 18/19, Tailwind CSS (Diseño), Lucide React (Iconografía), Context API (Estado).
+- **Backend:** Node.js, Express, TypeScript.
+- **Seguridad:** Middlewares de CORS y validación de esquemas.
 
-## 👩‍💻 Autor
+### Estructura de Comunicación
 
-**Julia Huertas**
+```mermaid
+graph TD
+    A[Frontend React/Vite] -->|Peticiones REST| B[API Express]
+    subgraph "Capa de Cliente"
+        A --> C[Context Provider]
+        A --> D[Hooks Personalizados]
+    end
+    subgraph "Capa de Servidor"
+        B --> E[Rutas /tasks]
+        B --> F[Rutas /projects]
+        B --> G[Modelos de Datos]
+    end
+```
 
-  * GitHub: [@juliaht15](https://github.com/juliaht15)
-  * Proyecto final de Fase 5 - Fullstack Development.
+---
 
------
-**Hecho por Julia Huertas - 2026**
+**Autor:** [Julia Huertas](https://github.com/juliaht15)  
+_Proyecto Final - Desarrollo Fullstack 2026_
+
+```
+
+```

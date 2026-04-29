@@ -1,114 +1,136 @@
-import { useState } from 'react';
-import { useApp } from '../context/AppContext';
+import { useState } from "react";
+import { useApp } from "../context/AppContext";
+import { Plus } from "lucide-react";
 
 export const TaskForm = () => {
-  const { addTask, state: { projects } } = useApp();
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
-  const [priority, setPriority] = useState<'low' | 'medium' | 'high'>('medium');
-  const [timeframe, setTimeframe] = useState<'today' | 'thisWeek' | 'thisMonth'>('thisWeek');
-  const [selectedProject, setSelectedProject] = useState<string>('1');
-  const [isUrgent, setIsUrgent] = useState(false);
+  const { addTask, projects } = useApp();
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [selectedProject, setSelectedProject] = useState("");
+  const [priority, setPriority] = useState<"low" | "medium" | "high">("medium");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!title.trim()) return;
 
-    addTask({
+    // Se añade createdAt para solucionar el error de TypeScript en errores.PNG
+    await addTask({
       title,
       description,
       completed: false,
-      priority: isUrgent ? 'high' : priority,
-      timeframe,
-      projectId: selectedProject
+      priority,
+      timeframe: "thisWeek",
+      projectId: selectedProject || projects[0]?.id || "",
+      createdAt: new Date().toISOString(),
     });
 
-    setTitle('');
-    setDescription('');
-    setPriority('medium');
-    setTimeframe('thisWeek');
-    setIsUrgent(false);
+    // Resetear estado
+    setTitle("");
+    setDescription("");
+    setIsExpanded(false);
   };
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg border dark:border-gray-700 p-6">
-      <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-        <span className="text-2xl">✨</span>
-        Crear Nueva Tarea
-      </h2>
-
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
+    <div
+      className={`w-full max-w-2xl mx-auto bg-white dark:bg-slate-800 transition-all duration-300 border-2 rounded-xl overflow-hidden ${
+        isExpanded
+          ? "border-emerald-500 shadow-lg shadow-emerald-500/10"
+          : "border-slate-100 dark:border-slate-700 hover:border-slate-200"
+      }`}
+    >
+      {!isExpanded ? (
+        <div
+          onClick={() => setIsExpanded(true)}
+          className="p-4 flex items-center gap-3 cursor-pointer group"
+        >
+          <div className="bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 p-1.5 rounded-lg group-hover:bg-emerald-100 transition-colors">
+            <Plus size={20} />
+          </div>
+          <span className="text-slate-400 font-medium text-sm">
+            Añadir una nueva tarea...
+          </span>
+        </div>
+      ) : (
+        <form
+          onSubmit={handleSubmit}
+          className="p-5 space-y-4 animate-in fade-in duration-300"
+        >
           <input
+            autoFocus
             type="text"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            placeholder="¿Qué necesitas hacer?"
-            className="w-full px-4 py-3 rounded-lg border dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500"
-            required
+            placeholder="Título de la tarea"
+            className="w-full text-lg font-semibold bg-transparent border-none focus:ring-0 placeholder-slate-300 dark:text-white dark:placeholder-slate-500"
           />
-        </div>
-
-        <div>
           <textarea
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            placeholder="Añade una descripción (opcional)"
+            placeholder="Añadir notas o detalles adicionales..."
+            className="w-full text-sm bg-transparent border-none focus:ring-0 placeholder-slate-400 dark:placeholder-slate-600 resize-none dark:text-slate-300"
             rows={2}
-            className="w-full px-4 py-3 rounded-lg border dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500 resize-none"
           />
-        </div>
 
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">📁 Proyecto</label>
-            <select
-              value={selectedProject}
-              onChange={(e) => setSelectedProject(e.target.value)}
-              className="w-full px-4 py-2 rounded-lg border dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
-            >
-              {projects.map(project => (
-                <option key={project.id} value={project.id}>{project.name}</option>
-              ))}
-            </select>
+          <div className="flex flex-wrap items-center gap-4 pt-4 border-t border-slate-50 dark:border-slate-700">
+            <div className="flex flex-col gap-1">
+              <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                Proyecto
+              </label>
+              <select
+                value={selectedProject}
+                onChange={(e) => setSelectedProject(e.target.value)}
+                className="text-xs font-semibold bg-slate-100 dark:bg-slate-700 px-3 py-2 rounded-md border-none focus:ring-1 focus:ring-emerald-500 dark:text-slate-200"
+              >
+                <option value="">Seleccionar...</option>
+                {projects.map((p) => (
+                  <option key={p.id} value={p.id}>
+                    {p.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="flex flex-col gap-1">
+              <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                Prioridad
+              </label>
+              <div className="flex gap-1.5">
+                {(["low", "medium", "high"] as const).map((p) => (
+                  <button
+                    key={p}
+                    type="button"
+                    onClick={() => setPriority(p)}
+                    className={`px-3 py-1.5 text-[10px] font-bold uppercase rounded-md transition-all ${
+                      priority === p
+                        ? "bg-blue-600 text-white shadow-sm"
+                        : "bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400 hover:bg-slate-200"
+                    }`}
+                  >
+                    {p === "low" ? "Baja" : p === "medium" ? "Media" : "Alta"}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="ml-auto flex items-center gap-2 self-end">
+              <button
+                type="button"
+                onClick={() => setIsExpanded(false)}
+                className="px-4 py-2 text-xs font-bold text-slate-500 hover:text-slate-700 dark:hover:text-slate-300"
+              >
+                Cancelar
+              </button>
+              <button
+                type="submit"
+                className="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-2 rounded-lg text-xs font-bold shadow-md transition-all active:scale-95 shadow-emerald-500/20"
+              >
+                Guardar Tarea
+              </button>
+            </div>
           </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">⏰ Cuándo</label>
-            <select
-              value={timeframe}
-              onChange={(e) => setTimeframe(e.target.value as any)}
-              className="w-full px-4 py-2 rounded-lg border dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
-            >
-              <option value="today">📅 Hoy</option>
-              <option value="thisWeek">📆 Esta semana</option>
-              <option value="thisMonth">📅 Este mes</option>
-            </select>
-          </div>
-        </div>
-
-        <div className="flex items-center gap-3 p-3 bg-red-50 dark:bg-red-900/20 border-2 border-red-300 dark:border-red-700 rounded-lg cursor-pointer" onClick={() => setIsUrgent(!isUrgent)}>
-          <input
-            type="checkbox"
-            checked={isUrgent}
-            onChange={(e) => setIsUrgent(e.target.checked)}
-            className="w-5 h-5 rounded border-red-300 text-red-600 focus:ring-red-500"
-          />
-          <div className="flex-1">
-            <label className="text-sm font-bold text-red-700 dark:text-red-400 cursor-pointer">
-              🚨 Marcar como URGENTE
-            </label>
-            <p className="text-xs text-red-600 dark:text-red-500">Esto establecerá la prioridad al máximo</p>
-          </div>
-        </div>
-
-        <button
-          type="submit"
-          className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-semibold py-3 rounded-lg transition transform hover:scale-[1.02] shadow-lg"
-        >
-          ➕ Añadir Tarea
-        </button>
-      </form>
+        </form>
+      )}
     </div>
   );
 };
