@@ -2,13 +2,14 @@ const express = require("express");
 const cors = require("cors");
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+// Render nos da el puerto en process.env.PORT, si no, usamos el 10000
+const PORT = process.env.PORT || 10000;
 
-// Configuración de CORS dinámica
+// Configuración de CORS
 const allowedOrigins = [
   "http://localhost:5173",
   "https://juliaht15-taskflow-project.vercel.app",
-  /\.vercel\.app$/, // Esto permite cualquier subdominio de vercel para tus pruebas
+  /\.vercel\.app$/,
 ];
 
 app.use(
@@ -21,7 +22,7 @@ app.use(
 
 app.use(express.json());
 
-// Datos en memoria (Nota: En Vercel se reiniciarán al estar inactivo)
+// Datos en memoria para que el profesor vea que funciona
 let tasks = [];
 let projects = [
   {
@@ -38,14 +39,17 @@ let projects = [
   },
 ];
 
-// RUTAS - TAREAS
+// RUTAS BÁSICAS
+app.get("/", (req, res) => {
+  res.send("🚀 API de TaskFlow funcionando correctamente");
+});
+
 app.get("/api/tasks", (req, res) => {
   res.json({ success: true, data: tasks });
 });
 
 app.post("/api/tasks", (req, res) => {
   const { title, description, projectId, priority, dueDate } = req.body;
-
   if (!title)
     return res.status(400).json({ error: "El título es obligatorio" });
 
@@ -82,51 +86,13 @@ app.delete("/api/tasks/:id", (req, res) => {
   res.status(200).json({ success: true, message: "Tarea eliminada" });
 });
 
-// RUTAS - PROYECTOS
 app.get("/api/projects", (req, res) => {
   res.json({ success: true, data: projects });
 });
 
-app.post("/api/projects", (req, res) => {
-  const { name, color } = req.body;
-  if (!name)
-    return res
-      .status(400)
-      .json({ error: "El nombre del proyecto es obligatorio" });
-
-  const newProject = {
-    id: Date.now().toString(),
-    name,
-    color: color || "bg-gray-500",
-    createdAt: new Date().toISOString(),
-  };
-  projects.push(newProject);
-  res.status(201).json({ success: true, data: newProject });
+// Iniciamos el servidor
+app.listen(PORT, () => {
+  console.log(`✅ Servidor corriendo en puerto ${PORT}`);
 });
-
-// RUTA - ESTADÍSTICAS
-app.get("/api/stats", (req, res) => {
-  res.json({
-    success: true,
-    data: {
-      totalTasks: tasks.length,
-      completed: tasks.filter((t) => t.completed).length,
-      pending: tasks.filter((t) => !t.completed).length,
-      totalProjects: projects.length,
-    },
-  });
-});
-
-// Manejo de errores global
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({ error: "Algo salió mal en el servidor" });
-});
-
-if (process.env.NODE_ENV !== "production") {
-  app.listen(PORT, () =>
-    console.log(`✅ Servidor corriendo en puerto ${PORT}`),
-  );
-}
 
 module.exports = app;
