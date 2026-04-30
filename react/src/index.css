@@ -2,34 +2,43 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --brand-emerald: #10b981;
-  --brand-purple: #9333ea;
-  --bg-main: #f8fafc;
-}
-
-.dark {
-  --bg-main: #0f172a;
-}
-
-body {
-  @apply bg-[var(--bg-main)] text-slate-900 dark:text-slate-100 font-sans antialiased transition-colors duration-300;
-}
-
-@layer components {
-  .btn-primary {
-    @apply bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-2.5 px-6 rounded-xl 
-           transition-all active:scale-95 shadow-md shadow-emerald-100 dark:shadow-none;
+@layer base {
+  :root {
+    --foreground-rgb: 15, 23, 42;
+    --background-start-rgb: 255, 255, 255;
+    --background-end-rgb: 255, 255, 255;
   }
 
-  .card-style {
-    @apply bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 
-           rounded-2xl shadow-sm hover:shadow-md transition-all;
+  .dark {
+    --foreground-rgb: 248, 250, 252;
+    --background-start-rgb: 2, 6, 23;
+    --background-end-rgb: 2, 6, 23;
   }
 
-  .input-style {
-    @apply w-full bg-slate-50 dark:bg-slate-700/50 border border-slate-200 dark:border-slate-600 
-           rounded-xl py-2 px-4 outline-none focus:ring-2 focus:ring-purple-500 
-           text-slate-900 dark:text-white transition-all;
+  body {
+    @apply antialiased text-slate-900 bg-white dark:bg-slate-950 dark:text-slate-100 transition-colors duration-300;
+    font-family:
+      "Inter",
+      system-ui,
+      -apple-system,
+      sans-serif;
   }
+}
+
+/* Scrollbars minimalistas para las columnas de TaskFlow */
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-slate-200 dark:bg-slate-800 rounded-full hover:bg-slate-300 dark:hover:bg-slate-700;
+}
+
+/* Eliminar el estilo por defecto de los inputs de fecha en Dark Mode */
+input[type="date"]::-webkit-calendar-picker-indicator {
+  @apply dark:invert opacity-50;
 }

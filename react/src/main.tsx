@@ -4,13 +4,7 @@ import App from "./App";
 import { AppProvider } from "./context/AppContext";
 import "./index.css";
 
-const rootElement = document.getElementById("root");
-
-if (!rootElement) {
-  throw new Error("No se encontró el elemento raíz.");
-}
-
-ReactDOM.createRoot(rootElement).render(
+ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <AppProvider>
       <App />

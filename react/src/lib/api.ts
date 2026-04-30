@@ -1,5 +1,5 @@
 import axios from "axios";
-import { Task, Project, CreateTaskData, CreateProjectData } from "../types";
+import { Task, Project } from "../types";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
 
@@ -8,28 +8,20 @@ export const api = axios.create({
   headers: { "Content-Type": "application/json" },
 });
 
-// Interceptor para manejar la estructura de respuesta del backend ({ data: ... })
+// Interceptor para extraer la data
 api.interceptors.response.use((response) => response.data);
 
 export const taskService = {
-  getAll: () => api.get<any, { data: Task[] }>("/tasks"),
-  create: (data: CreateTaskData) =>
-    api.post<any, { data: Task }>("/tasks", data),
-  update: (id: number | string, data: Partial<Task>) =>
-    api.patch<any, { data: Task }>(`/tasks/${id}`, data),
-  delete: (id: number | string) => api.delete(`/tasks/${id}`),
+  // El uso de <any, Task[]> mapea la respuesta limpia del interceptor
+  getAll: () => api.get<any, Task[]>("/tasks"),
+  create: (data: Omit<Task, "id" | "createdAt">) =>
+    api.post<any, Task>("/tasks", data),
+  update: (id: string, data: Partial<Task>) =>
+    api.patch<any, Task>(`/tasks/${id}`, data),
+  delete: (id: string) => api.delete(`/tasks/${id}`),
 };
 
 export const projectService = {
-  getAll: () => api.get<any, { data: Project[] }>("/projects"),
-  create: (data: CreateProjectData) =>
-    api.post<any, { data: Project }>("/projects", data),
+  getAll: () => api.get<any, Project[]>("/projects"),
+  create: (name: string) => api.post<any, Project>("/projects", { name }),
 };
-
-export const formatDate = (date: string) =>
-  new Intl.DateTimeFormat("es-ES", {
-    dateStyle: "medium",
-    timeStyle: "short",
-  }).format(new Date(date));
-
-export const generateId = () => Math.random().toString(36).substring(2, 9);

@@ -1,46 +1,25 @@
-export type Theme = "light" | "dark";
-
-export type Priority = "low" | "medium" | "high";
-
-export type Timeframe = "today" | "thisWeek" | "thisMonth";
-
 export interface Task {
-  id: number | string;
+  id: string;
   title: string;
   description?: string;
   completed: boolean;
-  priority?: Priority;
-  timeframe?: Timeframe;
-  projectId: number | string;
+  projectId?: string;
+  dueDate?: string;
   createdAt: string;
 }
 
 export interface Project {
   id: string;
   name: string;
-  color: string;
-  createdAt: string;
+  color?: string;
 }
 
-export interface AppState {
+export interface AppContextType {
   tasks: Task[];
   projects: Project[];
   loading: boolean;
-  theme: Theme;
-  searchQuery: string;
-}
-
-export type CreateTaskData = Omit<Task, "id" | "createdAt">;
-export type CreateProjectData = Omit<Project, "id" | "createdAt">;
-
-export interface AppContextType extends AppState {
-  setSearchQuery: (query: string) => void;
-  setTheme: (theme: Theme) => void;
-  toggleTheme: () => void;
-  addTask: (task: CreateTaskData) => Promise<void>;
-  toggleTask: (id: number | string) => Promise<void>;
-  deleteTask: (id: number | string) => Promise<void>;
-  addProject: (project: CreateProjectData) => Promise<void>;
-  moveTaskToProject: (taskId: number | string, projectId: string) => void;
-  updateTaskTitle: (taskId: number | string, newTitle: string) => void;
+  addTask: (task: Omit<Task, "id" | "createdAt">) => Promise<void>;
+  addProject: (name: string) => Promise<void>;
+  toggleTask: (id: string) => Promise<void>;
+  deleteTask: (id: string) => Promise<void>;
 }

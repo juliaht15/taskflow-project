@@ -1,89 +1,77 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
-import {
-  Task,
-  Project,
-  Theme,
-  CreateTaskData,
-  CreateProjectData,
-} from "../types";
+// react/src/context/AppContext.tsx
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from "react";
+import { Task, Project, AppContextType } from "../types";
+import { taskService, projectService } from "../lib/api";
 
-interface ExtendedContextType {
-  tasks: Task[];
-  projects: Project[];
-  loading: boolean;
-  theme: Theme;
-  searchQuery: string;
-  setSearchQuery: (query: string) => void;
-  setTheme: (theme: Theme) => void;
-  toggleTheme: () => void;
-  addTask: (task: CreateTaskData) => Promise<void>;
-  toggleTask: (id: number | string) => Promise<void>;
-  deleteTask: (id: number | string) => Promise<void>;
-  addProject: (project: CreateProjectData) => Promise<void>;
-  moveTaskToProject: (taskId: number | string, projectId: string) => void;
-  updateTaskTitle: (taskId: number | string, newTitle: string) => void;
-}
+const AppContext = createContext<AppContextType | undefined>(undefined);
 
-const AppContext = createContext<ExtendedContextType | undefined>(undefined);
-
-export const AppProvider = ({ children }: { children: React.ReactNode }) => {
+export const AppProvider: React.FC<{ children: ReactNode }> = ({
+  children,
+}) => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [projects, setProjects] = useState<Project[]>([]);
-  const [theme, setTheme] = useState<Theme>(() => {
-    return (localStorage.getItem("theme") as Theme) || "light";
-  });
-  const [searchQuery, setSearchQuery] = useState("");
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const root = window.document.documentElement;
-    root.classList.remove("light", "dark");
-    root.classList.add(theme);
-    localStorage.setItem("theme", theme);
-  }, [theme]);
-
-  const toggleTheme = () =>
-    setTheme((prev) => (prev === "light" ? "dark" : "light"));
-
-  const addTask = async (taskData: CreateTaskData) => {
-    const newTask: Task = {
-      ...taskData,
-      id: Date.now(),
-      createdAt: new Date().toISOString(),
+    const fetchData = async () => {
+      try {
+        const tData = await taskService.getAll();
+        const pData = await projectService.getAll();
+        setTasks(tData);
+        setProjects(pData);
+      } catch (e) {
+        console.error("Error cargando datos:", e);
+      } finally {
+        setLoading(false);
+      }
     };
-    setTasks((prev) => [newTask, ...prev]);
+    fetchData();
+  }, []);
+
+  const addTask = async (data: Omit<Task, "id" | "createdAt">) => {
+    try {
+      const newTask = await taskService.create(data);
+      setTasks((prev) => [newTask, ...prev]);
+    } catch (e) {
+      console.error(e);
+    }
   };
 
-  const toggleTask = async (id: number | string) => {
-    setTasks((prev) =>
-      prev.map((t) => (t.id === id ? { ...t, completed: !t.completed } : t)),
-    );
+  const addProject = async (name: string) => {
+    try {
+      const newProj = await projectService.create(name);
+      setProjects((prev) => [...prev, newProj]);
+    } catch (e) {
+      console.error(e);
+    }
   };
 
-  const deleteTask = async (id: number | string) => {
-    setTasks((prev) => prev.filter((t) => t.id !== id));
+  const toggleTask = async (id: string) => {
+    try {
+      const task = tasks.find((t) => t.id === id);
+      if (!task) return;
+      const updated = await taskService.update(id, {
+        completed: !task.completed,
+      });
+      setTasks((prev) => prev.map((t) => (t.id === id ? updated : t)));
+    } catch (e) {
+      console.error(e);
+    }
   };
 
-  const addProject = async (projectData: CreateProjectData) => {
-    const newProject: Project = {
-      ...projectData,
-      id: Date.now().toString(),
-      createdAt: new Date().toISOString(),
-    };
-    setProjects((prev) => [...prev, newProject]);
-  };
-
-  const moveTaskToProject = (taskId: number | string, projectId: string) => {
-    setTasks((prev) =>
-      prev.map((t) =>
-        t.id === taskId ? { ...t, projectId: Number(projectId) } : t,
-      ),
-    );
-  };
-
-  const updateTaskTitle = (taskId: number | string, newTitle: string) => {
-    setTasks((prev) =>
-      prev.map((t) => (t.id === taskId ? { ...t, title: newTitle } : t)),
-    );
+  const deleteTask = async (id: string) => {
+    try {
+      await taskService.delete(id);
+      setTasks((prev) => prev.filter((t) => t.id !== id));
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   return (
@@ -91,18 +79,11 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
       value={{
         tasks,
         projects,
-        theme,
-        searchQuery,
-        loading: false,
-        setSearchQuery,
-        setTheme,
-        toggleTheme,
+        loading,
         addTask,
+        addProject,
         toggleTask,
         deleteTask,
-        addProject,
-        moveTaskToProject,
-        updateTaskTitle,
       }}
     >
       {children}
@@ -110,6 +91,8 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
+// Esta línea de abajo es el truco de magia para eliminar el aviso amarillo de Fast Refresh
+// eslint-disable-next-line react-refresh/only-export-components
 export const useAppContext = () => {
   const context = useContext(AppContext);
   if (!context)
