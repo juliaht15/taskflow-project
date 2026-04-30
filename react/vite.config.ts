@@ -7,14 +7,14 @@ export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
-      // Esto permite usar '@' para referirte a la carpeta 'src'
+      // Configuración de alias para importaciones limpias (ej. import { Task } from "@/types")
       "@": path.resolve(__dirname, "./src"),
     },
   },
   server: {
     port: 5173,
     proxy: {
-      // Configuración de proxy para evitar problemas de CORS en desarrollo local
+      // Redirige las llamadas locales /api al servidor backend para evitar bloqueos de CORS
       "/api": {
         target: "http://localhost:3000",
         changeOrigin: true,
@@ -24,5 +24,7 @@ export default defineConfig({
   build: {
     outDir: "dist",
     emptyOutDir: true,
+    // Genera sourcemaps para facilitar la depuración en producción si fuera necesario
+    sourcemap: true,
   },
 });

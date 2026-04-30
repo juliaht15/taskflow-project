@@ -16,18 +16,20 @@
     "noEmit": true,
     "jsx": "react-jsx",
 
-    /* Alias de rutas */
+    /* Alias de rutas corregido */
+    /* Eliminamos baseUrl y usamos rutas relativas al archivo config */
     "paths": {
       "@/*": ["./src/*"]
     },
 
-    /* Tipos de Vite */
+    /* Tipos de Vite y Node */
     "types": ["vite/client", "node"],
 
-    /* Linting - Limpiado para evitar errores de opción desconocida */
-    "noUnusedLocals": false,
-    "noUnusedParameters": false,
+    /* Calidad de Código */
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src", "src/**/*.ts", "src/**/*.tsx"]
+  "include": ["src", "vite.config.ts"],
+  "exclude": ["node_modules", "dist"]
 }

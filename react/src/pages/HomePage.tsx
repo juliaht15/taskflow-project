@@ -1,4 +1,4 @@
-import { useApp } from "../context/AppContext";
+import { useAppContext } from "../context/AppContext";
 import {
   Layout,
   TaskForm,
@@ -9,8 +9,7 @@ import {
 } from "../components";
 
 export default function HomePage() {
-  // Usamos la desestructuración del estado que definimos en AppState
-  const { tasks, projects } = useApp();
+  const { tasks, projects, addTask } = useAppContext();
 
   return (
     <Layout>
@@ -18,18 +17,18 @@ export default function HomePage() {
         {/* Sección superior: Estadísticas rápidas */}
         <StatsWidget tasks={tasks} />
 
-        {/* Grid principal responsivo: 1 columna en móvil, 4 en pantallas grandes */}
+        {/* Grid principal responsivo */}
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           {/* Columna Izquierda: Gestión de Proyectos */}
-          <aside className="lg:col-span-1">
-            <ProjectWidget projects={projects} />
+          <aside className="lg:col-span-1 space-y-6">
+            <ProjectWidget projects={projects} tasks={tasks} />
           </aside>
 
           {/* Columna Central: El "Feed" de trabajo */}
           <main className="lg:col-span-2 space-y-6">
-            <TaskForm />
+            <TaskForm onTaskCreated={addTask} projects={projects} />
 
-            <div className="card-container p-6">
+            <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
               <header className="flex items-center justify-between mb-6">
                 <h2 className="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-3">
                   <span className="p-2 bg-purple-100 dark:bg-purple-900/30 rounded-lg">

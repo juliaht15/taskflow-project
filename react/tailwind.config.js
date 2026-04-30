@@ -5,27 +5,29 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Puedes añadir aquí tus colores personalizados si quieres que TaskFlow sea único
+        brand: {
+          emerald: "#10b981",
+          purple: "#9333ea",
+        },
       },
       animation: {
-        "fade-in": "fadeIn 0.5s ease-out",
+        "fade-in": "fadeIn 0.4s ease-out",
       },
       keyframes: {
         fadeIn: {
-          "0%": { opacity: "0" },
-          "100%": { opacity: "1" },
+          "0%": { opacity: "0", transform: "translateY(10px)" },
+          "100%": { opacity: "1", transform: "translateY(0)" },
         },
       },
     },
   },
-  // Safelist es importante para que los colores de los proyectos no desaparezcan en producción
   safelist: [
     "bg-blue-500",
     "bg-purple-500",
-    "bg-green-500",
+    "bg-emerald-500",
     "bg-red-500",
-    "bg-yellow-500",
-    "bg-gray-500",
+    "bg-amber-500",
+    "bg-slate-500",
   ],
   plugins: [require("@tailwindcss/forms"), require("@tailwindcss/typography")],
 };

@@ -1,15 +1,17 @@
 export type Theme = "light" | "dark";
+
 export type Priority = "low" | "medium" | "high";
+
 export type Timeframe = "today" | "thisWeek" | "thisMonth";
 
 export interface Task {
-  id: string;
+  id: number | string;
   title: string;
-  description: string;
+  description?: string;
   completed: boolean;
-  priority: Priority;
-  timeframe: Timeframe;
-  projectId: string;
+  priority?: Priority;
+  timeframe?: Timeframe;
+  projectId: number | string;
   createdAt: string;
 }
 
@@ -25,22 +27,20 @@ export interface AppState {
   projects: Project[];
   loading: boolean;
   theme: Theme;
+  searchQuery: string;
 }
 
-/**
- * Utilidades para la creación de datos (Omiten campos automáticos)
- * Útiles para los formularios antes de enviar a la API
- */
 export type CreateTaskData = Omit<Task, "id" | "createdAt">;
 export type CreateProjectData = Omit<Project, "id" | "createdAt">;
 
-/**
- * Definición de las acciones del Contexto (opcional pero recomendado)
- */
 export interface AppContextType extends AppState {
-  addTask: (task: CreateTaskData) => Promise<void>;
-  toggleTask: (id: string) => Promise<void>;
-  deleteTask: (id: string) => Promise<void>;
-  addProject: (project: CreateProjectData) => Promise<void>;
+  setSearchQuery: (query: string) => void;
   setTheme: (theme: Theme) => void;
+  toggleTheme: () => void;
+  addTask: (task: CreateTaskData) => Promise<void>;
+  toggleTask: (id: number | string) => Promise<void>;
+  deleteTask: (id: number | string) => Promise<void>;
+  addProject: (project: CreateProjectData) => Promise<void>;
+  moveTaskToProject: (taskId: number | string, projectId: string) => void;
+  updateTaskTitle: (taskId: number | string, newTitle: string) => void;
 }

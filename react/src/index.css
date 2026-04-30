@@ -4,7 +4,7 @@
 
 :root {
   --brand-emerald: #10b981;
-  --brand-blue: #2563eb;
+  --brand-purple: #9333ea;
   --bg-main: #f8fafc;
 }
 
@@ -13,22 +13,23 @@
 }
 
 body {
-  @apply bg-[var(--bg-main)] text-slate-900 dark:text-slate-100 font-sans;
-}
-
-/* Forzar eliminación de rosas/lilas del logo anterior */
-[class*="purple"],
-[class*="pink"],
-[class*="fuchsia"] {
-  @apply text-blue-600 border-blue-600 bg-blue-50 !important;
+  @apply bg-[var(--bg-main)] text-slate-900 dark:text-slate-100 font-sans antialiased transition-colors duration-300;
 }
 
 @layer components {
   .btn-primary {
-    @apply bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-4 rounded-lg transition-all;
+    @apply bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-2.5 px-6 rounded-xl 
+           transition-all active:scale-95 shadow-md shadow-emerald-100 dark:shadow-none;
   }
 
   .card-style {
-    @apply bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl shadow-sm;
+    @apply bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 
+           rounded-2xl shadow-sm hover:shadow-md transition-all;
+  }
+
+  .input-style {
+    @apply w-full bg-slate-50 dark:bg-slate-700/50 border border-slate-200 dark:border-slate-600 
+           rounded-xl py-2 px-4 outline-none focus:ring-2 focus:ring-purple-500 
+           text-slate-900 dark:text-white transition-all;
   }
 }

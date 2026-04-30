@@ -14,7 +14,7 @@ export default tseslint.config(
       globals: {
         ...globals.browser,
         ...globals.es2021,
-        ...globals.node, // Añadido para que reconozca variables de Node en configs
+        ...globals.node,
       },
     },
     plugins: {
@@ -28,8 +28,9 @@ export default tseslint.config(
         { allowConstantExport: true },
       ],
       "@typescript-eslint/no-unused-vars": "warn",
-      "@typescript-eslint/no-explicit-any": "off", // Permite 'any' para no trabarte mientras programas
+      "@typescript-eslint/no-explicit-any": "off",
       "react-hooks/exhaustive-deps": "warn",
+      "no-console": ["warn", { allow: ["warn", "error"] }],
     },
   },
 );
