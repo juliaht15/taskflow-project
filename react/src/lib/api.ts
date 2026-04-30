@@ -1,16 +1,25 @@
 import axios from "axios";
 import { Task, Project } from "../types";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
+// Forzamos que la URL termine en /api si no lo hace ya
+const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
+const CLEAN_URL = BASE_URL.endsWith("/") ? BASE_URL.slice(0, -1) : BASE_URL;
 
 export const api = axios.create({
-  baseURL: API_URL,
+  baseURL: CLEAN_URL,
   headers: { "Content-Type": "application/json" },
 });
 
 api.interceptors.response.use(
   (response) => response.data,
-  (error) => Promise.reject(error),
+  (error) => {
+    console.error(
+      "Error en la llamada:",
+      error.response?.status,
+      error.message,
+    );
+    return Promise.reject(error);
+  },
 );
 
 export const taskService = {
