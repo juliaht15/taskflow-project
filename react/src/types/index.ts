@@ -3,6 +3,7 @@ export interface Task {
   title: string;
   description?: string;
   completed: boolean;
+  priority: "low" | "medium" | "high";
   dueDate?: string;
   projectId?: string;
   createdAt: string;
@@ -22,4 +23,5 @@ export interface AppContextType {
   addProject: (name: string) => Promise<any>;
   toggleTask: (id: string) => Promise<void>;
   deleteTask: (id: string) => Promise<void>;
+  deleteProject: (id: string) => Promise<void>;
 }

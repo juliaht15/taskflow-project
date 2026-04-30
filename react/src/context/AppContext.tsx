@@ -20,14 +20,12 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [tData, pData] = await Promise.all([
-          taskService.getAll(),
-          projectService.getAll(),
-        ]);
+        const tData = await taskService.getAll();
+        const pData = await projectService.getAll();
         setTasks(tData);
         setProjects(pData);
       } catch (e) {
-        console.error("Error inicial:", e);
+        console.error("Error al cargar datos:", e);
       } finally {
         setLoading(false);
       }
@@ -35,40 +33,36 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({
     fetchData();
   }, []);
 
-  const addTask = async (data: Omit<Task, "id" | "createdAt">) => {
+  const addTask = async (data: any) => {
     try {
       const newTask = await taskService.create(data);
-      if (newTask) {
-        setTasks((prev) => [newTask, ...prev]);
-        return newTask;
-      }
-    } catch (e) {
-      console.error("Error al crear tarea:", e);
+      setTasks((prev) => [newTask, ...prev]);
+      return newTask;
+    } catch {
+      console.error("Error al añadir tarea");
     }
   };
 
   const addProject = async (name: string) => {
     try {
       const newProj = await projectService.create(name);
-      if (newProj) {
-        setProjects((prev) => [...prev, newProj]);
-        return newProj;
-      }
-    } catch (e) {
-      console.error("Error al crear carpeta:", e);
+      setProjects((prev) => [...prev, newProj]);
+      return newProj;
+    } catch {
+      console.error("Error al añadir carpeta");
     }
   };
 
   const toggleTask = async (id: string) => {
+    const task = tasks.find((t) => t.id === id);
+    if (!task) return;
     try {
-      const task = tasks.find((t) => t.id === id);
-      if (!task) return;
       const updated = await taskService.update(id, {
         completed: !task.completed,
       });
       setTasks((prev) => prev.map((t) => (t.id === id ? updated : t)));
-    } catch (e) {
-      console.error(e);
+    } catch {
+      console.error("Error al actualizar tarea");
     }
   };
 
@@ -76,8 +70,18 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({
     try {
       await taskService.delete(id);
       setTasks((prev) => prev.filter((t) => t.id !== id));
-    } catch (e) {
-      console.error(e);
+    } catch {
+      console.error("Error al borrar tarea");
+    }
+  };
+
+  const deleteProject = async (id: string) => {
+    try {
+      await projectService.delete(id);
+      setProjects((prev) => prev.filter((p) => p.id !== id));
+      setTasks((prev) => prev.filter((t) => t.projectId !== id));
+    } catch {
+      console.error("Error al borrar carpeta");
     }
   };
 
@@ -91,6 +95,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({
         addProject,
         toggleTask,
         deleteTask,
+        deleteProject,
       }}
     >
       {children}
