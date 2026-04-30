@@ -1,7 +1,7 @@
 import axios from "axios";
 import { Task, Project } from "../types";
 
-const rawUrl = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
+const rawUrl = "https://taskflow-api-8d6c.onrender.com/api";
 const BASE_URL = rawUrl.trim().replace(/\/+$/, "");
 
 export const api = axios.create({
