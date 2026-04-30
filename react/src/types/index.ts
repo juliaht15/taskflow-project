@@ -3,23 +3,23 @@ export interface Task {
   title: string;
   description?: string;
   completed: boolean;
-  projectId?: string;
   dueDate?: string;
+  projectId?: string;
   createdAt: string;
 }
 
 export interface Project {
   id: string;
   name: string;
-  color?: string;
+  createdAt: string;
 }
 
 export interface AppContextType {
   tasks: Task[];
   projects: Project[];
   loading: boolean;
-  addTask: (task: Omit<Task, "id" | "createdAt">) => Promise<void>;
-  addProject: (name: string) => Promise<void>;
+  addTask: (data: Omit<Task, "id" | "createdAt">) => Promise<any>;
+  addProject: (name: string) => Promise<any>;
   toggleTask: (id: string) => Promise<void>;
   deleteTask: (id: string) => Promise<void>;
 }

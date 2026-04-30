@@ -1,4 +1,3 @@
-// react/src/context/AppContext.tsx
 import React, {
   createContext,
   useContext,
@@ -21,12 +20,14 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const tData = await taskService.getAll();
-        const pData = await projectService.getAll();
+        const [tData, pData] = await Promise.all([
+          taskService.getAll(),
+          projectService.getAll(),
+        ]);
         setTasks(tData);
         setProjects(pData);
       } catch (e) {
-        console.error("Error cargando datos:", e);
+        console.error("Error inicial:", e);
       } finally {
         setLoading(false);
       }
@@ -37,18 +38,24 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({
   const addTask = async (data: Omit<Task, "id" | "createdAt">) => {
     try {
       const newTask = await taskService.create(data);
-      setTasks((prev) => [newTask, ...prev]);
+      if (newTask) {
+        setTasks((prev) => [newTask, ...prev]);
+        return newTask;
+      }
     } catch (e) {
-      console.error(e);
+      console.error("Error al crear tarea:", e);
     }
   };
 
   const addProject = async (name: string) => {
     try {
       const newProj = await projectService.create(name);
-      setProjects((prev) => [...prev, newProj]);
+      if (newProj) {
+        setProjects((prev) => [...prev, newProj]);
+        return newProj;
+      }
     } catch (e) {
-      console.error(e);
+      console.error("Error al crear carpeta:", e);
     }
   };
 
@@ -91,7 +98,6 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({
   );
 };
 
-// Esta línea de abajo es el truco de magia para eliminar el aviso amarillo de Fast Refresh
 // eslint-disable-next-line react-refresh/only-export-components
 export const useAppContext = () => {
   const context = useContext(AppContext);

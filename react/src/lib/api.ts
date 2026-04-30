@@ -8,11 +8,12 @@ export const api = axios.create({
   headers: { "Content-Type": "application/json" },
 });
 
-// Interceptor para extraer la data
-api.interceptors.response.use((response) => response.data);
+api.interceptors.response.use(
+  (response) => response.data,
+  (error) => Promise.reject(error),
+);
 
 export const taskService = {
-  // El uso de <any, Task[]> mapea la respuesta limpia del interceptor
   getAll: () => api.get<any, Task[]>("/tasks"),
   create: (data: Omit<Task, "id" | "createdAt">) =>
     api.post<any, Task>("/tasks", data),
