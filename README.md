@@ -49,10 +49,11 @@ npm run dev
 ## 🚀 Funcionalidades
 
 - **Gestión de Ciclo de Vida:** Creación, edición, completado y eliminación de tareas en tiempo real.
-- **Filtro de Búsqueda Inteligente:** Localización instantánea de tareas mediante un buscador dinámico.
-- **Categorización por Proyectos:** Organización jerárquica con etiquetas visuales y selección de proyectos.
-- **Tematización Dual:** Soporte nativo para Modo Claro y Modo Oscuro con persistencia.
-- **Validación de Datos:** Uso de TypeScript en todo el flujo para asegurar la integridad de la información.
+- **Filtro de Búsqueda Inteligente:** Localización instantánea de tareas mediante un buscador dinámico integrado en el header.
+- **Categorización por Proyectos:** Organización jerárquica con etiquetas visuales, creación dinámica de carpetas y filtrado lateral.
+- **Sistema de Prioridades:** Clasificación de tareas mediante niveles (Alta, Media, Baja) con indicadores visuales de color.
+- **Tematización Dual:** Soporte nativo para Modo Claro y Modo Oscuro con persistencia visual.
+- **Validación de Datos:** Uso de TypeScript en todo el flujo para asegurar la integridad de la información y minimizar errores en producción.
 
 ---
 
@@ -60,23 +61,24 @@ npm run dev
 
 ### Stack Técnico
 
-- **Frontend:** React 18/19, Tailwind CSS, Lucide React, Context API.
+- **Frontend:** React 18/19, Tailwind CSS, Lucide React, Context API para la gestión de estado global.
 - **Backend:** Node.js, Express, TypeScript.
-- **Seguridad:** Middlewares de CORS y validación de esquemas.
+- **Comunicación:** Axios con interceptores personalizados para una gestión de errores centralizada y limpieza de datos.
+- **Seguridad:** Middlewares de CORS y validación de esquemas para la protección de la API.
 
 ### Estructura de Comunicación
 
 ```mermaid
 graph TD
-    A[Frontend React/Vite] -->|Peticiones REST| B[API Express]
+    A[Frontend React/Vite] -->|Peticiones REST - Axios| B[API Express en Render]
     subgraph "Capa de Cliente"
-        A --> C[Context Provider]
-        A --> D[Hooks Personalizados]
+        A --> C[Context Provider - Global State]
+        A --> D[Hooks Personalizados & Services]
     end
     subgraph "Capa de Servidor"
-        B --> E[Rutas /tasks]
-        B --> F[Rutas /projects]
-        B --> G[Modelos de Datos]
+        B --> E[Rutas /tasks - CRUD]
+        B --> F[Rutas /projects - Gestión]
+        B --> G[Modelos de Datos & TypeScript Interfaces]
     end
 ```
 
