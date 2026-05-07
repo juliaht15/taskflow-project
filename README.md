@@ -7,6 +7,7 @@
 ![NodeJS](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)
 ![Express](https://img.shields.io/badge/Express-000000?style=for-the-badge&logo=express&logoColor=white)
 ![Vercel](https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)
+![Render](https://img.shields.io/badge/Render-46E3B7?style=for-the-badge&logo=render&logoColor=white)
 
 # 📝 TaskFlow Pro
 
@@ -14,10 +15,14 @@
 
 Plataforma Fullstack diseñada para la organización eficiente de tareas y proyectos, ofreciendo una experiencia de usuario fluida con una interfaz moderna y alto rendimiento.
 
-| Despliegue   | URL                                                       |
-| ------------ | --------------------------------------------------------- |
-| Frontend     | [Vercel](https://juliaht15-taskflow-project.vercel.app)   |
-| Gestión Ágil | [Trello](https://trello.com/b/CFXX99qx/task-flow-phase-5) |
+| Servicio         | Plataforma | URL                                                                     |
+| :--------------- | :--------- | :---------------------------------------------------------------------- |
+| **Frontend**     | Vercel     | [Visitar Web](https://taskflow-project-jht.vercel.app/)                 |
+| **API Backend**  | Render     | [Endpoint API](https://taskflow-api-8d6c.onrender.com)                  |
+| **Gestión Ágil** | Trello     | [Tablero del Proyecto](https://trello.com/b/CFXX99qx/task-flow-phase-5) |
+
+> [!IMPORTANT]
+> **Nota sobre el rendimiento:** El backend utiliza un plan gratuito de Render que entra en modo reposo tras 15 minutos de inactividad. La primera carga puede demorar entre **30 y 50 segundos** mientras la instancia se reactiva. Una vez "despierta", la aplicación funciona con total normalidad.
 
 ---
 
@@ -32,24 +37,24 @@ Plataforma Fullstack diseñada para la organización eficiente de tareas y proye
 
 ## Tecnologías
 
-| Frontend     | Uso                                              |
-| ------------ | ------------------------------------------------ |
-| React 18/19  | Biblioteca principal para la interfaz de usuario |
-| Tailwind CSS | Estilizado moderno y responsive                  |
-| Context API  | Gestión de estado global de la aplicación        |
-| Lucide React | Set de iconos vectoriales                        |
+| Frontend         | Uso                                              |
+| :--------------- | :----------------------------------------------- |
+| **React 18/19**  | Biblioteca principal para la interfaz de usuario |
+| **Tailwind CSS** | Estilizado moderno y responsive                  |
+| **Context API**  | Gestión de estado global de la aplicación        |
+| **Lucide React** | Set de iconos vectoriales                        |
 
-| Backend    | Uso                                                  |
-| ---------- | ---------------------------------------------------- |
-| Node.js    | Entorno de ejecución para el servidor                |
-| Express    | Framework para la creación de la API REST            |
-| TypeScript | Tipado estático para asegurar la integridad de datos |
+| Backend        | Uso                                                  |
+| :------------- | :--------------------------------------------------- |
+| **Node.js**    | Entorno de ejecución para el servidor                |
+| **Express**    | Framework para la creación de la API REST            |
+| **TypeScript** | Tipado estático para asegurar la integridad de datos |
 
-| Auxiliares | Uso                                           |
-| ---------- | --------------------------------------------- |
-| Axios      | Cliente HTTP con interceptores personalizados |
-| CORS       | Middleware de seguridad para acceso cruzado   |
-| Vercel     | Plataforma de despliegue y hosting            |
+| Infraestructura | Uso                                           |
+| :-------------- | :-------------------------------------------- |
+| **Axios**       | Cliente HTTP con interceptores personalizados |
+| **Vercel**      | Hosting del Frontend y despliegue continuo    |
+| **Render**      | Hosting del Backend (API)                     |
 
 ---
 
@@ -57,18 +62,18 @@ Plataforma Fullstack diseñada para la organización eficiente de tareas y proye
 
 ```
 taskflow-project/
-├── react/                  # Frontend del proyecto
+├── react/                 # Frontend del proyecto
 │   ├── src/
-│   │   ├── components/     # Componentes reutilizables
-│   │   ├── context/        # Estado global (Context API)
-│   │   ├── hooks/          # Lógica personalizada
-│   │   └── services/       # Comunicación con la API (Axios)
+│   │   ├── components/    # Componentes reutilizables
+│   │   ├── context/       # Estado global (Context API)
+│   │   ├── hooks/         # Lógica personalizada
+│   │   └── services/      # Comunicación con la API (Axios)
 │   └── package.json
-├── api/                    # Backend del proyecto (Node/Express)
+├── api/                   # Backend del proyecto (Node/Express)
 │   ├── src/
-│   │   ├── routes/         # Endpoints de /tasks y /projects
-│   │   ├── controllers/    # Lógica de negocio
-│   │   └── models/         # Interfaces y tipos de TS
+│   │   ├── routes/        # Endpoints de /tasks y /projects
+│   │   ├── controllers/   # Lógica de negocio
+│   │   └── models/        # Interfaces y tipos de TS
 │   └── package.json
 └── README.md
 ```
@@ -95,19 +100,20 @@ npm run dev
 
 ---
 
-## Desplegar en Vercel
+## Despliegue
 
-### Frontend
+### Frontend (Vercel)
 
 1. Conectar el repositorio de GitHub en el dashboard de Vercel.
 2. Configurar el `Root Directory` como la carpeta `react/`.
-3. Añadir las variables de entorno necesarias (API URL) y desplegar.
+3. Añadir la variable de entorno `VITE_API_URL` apuntando a la URL de Render.
 
-### Backend
+### Backend (Render)
 
-1. Crear un nuevo proyecto en Vercel apuntando a la carpeta `api/`.
-2. Asegurar que el archivo `vercel.json` esté correctamente configurado para funciones Serverless.
-3. Desplegar y vincular la URL generada al Frontend.
+1. Crear un nuevo **Web Service** en Render.
+2. Conectar el repositorio y configurar el `Root Directory` como `api/`.
+3. Comando de Build: `npm install`
+4. Comando de Start: `npm start` (o el definido en tu package.json).
 
 ---
 
