@@ -4,7 +4,7 @@
 ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
 ![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
 ![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
-![TypeScript](https://shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=TypeScript&logoColor=FFF)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=TypeScript&logoColor=FFF)
 ![NodeJS](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)
 ![Express](https://img.shields.io/badge/Express-000000?style=for-the-badge&logo=express&logoColor=white)
 ![Vercel](https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)
@@ -80,16 +80,16 @@ taskflow-project/
 ## Descargar y ejecutar
 
 ```bash
-# Clonar el repositorio
+# 1. Clonar el repositorio
 git clone [https://github.com/juliaht15/taskflow-project.git](https://github.com/juliaht15/taskflow-project.git)
 cd taskflow-project
 
-# Instalar y ejecutar Backend
+# 2. Instalar y ejecutar Backend
 cd api
 npm install
 npm run dev
 
-# Instalar y ejecutar Frontend (en otra terminal)
+# 3. Instalar y ejecutar Frontend (en otra terminal)
 cd ../react
 npm install
 npm run dev
@@ -117,5 +117,4 @@ _Desarrollado durante las prácticas en [Corner Estudios](https://www.corner-est
 
 ```
 
----
 ```
