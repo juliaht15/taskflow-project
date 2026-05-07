@@ -1,5 +1,3 @@
----
-
 ```markdown
 ![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)
 ![CSS](https://img.shields.io/badge/CSS-639?style=for-the-badge&logo=css&logoColor=fff)
@@ -12,13 +10,14 @@
 ![Vercel](https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)
 
 # 📝 TaskFlow Pro
+
 > Gestión de Tareas Profesional (SaaS-style)
 
 Plataforma Fullstack diseñada para la organización eficiente de tareas y proyectos, ofreciendo una experiencia de usuario fluida con una interfaz moderna y alto rendimiento.
 
-| Despliegue | URL |
-|------------|-----|
-| Frontend | [Vercel](https://juliaht15-taskflow-project.vercel.app) |
+| Despliegue   | URL                                                       |
+| ------------ | --------------------------------------------------------- |
+| Frontend     | [Vercel](https://juliaht15-taskflow-project.vercel.app)   |
 | Gestión Ágil | [Trello](https://trello.com/b/CFXX99qx/task-flow-phase-5) |
 
 ---
@@ -56,24 +55,25 @@ Plataforma Fullstack diseñada para la organización eficiente de tareas y proye
 ---
 
 ## Estructura del proyecto
+```
 
-```
 taskflow-project/
-├── react/                  # Frontend del proyecto
-│   ├── src/
-│   │   ├── components/     # Componentes reutilizables
-│   │   ├── context/        # Estado global (Context API)
-│   │   ├── hooks/          # Lógica personalizada
-│   │   └── services/       # Comunicación con la API (Axios)
-│   └── package.json
-├── api/                    # Backend del proyecto (Node/Express)
-│   ├── src/
-│   │   ├── routes/         # Endpoints de /tasks y /projects
-│   │   ├── controllers/    # Lógica de negocio
-│   │   └── models/         # Interfaces y tipos de TS
-│   └── package.json
+├── react/ # Frontend del proyecto
+│ ├── src/
+│ │ ├── components/ # Componentes reutilizables
+│ │ ├── context/ # Estado global (Context API)
+│ │ ├── hooks/ # Lógica personalizada
+│ │ └── services/ # Comunicación con la API (Axios)
+│ └── package.json
+├── api/ # Backend del proyecto (Node/Express)
+│ ├── src/
+│ │ ├── routes/ # Endpoints de /tasks y /projects
+│ │ ├── controllers/ # Lógica de negocio
+│ │ └── models/ # Interfaces y tipos de TS
+│ └── package.json
 └── README.md
-```
+
+````
 
 ---
 
@@ -93,7 +93,7 @@ npm run dev
 cd ../react
 npm install
 npm run dev
-```
+````
 
 ---
 
