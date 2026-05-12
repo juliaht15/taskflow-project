@@ -1,7 +1,9 @@
 import axios from "axios";
 import { Task, Project } from "../types";
 
-const rawUrl = "https://taskflow-api-8d6c.onrender.com/api";
+// Usamos la variable de entorno, y si no existe, la de Render (sin espacios)
+const rawUrl =
+  import.meta.env.VITE_API_URL || "https://taskflow-api-8d6c.onrender.com/api";
 const BASE_URL = rawUrl.trim().replace(/\/+$/, "");
 
 export const api = axios.create({
@@ -9,17 +11,24 @@ export const api = axios.create({
   headers: { "Content-Type": "application/json" },
 });
 
-// Este interceptor es clave para quitar el envoltorio de AxiosResponse
+// Interceptor para devolver directamente los datos (data) y no la respuesta completa de Axios
 api.interceptors.response.use(
   (response) => response.data,
-  (error) => Promise.reject(error),
+  (error) => {
+    console.error(
+      "Error en la petición API:",
+      error.response?.data || error.message,
+    );
+    return Promise.reject(error);
+  },
 );
 
 export const taskService = {
-  // Añadimos <any, Task[]> para que TS sepa que la respuesta es un array de tareas
+  // TS sabe que la respuesta tras el interceptor es Task[] o Task
   getAll: () => api.get<any, Task[]>("/tasks"),
-  create: (data: any) => api.post<any, Task>("/tasks", data),
-  update: (id: string, data: any) => api.patch<any, Task>(`/tasks/${id}`, data),
+  create: (data: Partial<Task>) => api.post<any, Task>("/tasks", data),
+  update: (id: string, data: Partial<Task>) =>
+    api.patch<any, Task>(`/tasks/${id}`, data),
   delete: (id: string) => api.delete(`/tasks/${id}`),
 };
 

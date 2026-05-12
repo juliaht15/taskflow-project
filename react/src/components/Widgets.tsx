@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Project } from "../types";
+import { Project, Task } from "../types"; // Importamos Task para tipar bien
 import {
   Calendar,
   CheckCircle2,
@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { useAppContext } from "../context/AppContext";
 
+// --- MÓDULO: CREAR TAREA ---
 export const CreateTaskModule: React.FC<{ projects: Project[] }> = ({
   projects,
 }) => {
@@ -20,11 +21,14 @@ export const CreateTaskModule: React.FC<{ projects: Project[] }> = ({
   const [date, setDate] = useState("");
   const [projectId, setProjectId] = useState("");
   const [priority, setPriority] = useState<"low" | "medium" | "high">("medium");
+  const [isSubmitting, setIsSubmitting] = useState(false); // Feedback de carga
 
   const handleSave = async () => {
     if (!title.trim()) return;
 
+    setIsSubmitting(true);
     try {
+      // Usamos el método del contexto que ya conecta con tu api.ts
       await addTask({
         title: title.trim(),
         description: description.trim(),
@@ -34,13 +38,19 @@ export const CreateTaskModule: React.FC<{ projects: Project[] }> = ({
         priority: priority,
       });
 
+      // LIMPIEZA DE ESTADOS (Lo que el profe pidió)
       setTitle("");
       setDescription("");
       setDate("");
       setProjectId("");
       setPriority("medium");
-    } catch {
-      console.error("No se pudo crear la tarea.");
+
+      // Feedback opcional
+      // alert("Tarea guardada");
+    } catch (error) {
+      console.error("Error al crear la tarea:", error);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -50,7 +60,10 @@ export const CreateTaskModule: React.FC<{ projects: Project[] }> = ({
         Nueva Tarea
       </h3>
       <div className="space-y-4">
+        {/* Accesibilidad: Añadimos 'name' e 'id' */}
         <input
+          id="task-title"
+          name="title"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           placeholder="¿Qué hay que hacer?"
@@ -64,6 +77,7 @@ export const CreateTaskModule: React.FC<{ projects: Project[] }> = ({
           {(["low", "medium", "high"] as const).map((p) => (
             <button
               key={p}
+              type="button"
               onClick={() => setPriority(p)}
               className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase transition-all ${
                 priority === p
@@ -79,6 +93,8 @@ export const CreateTaskModule: React.FC<{ projects: Project[] }> = ({
         <div className="flex items-start gap-3 bg-slate-50 dark:bg-slate-800/50 p-3.5 rounded-xl border border-slate-100 dark:border-slate-800">
           <AlignLeft className="w-5 h-5 text-slate-400 mt-1" />
           <textarea
+            id="task-desc"
+            name="description"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             placeholder="Añade una descripción..."
@@ -88,24 +104,24 @@ export const CreateTaskModule: React.FC<{ projects: Project[] }> = ({
 
         <div className="flex flex-wrap items-center justify-between gap-4 pt-2">
           <div className="flex gap-3">
-            {/* AQUÍ USAMOS EL ICONO CALENDAR PARA QUITAR EL AVISO */}
             <div className="flex items-center gap-2 bg-slate-100 dark:bg-slate-800 px-4 py-2 rounded-full text-xs font-semibold">
               <Calendar className="w-4 h-4 text-emerald-600" />
               <input
                 type="date"
+                name="dueDate"
                 value={date}
                 onChange={(e) => setDate(e.target.value)}
                 className="bg-transparent outline-none"
               />
             </div>
 
-            {/* AQUÍ USAMOS EL ICONO FOLDER PARA QUITAR EL AVISO */}
             <div className="relative flex items-center bg-slate-100 dark:bg-slate-800 px-4 py-2 rounded-full">
               <Folder className="w-4 h-4 text-emerald-600 mr-2" />
               <select
+                name="projectId"
                 value={projectId}
                 onChange={(e) => setProjectId(e.target.value)}
-                className="bg-transparent text-xs font-semibold outline-none cursor-pointer appearance-none"
+                className="bg-transparent text-xs font-semibold outline-none cursor-pointer appearance-none pr-2"
               >
                 <option value="">Carpeta...</option>
                 {projects.map((p) => (
@@ -119,9 +135,10 @@ export const CreateTaskModule: React.FC<{ projects: Project[] }> = ({
 
           <button
             onClick={handleSave}
-            className="bg-emerald-600 hover:bg-emerald-700 text-white px-8 py-2.5 rounded-full text-sm font-bold shadow-lg active:scale-95 transition-all"
+            disabled={isSubmitting || !title.trim()}
+            className="bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 text-white px-8 py-2.5 rounded-full text-sm font-bold shadow-lg active:scale-95 transition-all"
           >
-            Guardar Tarea
+            {isSubmitting ? "Guardando..." : "Guardar Tarea"}
           </button>
         </div>
       </div>
@@ -129,8 +146,10 @@ export const CreateTaskModule: React.FC<{ projects: Project[] }> = ({
   );
 };
 
-export const TaskItem: React.FC<{ task: any }> = ({ task }) => {
+// --- COMPONENTE: ITEM DE TAREA ---
+export const TaskItem: React.FC<{ task: Task }> = ({ task }) => {
   const { toggleTask, deleteTask } = useAppContext();
+
   const pColor =
     task.priority === "high"
       ? "text-red-500"
@@ -174,7 +193,8 @@ export const TaskItem: React.FC<{ task: any }> = ({ task }) => {
   );
 };
 
-export const UpcomingTasksModule: React.FC<{ tasks: any[] }> = ({ tasks }) => (
+// --- MÓDULO: PRÓXIMAS TAREAS (Lateral) ---
+export const UpcomingTasksModule: React.FC<{ tasks: Task[] }> = ({ tasks }) => (
   <div className="space-y-6">
     <h2 className="text-xs font-black uppercase tracking-widest text-slate-400">
       Próximas
