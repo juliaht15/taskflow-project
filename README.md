@@ -106,7 +106,3 @@ npm run dev
 ---
 
 **Desarrollado por [Julia Huertas**](https://www.google.com/search?q=https://github.com/juliaht15) _Fullstack Developer - 2026_
-
-```
-
-```
