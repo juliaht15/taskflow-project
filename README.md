@@ -105,14 +105,6 @@ npm run dev
 
 ---
 
-## 📈 Próximas Actualizaciones
-
-- [ ] Implementación de Auth (Login/Registro).
-- [ ] Sincronización con la versión Mobile (React Native).
-- [ ] Notificaciones Push para tareas próximas a vencer.
-
----
-
 **Desarrollado por [Julia Huertas**](https://www.google.com/search?q=https://github.com/juliaht15) _Fullstack Developer - 2026_
 
 ```
