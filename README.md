@@ -6,118 +6,114 @@
 ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=TypeScript&logoColor=FFF)
 ![NodeJS](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)
 ![Express](https://img.shields.io/badge/Express-000000?style=for-the-badge&logo=express&logoColor=white)
-![Vercel](https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)
-![Render](https://img.shields.io/badge/Render-46E3B7?style=for-the-badge&logo=render&logoColor=white)
 
 # 📝 TaskFlow Pro
 
-> Gestión de Tareas Profesional (SaaS-style)
+> **Solución Fullstack para la gestión de tareas de alto rendimiento.**
 
-Plataforma Fullstack diseñada para la organización eficiente de tareas y proyectos, ofreciendo una experiencia de usuario fluida con una interfaz moderna y alto rendimiento.
+TaskFlow Pro es una plataforma diseñada bajo estándares profesionales para la organización eficiente de proyectos. Separa de forma estricta las capas de frontend y backend para garantizar escalabilidad y un mantenimiento limpio del código.
 
-| Servicio         | Plataforma | URL                                                                     |
-| :--------------- | :--------- | :---------------------------------------------------------------------- |
-| **Frontend**     | Vercel     | [Visitar Web](https://taskflow-project-jht.vercel.app/)                 |
-| **API Backend**  | Render     | [Endpoint API](https://taskflow-api-8d6c.onrender.com)                  |
-| **Gestión Ágil** | Trello     | [Tablero del Proyecto](https://trello.com/b/CFXX99qx/task-flow-phase-5) |
+| Servicio          | Plataforma | Enlace Directo                                                     |
+| :---------------- | :--------- | :----------------------------------------------------------------- |
+| **Frontend**      | Vercel     | [🚀 Ver Aplicación](https://taskflow-project-jht.vercel.app/)      |
+| **API Backend**   | Render     | [📡 Endpoint API](https://taskflow-api-8d6c.onrender.com)          |
+| **Documentación** | Trello     | [📋 Gestión Ágil](https://trello.com/b/CFXX99qx/task-flow-phase-5) |
 
-> [!IMPORTANT]
-> **Nota sobre el rendimiento:** El backend utiliza un plan gratuito de Render que entra en modo reposo tras 15 minutos de inactividad. La primera carga puede demorar entre **30 y 50 segundos** mientras la instancia se reactiva. Una vez "despierta", la aplicación funciona con total normalidad.
-
----
-
-## Características
-
-- **Gestión de Ciclo de Vida:** Creación, edición, completado y eliminación de tareas en tiempo real.
-- **Filtro Inteligente y Prioridades:** Buscador dinámico integrado y clasificación por niveles (Alta, Media, Baja) con indicadores visuales.
-- **Categorización por Proyectos:** Organización jerárquica con etiquetas visuales y creación dinámica de carpetas.
-- **Tematización Dual:** Soporte nativo para Modo Claro y Modo Oscuro con persistencia visual.
+> [!NOTE]
+> **Rendimiento de la API:** Debido al uso del plan gratuito de Render, el servidor puede entrar en reposo. La primera petición puede tardar unos **30 segundos** en responder mientras la instancia se reactiva.
 
 ---
 
-## Tecnologías
+## 🌟 Características Destacadas
 
-| Frontend         | Uso                                              |
-| :--------------- | :----------------------------------------------- |
-| **React 18/19**  | Biblioteca principal para la interfaz de usuario |
-| **Tailwind CSS** | Estilizado moderno y responsive                  |
-| **Context API**  | Gestión de estado global de la aplicación        |
-| **Lucide React** | Set de iconos vectoriales                        |
-
-| Backend        | Uso                                                  |
-| :------------- | :--------------------------------------------------- |
-| **Node.js**    | Entorno de ejecución para el servidor                |
-| **Express**    | Framework para la creación de la API REST            |
-| **TypeScript** | Tipado estático para asegurar la integridad de datos |
-
-| Infraestructura | Uso                                           |
-| :-------------- | :-------------------------------------------- |
-| **Axios**       | Cliente HTTP con interceptores personalizados |
-| **Vercel**      | Hosting del Frontend y despliegue continuo    |
-| **Render**      | Hosting del Backend (API)                     |
+- **Gestión de Ciclo de Vida:** Flujo completo de creación, edición y eliminación de tareas con persistencia en base de datos.
+- **Arquitectura de Proyectos:** Organización jerárquica mediante "Carpetas" dinámicas.
+- **Priorización Inteligente:** Clasificación visual por niveles (Baja, Media, Alta).
+- **UX Optimizada:** Feedback visual en tiempo real, estados de carga (loading states) y limpieza automática de formularios.
+- **Modo Oscuro Nativo:** Interfaz adaptativa con persistencia de preferencia de usuario.
 
 ---
 
-## Estructura del proyecto
+## 🛠️ Stack Tecnológico
 
-```
+### Frontend
+
+- **React 18/19 + TypeScript:** Arquitectura de componentes robusta y tipado estático.
+- **Tailwind CSS:** Diseño responsive y moderno basado en utilidades.
+- **Context API:** Gestión de estado global centralizada.
+- **Lucide React:** Iconografía vectorial consistente.
+- **Axios:** Cliente HTTP configurado con interceptores para una comunicación limpia con la API.
+
+### Backend
+
+- **Node.js & Express:** Servidor escalable y rápido.
+- **RESTful API:** Endpoints estructurados para `/tasks` y `/projects`.
+- **CORS & Seguridad:** Configuración de cabeceras para despliegues seguros en entornos distintos.
+
+---
+
+## 📁 Estructura del Proyecto
+
+```text
 taskflow-project/
-├── react/                 # Frontend del proyecto
+├── react/                 # Aplicación Frontend (Vite)
 │   ├── src/
-│   │   ├── components/    # Componentes reutilizables
-│   │   ├── context/       # Estado global (Context API)
-│   │   ├── hooks/         # Lógica personalizada
-│   │   └── services/      # Comunicación con la API (Axios)
-│   └── package.json
-├── api/                   # Backend del proyecto (Node/Express)
+│   │   ├── components/    # Widgets y UI reusable
+│   │   ├── context/       # Lógica de estado global
+│   │   ├── lib/           # Configuración de Axios (api.ts)
+│   │   └── pages/         # Vistas principales (HomePage)
+├── api/                   # Servidor Backend (Node)
 │   ├── src/
-│   │   ├── routes/        # Endpoints de /tasks y /projects
-│   │   ├── controllers/   # Lógica de negocio
-│   │   └── models/        # Interfaces y tipos de TS
-│   └── package.json
+│   │   ├── routes/        # Definición de rutas
+│   │   └── controllers/   # Lógica de negocio
 └── README.md
+
 ```
 
 ---
 
-## Descargar y ejecutar
+## 🚀 Instalación y Uso Local
+
+Para ejecutar el proyecto localmente, sigue estos pasos:
+
+1. **Clonar el repositorio:**
 
 ```bash
-# 1. Clonar el repositorio
 git clone [https://github.com/juliaht15/taskflow-project.git](https://github.com/juliaht15/taskflow-project.git)
 cd taskflow-project
 
-# 2. Instalar y ejecutar Backend
+```
+
+2. **Configurar el Backend:**
+
+```bash
 cd api
 npm install
 npm run dev
 
-# 3. Instalar y ejecutar Frontend (en otra terminal)
+```
+
+3. **Configurar el Frontend:**
+
+```bash
 cd ../react
 npm install
+# Asegúrate de configurar tu .env con VITE_API_URL=http://localhost:5000/api
 npm run dev
+
 ```
 
 ---
 
-## Despliegue
+## 📈 Próximas Actualizaciones
 
-### Frontend (Vercel)
-
-1. Conectar el repositorio de GitHub en el dashboard de Vercel.
-2. Configurar el `Root Directory` como la carpeta `react/`.
-3. Añadir la variable de entorno `VITE_API_URL` apuntando a la URL de Render.
-
-### Backend (Render)
-
-1. Crear un nuevo **Web Service** en Render.
-2. Conectar el repositorio y configurar el `Root Directory` como `api/`.
-3. Comando de Build: `npm install`
-4. Comando de Start: `npm start` (o el definido en tu package.json).
+- [ ] Implementación de Auth (Login/Registro).
+- [ ] Sincronización con la versión Mobile (React Native).
+- [ ] Notificaciones Push para tareas próximas a vencer.
 
 ---
 
-_Desarrollado durante las prácticas en [Corner Estudios](https://www.corner-estudios.com) — Julia Huertas — 2026_
+**Desarrollado por [Julia Huertas**](https://www.google.com/search?q=https://github.com/juliaht15) _Fullstack Developer - 2026_
 
 ```
 
